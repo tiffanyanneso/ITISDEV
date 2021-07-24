@@ -53,7 +53,14 @@
 /* TABLE */
 .div-table {
     overflow-y: auto; 
+}
+
+.table-height-185 {
     height: 185px;
+}
+
+.table-height-300{
+    height: 300px;
 }
 
 .table-head {
@@ -75,4 +82,75 @@
 .color-blue {
     color: #2F5D62; 
 }
+
+/* BUTTONS */
+.btn-light-blue {
+    background-color: #0F84D9;
+    width: 150px;
+    border-radius: 5px;
+    color: white;
+    border:  #0F84D9;
+    height: 30px;
+}
+
+#div-view-dish-edit-details {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    /*visibility: hidden;*/
+}
+
+#div-view-dish-edit-ingredients {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    /*visibility: hidden;*/
+}
+
+/* STATUS BUTTON */
+.btn-status {
+    background-color: #30b357;
+    width: 150px;
+    border-radius: 5px;
+    color: white;
+    border:  #30b357;
+    height: 30px;
+}
+
+.div-btn-status {
+    width: 50%; 
+    float: left; 
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: flex-end;
+}
+
+/* LABEL */
+.label-container {
+    height: 40px; 
+    width: 100%;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+ 
+.override-label {
+    padding-left: 10px;
+    float: left;
+    background-color: #F8F5F1; 
+    height: 100%; 
+    width: 120px;
+    display: flex;
+    align-items: center;
+}
+
+.label-content {
+    padding-left: 10px;
+    float: left;
+    background-color: #f8f5f180; 
+    height: 100%; 
+    width: 70%;
+    display: flex;
+    align-items: center;
+}
+
 

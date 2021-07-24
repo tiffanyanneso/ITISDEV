@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> View Dish </title>
+        <meta name="description" content="View Dish">
+        <meta name="keyword" content="View Dish">
+        <link rel="stylesheet" type="text/css" href="../public/css/general.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        
+    </head>
+    <body>
+
+        <!-- PARTIALS -->
+        <div id="navbar"> 
+            <div class="navbar-logout"> 
+                <a href= "#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="#">Home</a>
+            <a href="#">New Order</a>
+            <a href="#">View Menu</a>
+        </div>
+
+        <div class="content">
+            <div>
+                <div style="display: flex;">
+                    <div style="width: 50%"><h1 class="bold color-blue">Fried Chicken</h1></div>
+                    <div class="div-btn-status">
+                        <div><button class="btn-status" id="status-view-dish">Status</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div>
+                <div class="label-container" style="width: 50%; float: left;">
+                    <div class="override-label">Price</div> 
+                    <div class="label-content" id="view-dish-price">  </div>
+                </div>
+
+                <div class="label-container" style="width: 50%; float: left; display: flex; justify-content: flex-end;">
+                    <div class="override-label">Classification</div> 
+                    <div class="label-content" id="view-dish-classification">  </div>
+                </div>
+            </div>
+
+            <div id="div-view-dish-edit-details" style="margin-top: 90px;"><button class="btn-light-blue" id="btn-view-dish-edit-details" style="margin-bottom: 10px;" >Edit Details</button></div>
+
+            <h3 class="bold">Ingredients</h3> 
+            <div class="div-table table-height-300">
+                <table class="table" id="table-view-dish-ingredients">
+                    <thead class="table-head table-sticky-header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                        <tr>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
+                            <td>1</td>
+                            <td>Cup</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                        </tr>
+                        <tr>
+                            <td>AFLR</td>
+                            <td>All Purpose Flour</td>
+                            <td>1</td>
+                            <td>Cup</td>
+                        </tr>
+                        <tr>
+                            <td>SLT</td>
+                            <td>Salt</td>
+                            <td>1</td>
+                            <td>Tablespoon</td>
+                        </tr>
+                        <tr>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
+                            <td>1</td>
+                            <td>Cup</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                        </tr>
+                        <tr>
+                            <td>AFLR</td>
+                            <td>All Purpose Flour</td>
+                            <td>1</td>
+                            <td>Cup</td>
+                        </tr>
+                        <tr>
+                            <td>SLT</td>
+                            <td>Salt</td>
+                            <td>1</td>
+                            <td>Tablespoon</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="div-view-dish-edit-ingredients" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-view-dish-edit-ingredients" style="margin-bottom: 10px;" >Edit Ingredients</button></div>
+        </div>
+    </body>
+</html>
