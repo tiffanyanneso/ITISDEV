@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> View Shrinkages </title>
-        <meta name="description" content="View Shrinkages">
-        <meta name="keyword" content="View Shrinkages">
+        <title> View Purchases </title>
+        <meta name="description" content="View Purchases">
+        <meta name="keyword" content="View Purchases">
         <link rel="stylesheet" type="text/css" href="../public/css/general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -33,11 +33,11 @@
         </div>
 
         <div class="content">
-            <h1 class="bold color-blue">Shrinkages</h1>
+            <h1 class="bold color-blue">Purchases</h1>
 
             <div style="width: 50%; float: left;">
-                <input type="search" placeholder="Search" name="search" class="search-field" id="view-shrinkages-search-field">
-                <button type="submit" id="view-shrinkages-search-button"><i class="fa fa-search" ></i></button>
+                <input type="search" placeholder="Search" name="search" class="search-field" id="view-purchases-search-field">
+                <button type="submit" id="search-button"><i class="fa fa-search" ></i></button>
             </div>
 
             <div style= "width: 50%; float: left; display: flex; justify-content: flex-end">
@@ -49,6 +49,7 @@
 
             <br>
 
+            <!-- make rows clickable -->
             <div class="div-table" style= "margin-top: 30px; height: 500px">
                 <table class="table" id="table-view-dish-ingredients">
                     <thead class="table-head table-sticky-header">
@@ -56,11 +57,7 @@
                             <th>Date</th>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>System</th>
-                            <th>Manual</th>
-                            <th>Unit</th>
-                            <th>Reason</th>
-                            <th>Reported By</th>
+                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody> 
@@ -69,6 +66,26 @@
                             <td>Canola Oil</td>
                             <td>1</td>
                             <td>Cup</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                        </tr>
+                        <tr>
+                            <td>AFLR</td>
+                            <td>All Purpose Flour</td>
+                            <td>1</td>
+                            <td>Cup</td>
+                        </tr>
+                        <tr>
+                            <td>SLT</td>
+                            <td>Salt</td>
+                            <td>1</td>
+                            <td>Tablespoon</td>
+                        </tr>
+                        <tr>
                             <td>COIL</td>
                             <td>Canola Oil</td>
                             <td>1</td>
@@ -79,110 +96,42 @@
                             <td>Chicken</td>
                             <td>500</td>
                             <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                         <tr>
                             <td>AFLR</td>
                             <td>All Purpose Flour</td>
                             <td>1</td>
                             <td>Cup</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                         <tr>
                             <td>AFLR</td>
                             <td>All Purpose Flour</td>
                             <td>1</td>
                             <td>Cup</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>AFLR</td>
-                            <td>All Purpose Flour</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>Salt</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                     </tbody>
                 </table>
