@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> View Purchases </title>
-        <meta name="description" content="View Purchases">
-        <meta name="keyword" content="View Purchases">
+        <title> View Order History </title>
+        <meta name="description" content="View Order History">
+        <meta name="keyword" content="View Order History">
         <link rel="stylesheet" type="text/css" href="../public/css/general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -33,25 +33,25 @@
         </div>
 
         <div class="content">
-            <h1 class="bold color-blue margin-bottom-0">Purchases</h1>
+            <h1 class="bold color-blue margin-bottom-0">Order History</h1>
 
             <div class="div-search">
-                <input type="search" placeholder="Search" name="search" class="search-field" id="view-purchases-search-field">
-                <button type="submit" id="view-purchases-search-button"><i class="fa fa-search" ></i></button>
+                <input type="search" placeholder="Search" name="search" class="search-field" id="view-order-history-search-field">
+                <button type="submit" id="view-order-history-search-button"><i class="fa fa-search" ></i></button>
             </div>
 
-            <div class= "div-dates">
-                <label class="date-label" for="start-date-purchases;">Start Date</label>
-                <input style="height: 34px" type="date" id="start-date-purchases" name="start-date-purchases">
-                <label class="date-label" style="margin-left: 10px;" for="end-date-purchases">End Date</label>
-                <input style="height: 34px" type="date" id="end-date-purchases" name="end-date-purchases">
+            <div class="div-dates">
+                <label class="date-label" for="start-date-order-history;">Start Date</label>
+                <input style="height: 34px" type="date" id="start-date-order-history" name="start-date-order-history">
+                <label class= "date-label" style="margin-left: 10px;" for="end-date-order-history">End Date</label>
+                <input style="height: 34px" type="date" id="end-date-order-history" name="end-date-order-history">
             </div>
 
             <br>
 
             <!-- make rows clickable -->
             <div class="div-table" style= "margin-top: 30px; height: 500px">
-                <table class="table" id="table-view-purchases">
+                <table class="table" id="table-view-order-history">
                     <thead class="table-head table-sticky-header">
                         <tr>
                             <th>Date</th>

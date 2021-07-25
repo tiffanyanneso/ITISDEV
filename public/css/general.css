@@ -92,6 +92,10 @@
     color: #2F5D62; 
 }
 
+.margin-bottom-0 {
+    margin-bottom: 0px;
+}
+
 /* BUTTONS */
 .btn-light-blue {
     background-color: #0F84D9;
@@ -155,7 +159,7 @@
     float: left;
     background-color: #F8F5F1; 
     height: 100%; 
-    width: 120px;
+    width: 30%;
     display: flex;
     align-items: center;
 }
@@ -230,7 +234,25 @@ input {
 }
 
 /* SEARCH */
+.div-search {
+    width: 50%; 
+    float: left;
+}
+
 .search-field {
     height: 34px;
     width: 400px;
+}
+
+/* DATES */
+.div-dates {
+    width: 50%; 
+    float: left; 
+    display: flex; 
+    justify-content: flex-end;
+}
+
+.date-label {
+    margin-top: auto; 
+    margin-right: 7px
 }

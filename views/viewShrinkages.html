@@ -33,24 +33,24 @@
         </div>
 
         <div class="content">
-            <h1 class="bold color-blue">Shrinkages</h1>
+            <h1 class="bold color-blue margin-bottom-0">Shrinkages</h1>
 
-            <div style="width: 50%; float: left;">
+            <div class="div-search">
                 <input type="search" placeholder="Search" name="search" class="search-field" id="view-shrinkages-search-field">
                 <button type="submit" id="view-shrinkages-search-button"><i class="fa fa-search" ></i></button>
             </div>
 
-            <div style= "width: 50%; float: left; display: flex; justify-content: flex-end">
-                <label style="margin-top: auto; margin-right: 7px" for="start-date-losses;">Start Date</label>
-                <input style="height: 34px" type="date" id="start-date-losses" name="start-date-losses">
-                <label style="margin-top: auto; margin-left: 10px; margin-right: 7px" for="end-date-losses">End Date</label>
-                <input style="height: 34px" type="date" id="end-date-losses" name="end-date-losses">
+            <div class= "div-dates">
+                <label for="start-date-shrinkages;" class= "date-label">Start Date</label>
+                <input style="height: 34px" type="date" id="start-date-shrinkages" name="start-date-shrinkages">
+                <label class= "date-label" style="margin-left: 10px;" for="end-date-shrinkages">End Date</label>
+                <input style="height: 34px" type="date" id="end-date-shrinkages" name="end-date-shrinkages">
             </div>
 
             <br>
 
-            <div class="div-table" style= "margin-top: 30px; height: 500px">
-                <table class="table" id="table-view-dish-ingredients">
+            <div class="div-table" style="margin-top: 30px; height: 500px">
+                <table class="table" id="table-view-shrinkages">
                     <thead class="table-head table-sticky-header">
                         <tr>
                             <th>Date</th>
