@@ -74,6 +74,15 @@
     top: 0;
 }
 
+.delete-button {
+    background-color: white; 
+    border: 0px;
+}
+.delete-button img:hover {
+    background-color: rgb(247, 121, 121);
+    color: white;
+}
+
 /* FONT */
 .bold {
     font-weight: bold;
@@ -93,18 +102,26 @@
     height: 30px;
 }
 
-#div-view-dish-edit-details {
+.div-btn-right {
     width: 100%;
     display: flex;
     justify-content: flex-end;
+}
+
+#div-view-dish-edit-details {
     /*visibility: hidden;*/
 }
 
 #div-view-dish-edit-ingredients {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
     /*visibility: hidden;*/
+}
+
+.btn-add {
+    width: 34px; 
+    background-color: #0F84D9; 
+    border: #0F84D9; 
+    border-radius: 7px; 
+    color: white;
 }
 
 /* STATUS BUTTON */
@@ -153,4 +170,61 @@
     align-items: center;
 }
 
+/* HEADER */
+.header-colored-bg {
+    width: 100%; 
+    background-color: #2F5D62; 
+    display: flex; 
+    align-items: center;
+}
 
+.header-text {
+    color: white; 
+    margin: 5px
+}
+
+/* INPUT */
+input {
+    width: 150px;
+    height: 34px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding-left: 4px;
+}
+
+#error {
+    margin: 0;
+    padding: 0;
+    color: #B00000;
+    font-weight: 700;
+}
+
+/* SUMMARY */
+.summary-container {
+    height: 30px;  
+    display: flex; 
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.summary-text {
+    width: 80%; 
+    float: left; 
+    text-align: end;
+}
+
+.summary-info-container {
+    width: 20%; 
+    float: left; 
+    display: flex; 
+    justify-content:flex-end;
+}
+
+.summary-info {
+    background-color: #dad8d8; 
+    width: 150px; 
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+}
