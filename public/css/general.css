@@ -228,3 +228,9 @@ input {
     align-items: center;
     padding-left: 10px;
 }
+
+/* SEARCH */
+.search-field {
+    height: 34px;
+    width: 400px;
+}
