@@ -196,11 +196,31 @@ input {
     padding-left: 4px;
 }
 
-#error {
+.error {
     margin: 0;
     padding: 0;
     color: #B00000;
     font-weight: 700;
+}
+
+.input-container {
+    height: 30px;  
+    display: flex; 
+    align-items: center;
+    margin-top: 20px;
+}
+
+.input-label {
+    width: 20%; 
+    float: left; 
+    text-align: left;
+}
+
+.input-info-container {
+    width: 80%; 
+    float: left; 
+    display: flex; 
+    justify-content:flex-start;
 }
 
 /* SUMMARY */
@@ -255,4 +275,10 @@ input {
 .date-label {
     margin-top: auto; 
     margin-right: 7px
+}
+
+/* DROPDOWN */
+.dropdown {
+    height: 34px;
+    width: 150px;
 }

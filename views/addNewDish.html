@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> New Dish </title>
+        <meta name="description" content="New Dish">
+        <meta name="keyword" content="New Dish">
+        <link rel="stylesheet" type="text/css" href="../public/css/general.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        
+    </head>
+    <body>
+
+        <!-- PARTIALS -->
+        <div id="navbar"> 
+            <div class="navbar-logout"> 
+                <a href= "#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="#">Home</a>
+            <a href="#">New Order</a>
+            <a href="#">View Menu</a>
+        </div>
+
+        <div class="content">
+           <h1 style="margin-bottom: 0px;" class="bold color-blue">Add New Dish</h1>
+
+           <hr>
+
+            <div class="input-container" style="margin-top: 20px;">
+                <div class="input-label"> <label for="new-dish-ID">Dish ID</label></div>
+                <div class="input-info-container"><input type="text" name="new-dish-ID" id="new-dish-ID" style="width: 100%"></div>
+            </div>
+
+            <p class="error" id="error-new-dish-ID" style="margin-left: 20%;"> error message here</p>
+            
+            <div class="input-container">
+                <div class="input-label"><label for="new-dish-name">Name</label></div>
+                <div class="input-info-container"><input type="text" name="new-dish-name" id="new-dish-name" style="width: 100%"></div>
+            </div>
+
+            <p class="error" id="error-new-dish-name" style="margin-left: 20%;"></p>
+
+            <div class="input-container">    
+                <div class="input-label"><label for="new-dish-price">Price</label></div>
+                <div class="input-info-container"><input type="number" name="new-dish-price" id="new-dish-price" style="width: 100%"></div>
+            </div>
+
+            <p class="error" id="error-new-dish-price" style="margin-left: 20%;"></p>
+
+            <div class="input-container">
+                <div class="input-label"> <label for="dropdown-add-new-dish-classification">Classification</label></div>
+                <div class="input-info-container">
+                    <select class="dropdown" id="dropdown-add-new-dish-classification">
+                        <option value="all" selected>All</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-container">    
+                <div class="input-label"> <label for="dropdown-add-new-dish-status">Status</label></div>
+                <div class="input-info-container">
+                    <select class="dropdown" id="dropdown-add-new-dish-status">
+                        <option value="all" selected>All</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr>
+
+            <h3 class="bold">Ingredients</h3> 
+
+            <div style="margin-top: 10px;"> 
+                <input type="text" name="new-dish-ID" id="new-dish-ID" placeholder="ID" style="margin-right: 5px">
+                <input type="number" name="new-dish-quantity" id="new-dish-quantity" placeholder="Quantity" style="margin-right: 10px">
+                <select class="dropdown" id="dropdown-add-new-dish-unit" style="margin-right: 10px">
+                    <option value="all" selected>All</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+                <input class="btn-add" type="button" id="btn-add-new-dish" name="btn-add-new-dish" value="+">
+            </div>
+
+            <div class="div-table" style="margin-top: 10px;">
+                <table class="table" id="table-add-new-dish">
+                    <thead class="table-head table-sticky-header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                        <tr>
+                            <td>FCHIK</td>
+                            <td>Fried Chicken</td>
+                            <td>2</td>
+                            <td>P 250.00</td>
+                            <td><button class="delete-button"><img src="../public/images/delete-icon.png" height="20px" width="15x" alt="Delete" id= "new-invoice-delete-table-row-btn"></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    
+            <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-dish-save">Save</button></div>
+        </div>
+    </body>
+</html>
