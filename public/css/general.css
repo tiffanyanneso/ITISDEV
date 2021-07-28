@@ -112,6 +112,13 @@
     justify-content: flex-end;
 }
 
+.div-btn-50 {
+    width: 50%; 
+    float: left; 
+    display: flex; 
+    justify-content: flex-end; 
+}
+
 #div-view-dish-edit-details {
     /*visibility: hidden;*/
 }
