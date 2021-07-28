@@ -1,0 +1,56 @@
+.dashboard-content {
+    margin-top: 90px;
+    padding: 10px 50px 0px 50px;
+    font-family: 'Lato', sans-serif;
+}
+
+.div-welcome {
+    margin-top: 20px;
+    background-color:  #e2e2e2ce;
+    height: 80px;  
+    display: flex;
+    align-items: center; 
+    padding-left: 20px;
+}
+
+.div-welcome h1 {
+    color: #2F5D62;
+}
+
+.options-format {
+    margin-top: 30px;
+}
+
+.options button {
+    height: 150px;
+    width: 250px;
+    background-color: #F8F5F1;
+    text-align:left;
+    font-size: 20px;
+    color: #2F5D62;
+    font-family: 'Lato', sans-serif;
+    margin-bottom: 10px;
+    border-color: black;
+    border-radius: 15px;
+    border-width: 4px;
+    display: inline-flex; 
+    align-items: flex-start; 
+    padding: 10px 0px 0px 10px;
+
+}
+
+.options button:hover {
+    background-color: #0F84D9;
+    color: white;
+}
+
+.options {
+    display: table;
+    border-spacing: 10px; 
+    margin: auto;
+    padding: 0px 200px 0px 200px;
+}
+
+.column {
+    display: table-cell;
+}

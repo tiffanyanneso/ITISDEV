@@ -42,6 +42,35 @@
     color: white;
 }
 
+/* LOGIN */
+.login-html {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.login-container {
+    background-color: #e2e2e2ce;
+    width: 500px;
+    padding: 15px;
+    font-family: 'Lato', sans-serif;
+    border: 10px;
+    border-radius: 25px; 
+}
+
+.login-h1 {
+    text-align: center;
+    color: #2F5D62;
+    font-family: 'Lato', sans-serif;
+}
+
+.login-input {
+    width: 300px;
+    margin-bottom: 10px;
+}
+
 /* CONTENT */
 .content {
     margin-top: 90px;
@@ -80,6 +109,16 @@
 }
 .delete-button img:hover {
     background-color: rgb(247, 121, 121);
+    color: white;
+}
+
+.edit-button {
+    background-color: white; 
+    border: 0px
+}
+
+.edit-button img:hover {
+    background-color: rgb(153, 228, 153);
     color: white;
 }
 
