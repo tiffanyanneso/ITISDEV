@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> View Shrinkages </title>
-        <meta name="description" content="View Shrinkages">
-        <meta name="keyword" content="View Shrinkages">
+        <title> View Inventory </title>
+        <meta name="description" content="View Inventory">
+        <meta name="keyword" content="View Inventory">
         <link rel="stylesheet" type="text/css" href="../public/css/general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -33,34 +33,46 @@
         </div>
 
         <div class="content">
-            <h1 class="bold color-blue">Shrinkages</h1>
+            <h1 class="bold color-blue">Inventory</h1>
 
             <div class="div-search">
-                <input type="search" placeholder="Search" name="search" class="search-field" id="view-shrinkages-search-field">
-                <button type="submit" id="view-shrinkages-search-button"><i class="fa fa-search" ></i></button>
+                <input type="search" placeholder="Search" name="search" class="search-field" id="view-inventory-search-field">
+                <button type="submit" id="view-inventory-search-button"><i class="fa fa-search" ></i></button>
             </div>
 
-            <div class= "div-dates">
-                <label for="start-date-shrinkages;" class= "date-label">Start Date</label>
-                <input style="height: 34px" type="date" id="start-date-shrinkages" name="start-date-shrinkages">
-                <label class= "date-label" style="margin-left: 10px;" for="end-date-shrinkages">End Date</label>
-                <input style="height: 34px" type="date" id="end-date-shrinkages" name="end-date-shrinkages">
+            <div class="div-btn-50">
+               <button class="btn-light-blue" id="btn-view-inventory-add-ingredient">+ Add Ingredient</button>
+            </div>
+
+            <div style="margin-top: 60px;">
+                <label for="dropdown-view-new-inventory-type" style="margin-right: 10px">Type</label>
+                <select class="dropdown" id="dropdown-view-inventory-type" style="margin-right: 10px">
+                    <option value="all-type" selected>All</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+    
+                <label for="dropdown-view-new-inventory-status" style="margin-right: 10px">Status</label>
+                <select class="dropdown" id="dropdown-view-inventory-status">
+                    <option value="low-stock" selected>Low Stock</option>
+                    <option value="in-stock">In Stock</option>
+                    <option value="all-status">All</option>
+                </select>
             </div>
 
             <br>
 
-            <div class="div-table" style="margin-top: 30px; height: 500px">
-                <table class="table" id="table-view-shrinkages">
+            <!-- make rows clickable -->
+            <div class="div-table" style="height: 500px">
+                <table class="table" id="table-view-inventory">
                     <thead class="table-head table-sticky-header">
                         <tr>
-                            <th>Date</th>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>System</th>
-                            <th>Manual</th>
+                            <th>Type</th>
+                            <th>Quantity</th>
                             <th>Unit</th>
-                            <th>Reason</th>
-                            <th>Reported By</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody> 
@@ -71,8 +83,6 @@
                             <td>Cup</td>
                             <td>COIL</td>
                             <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                         <tr>
                             <td>CHIK</td>
@@ -81,38 +91,6 @@
                             <td>Grams</td>
                             <td>COIL</td>
                             <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>AFLR</td>
-                            <td>All Purpose Flour</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>Salt</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                         <tr>
                             <td>CHIK</td>
@@ -121,8 +99,78 @@
                             <td>Grams</td>
                             <td>COIL</td>
                             <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
                         </tr>
                         <tr>
                             <td>AFLR</td>
@@ -131,8 +179,6 @@
                             <td>Cup</td>
                             <td>COIL</td>
                             <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
@@ -141,8 +187,22 @@
                             <td>Tablespoon</td>
                             <td>COIL</td>
                             <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
                             <td>1</td>
                             <td>Cup</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>CHIK</td>
+                            <td>Chicken</td>
+                            <td>500</td>
+                            <td>Grams</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
                         </tr>
                         <tr>
                             <td>AFLR</td>
@@ -151,8 +211,6 @@
                             <td>Cup</td>
                             <td>COIL</td>
                             <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
@@ -161,8 +219,14 @@
                             <td>Tablespoon</td>
                             <td>COIL</td>
                             <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>AFLR</td>
+                            <td>All Purpose Flour</td>
                             <td>1</td>
                             <td>Cup</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
@@ -171,8 +235,6 @@
                             <td>Tablespoon</td>
                             <td>COIL</td>
                             <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
@@ -181,8 +243,14 @@
                             <td>Tablespoon</td>
                             <td>COIL</td>
                             <td>Canola Oil</td>
+                        </tr>
+                        <tr>
+                            <td>SLT</td>
+                            <td>Salt</td>
                             <td>1</td>
-                            <td>Cup</td>
+                            <td>Tablespoon</td>
+                            <td>COIL</td>
+                            <td>Canola Oil</td>
                         </tr>
                     </tbody>
                 </table>

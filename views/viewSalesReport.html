@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> View Purchases </title>
-        <meta name="description" content="View Purchases">
-        <meta name="keyword" content="View Purchases">
+        <title> View Sales Report </title>
+        <meta name="description" content="View Sales Report">
+        <meta name="keyword" content="View Sales Report">
         <link rel="stylesheet" type="text/css" href="../public/css/general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -33,31 +33,32 @@
         </div>
 
         <div class="content">
-            <h1 class="bold color-blue">Purchases</h1>
+            <h1 class="bold color-blue">Sales Report</h1>
 
             <div class="div-search">
-                <input type="search" placeholder="Search" name="search" class="search-field" id="view-purchases-search-field">
-                <button type="submit" id="view-purchases-search-button"><i class="fa fa-search" ></i></button>
+                <input type="search" placeholder="Search" name="search" class="search-field" id="view-sales-report-search-field">
+                <button type="submit" id="view-sales-report-search-button"><i class="fa fa-search" ></i></button>
             </div>
 
-            <div class= "div-dates">
-                <label class="date-label" for="start-date-purchases;">Start Date</label>
-                <input style="height: 34px" type="date" id="start-date-purchases" name="start-date-purchases">
-                <label class="date-label" style="margin-left: 10px;" for="end-date-purchases">End Date</label>
-                <input style="height: 34px" type="date" id="end-date-purchases" name="end-date-purchases">
+            <div class="div-dates">
+                <label class="date-label" for="start-date-view-sales-report;">Start Date</label>
+                <input style="height: 34px" type="date" id="start-date-view-sales-report" name="start-date-view-sales-report">
+                <label class= "date-label" style="margin-left: 10px;" for="end-date-view-sales-report">End Date</label>
+                <input style="height: 34px" type="date" id="end-date-view-sales-report" name="end-date-view-sales-report">
             </div>
 
             <br>
 
             <!-- make rows clickable -->
             <div class="div-table" style= "margin-top: 30px; height: 500px">
-                <table class="table" id="table-view-purchases">
+                <table class="table" id="table-view-sales-report">
                     <thead class="table-head table-sticky-header">
                         <tr>
-                            <th>Date</th>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Total</th>
+                            <th>Count</th>
+                            <th>Discount</th>
+                            <th>Amount</th>
                         </tr>
                     </thead>
                     <tbody> 
@@ -66,80 +67,94 @@
                             <td>Canola Oil</td>
                             <td>1</td>
                             <td>Cup</td>
+                            <th>Amount</th>
                         </tr>
                         <tr>
                             <td>CHIK</td>
                             <td>Chicken</td>
                             <td>500</td>
                             <td>Grams</td>
+                            <th>Amount</th>
                         </tr>
                         <tr>
                             <td>AFLR</td>
                             <td>All Purpose Flour</td>
                             <td>1</td>
                             <td>Cup</td>
+                            <th>Amount</th>
                         </tr>
                         <tr>
                             <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
+                            <th>Amount</th>
                         </tr>
                         <tr>
                             <td>COIL</td>
                             <td>Canola Oil</td>
                             <td>1</td>
                             <td>Cup</td>
+                            <th>Amount</th>
                         </tr>
                         <tr>
                             <td>CHIK</td>
                             <td>Chicken</td>
                             <td>500</td>
                             <td>Grams</td>
+                            <th>Amount</th>
                         </tr>
                         <tr>
                             <td>AFLR</td>
                             <td>All Purpose Flour</td>
                             <td>1</td>
                             <td>Cup</td>
+                            <th>Amount</th>
                         </tr>
                         <tr>
                             <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
+                            <th>Amount</th>
                         </tr>
                         <tr>
                             <td>AFLR</td>
                             <td>All Purpose Flour</td>
                             <td>1</td>
                             <td>Cup</td>
+                            <th>Amount</th>
                         </tr>
                         <tr>
                             <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
+                            <th>Amount</th>
                         </tr>
                         <tr>
                             <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
+                            <th>Amount</th>
                         </tr>
                         <tr>
                             <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
+                            <th>Amount</th>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="summary-total-container" style= "margin-top: 10px;">    
+
+            <div class="summary-total-container">    
                 <div class="summary-total-text">Total</div>
-                <div class="summary-info-container"><div id="view-purchases-total" class="summary-total-info">P 200.00</div></div>
+                <div class="summary-info-container"><div id="view-sales-report-total" class="summary-total-info">P 200.00</div></div>
             </div>
+            
         </div>
     </body>
 </html>
