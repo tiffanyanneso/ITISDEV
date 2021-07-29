@@ -41,11 +41,6 @@ app.use(express.static('public'));
 // define the paths contained in `./routes/routes.js`
 app.use('/', routes);
 
-// if the route is not defined in the server, render `../views/error.hbs`
-// always define this as the last middleware
-app.use(function (req, res) {
-    res.render('error');
-});
 
 // connects to the database
 db.connect();

@@ -4,7 +4,7 @@
         <title> View Inventory </title>
         <meta name="description" content="View Inventory">
         <meta name="keyword" content="View Inventory">
-        <link rel="stylesheet" type="text/css" href="../public/css/general.css">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -41,11 +41,11 @@
             </div>
 
             <div class="div-btn-50">
-               <button class="btn-light-blue" id="btn-view-inventory-add-ingredient" data-toggle="modal" data-target="#exampleModalCenter">+ Add Ingredient</button>
+               <button class="btn-light-blue" id="btn-view-inventory-add-ingredient" data-toggle="modal" data-target="#modal-add-ingredient">+ Add Ingredient</button>
             </div>
 
             <!-- Modal -->
-            <div class="modal fade" id="#modal-add-ingredient" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal fade" id="modal-add-ingredient" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -113,38 +113,16 @@
                         </tr>
                     </thead>
                     <tbody> 
+                        {{#each ingredients}}
                         <tr>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
+                            <td> {{ingredientID}} </td>
+                            <td> {{ingredientName }} </td>
+                            <td> {{ingredientType}} </td>
+                            <td> {{quantityAvailable}} </td>
+                            <td> {{unitMeasurement}} </td>
+                            <td> in stock </td>
                         </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>Salt</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div>
@@ -152,8 +130,16 @@
         <script> 
             $(document).ready(function() {
                 $('#btn-add-new-ingredient').click(function() {
-                    $('#table-view-inventory').append ("<tr>" + "<td>" + $('#ingredient-id').val() + "</td>" + "<td>" + $('#ingredient-name').val() + "</td>" + "<td>" + $('#dropdown-ingredient-type').val() + "</td>" + "<td>" + $('#dropdown-ingredient-unit').val() + "</td>");
+                    var ingredientId = $('#ingredient-id').val();
+                    var ingredientName = $('#ingredient-name').val();
+                    var ingredientType = $('#dropdown-ingredient-type').val();
+                    var ingredientUnit = $('#dropdown-ingredient-unit').val();
+
+                    $('#table-view-inventory').append ("<tr>" + "<td>" + ingredientId + "</td>" + "<td>" + ingredientName + "</td>" + "<td>" + ingredientType + "</td>" + "<td>" + "</td>" + "<td>" + ingredientUnit + "</td>" + "<td>" + "</td>");
+
                     $('#modal-add-ingredient').modal('toggle');
+                    $('#add-new-ingredient').trigger('reset');
+                    $.post('/addIngredient', {ingredientId, ingredientName, ingredientType, ingredientUnit});
                 });
             })
         </script>

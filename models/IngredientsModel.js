@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 // defines the schema for collection `users`
 var IngredientsSchema = new mongoose.Schema({
 
-	IngredientID: {
+	ingredientID: {
 		type: String,
 		required: true
 	},
@@ -15,13 +15,13 @@ var IngredientsSchema = new mongoose.Schema({
 	},
 
 	ingredientType: {
-		type: Number,
+		type: String,
 		required: true
 	},
 
 	quantityAvailable: {
 		type: Number,
-		required: true
+		required: false
 	},
 
 	unitMeasurement: {

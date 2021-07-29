@@ -10,8 +10,3 @@ package-lock.json
 package.json
 public/js/buttons.js
 views/addStock.html
-controllers/controller.js
-controllers/viewInventoryController.js
-routes/routes.js
-routes/routes.js
-routes/routes.js

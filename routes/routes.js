@@ -10,6 +10,12 @@ const viewInventoryController = require('../controllers/viewInventoryController.
 
 router.get('/favicon.ico', controller.getFavicon);
 
-router.get('/viewInventory', viewInventoryController.getInventory);
+router.get ('/', controller.getIndex);
+
+router.get ('/dashboard', controller.getDashboard);
+
+router.get('/inventory', viewInventoryController.getInventory);
+
+router.post('/addIngredient', viewInventoryController.addIngredient);
 
 module.exports = router;
