@@ -41,7 +41,44 @@
             </div>
 
             <div class="div-btn-50">
-               <button class="btn-light-blue" id="btn-view-inventory-add-ingredient">+ Add Ingredient</button>
+               <button class="btn-light-blue" id="btn-view-inventory-add-ingredient" data-toggle="modal" data-target="#exampleModalCenter">+ Add Ingredient</button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="#modal-add-ingredient" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLongTitle">Add Ingredient</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="add-new-ingredient">
+                        <label for="ingredient-id">ID</label> <input id="ingredient-id" type="text"> <br>
+                        <label for="ingredient-name">Name</label> <input id="ingredient-name" type="text"><br>
+                        <label for="dropdown-ingredient-type">Ingredient Type</label>
+                        <select class="dropdown" id="dropdown-ingredient-type"> 
+                            <option value="all-type">All</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                        </select><br>
+                        <label for="dropdown-ingredient-unit">Unit of Measurement</label>
+                        <select class="dropdown" id="dropdown-ingredient-unit">
+                            <option value="ml">ml</option>
+                            <option value="g">g</option>
+                            <option value="lbs">lbs</option>
+                        </select><br>
+                        <label> Reorder Point </label> <input type="text"><br>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btn-add-new-ingredient">Add Ingredient</button>
+                      </div>
+                  </form>
+                </div>
+              </div>
             </div>
 
             <div style="margin-top: 60px;">
@@ -101,150 +138,6 @@
                             <td>Canola Oil</td>
                         </tr>
                         <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>AFLR</td>
-                            <td>All Purpose Flour</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>Salt</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>AFLR</td>
-                            <td>All Purpose Flour</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>Salt</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>AFLR</td>
-                            <td>All Purpose Flour</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>Salt</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>Salt</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                        </tr>
-                        <tr>
                             <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
@@ -256,5 +149,13 @@
                 </table>
             </div>
         </div>
+        <script> 
+            $(document).ready(function() {
+                $('#btn-add-new-ingredient').click(function() {
+                    $('#table-view-inventory').append ("<tr>" + "<td>" + $('#ingredient-id').val() + "</td>" + "<td>" + $('#ingredient-name').val() + "</td>" + "<td>" + $('#dropdown-ingredient-type').val() + "</td>" + "<td>" + $('#dropdown-ingredient-unit').val() + "</td>");
+                    $('#modal-add-ingredient').modal('toggle');
+                });
+            })
+        </script>
     </body>
 </html>
