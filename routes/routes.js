@@ -20,6 +20,8 @@ router.get('/inventory', viewInventoryController.getInventory);
 
 router.post('/addIngredient', viewInventoryController.addIngredient);
 
+router.get('/ingredient/:systemID', viewInventoryController.getIngredient);
+
 router.get('/addNewDish', addNewDishController.getAddNewDish);
 
 router.get('/getCheckDishID', addNewDishController.getCheckDishID);

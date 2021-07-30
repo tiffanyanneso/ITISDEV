@@ -114,7 +114,7 @@
                     </thead>
                     <tbody> 
                         {{#each ingredients}}
-                        <tr>
+                        <tr class="link" data-href="/ingredient/{{systemID}}">
                             <td> {{ingredientID}} </td>
                             <td> {{ingredientName }} </td>
                             <td> {{ingredientType}} </td>
@@ -140,6 +140,10 @@
                     $('#modal-add-ingredient').modal('toggle');
                     $('#add-new-ingredient').trigger('reset');
                     $.post('/addIngredient', {ingredientId, ingredientName, ingredientType, ingredientUnit});
+                });
+
+                $(".link").click(function() {
+                    window.location = $(this).data("href");
                 });
             })
         </script>
