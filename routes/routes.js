@@ -8,14 +8,22 @@ const controller = require('../controllers/controller.js');
 
 const viewInventoryController = require('../controllers/viewInventoryController.js');
 
+const addNewDishController = require('../controllers/addNewDishController.js');
+
 router.get('/favicon.ico', controller.getFavicon);
 
-router.get ('/', controller.getIndex);
+router.get('/', controller.getIndex);
 
-router.get ('/dashboard', controller.getDashboard);
+router.get('/dashboard', controller.getDashboard);
 
 router.get('/inventory', viewInventoryController.getInventory);
 
 router.post('/addIngredient', viewInventoryController.addIngredient);
+
+router.get('/addNewDish', addNewDishController.getAddNewDish);
+
+router.get('/getCheckDishID', addNewDishController.getCheckDishID);
+
+router.post('/postAddDish', addNewDishController.postAddDish);
 
 module.exports = router;

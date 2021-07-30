@@ -6,6 +6,8 @@ const Conversion = require('./ConversionModel.js');
 
 const Ingredients = require('./IngredientsModel.js');
 
+const Dishes = require('./DishesModel.js');
+
 const Stock = require('./StockModel.js');
 
 const url = 'mongodb+srv://admin:admin@itisdev.wqab7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';

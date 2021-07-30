@@ -14,18 +14,18 @@ var DishesSchema = new mongoose.Schema({
 		required: true
 	},
 
-	price: {
+	dishPrice: {
 		type: Number,
 		required: true
 	},
 
-	dishStatusID: {
-		type: Number,
+	dishStatus: {
+		type: String,
 		required: true
 	},
 
-	dishClassificationID: {
-		type: Number, 
+	dishClassification: {
+		type: String, 
 		required:true
 	}
 });

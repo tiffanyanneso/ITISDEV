@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> New Dish </title>
+        <meta name="description" content="New Dish">
+        <meta name="keyword" content="New Dish">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        
+    </head>
+    <body>
+
+        <!-- PARTIALS -->
+        <div id="navbar"> 
+            <div class="navbar-logout"> 
+                <a href= "#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="#">Home</a>
+            <a href="#">New Order</a>
+            <a href="#">View Menu</a>
+        </div>
+
+        <div class="content">
+           <h1 style="margin-bottom: 0px;" class="bold color-blue">Add New Dish</h1>
+
+           <hr>
+
+            <div class="input-container" style="margin-top: 20px;">
+                <div class="input-label"> <label for="new-dish-ID">Dish ID</label></div>
+                <div class="input-info-container"><input type="text" name="new-dish-ID" id="new-dish-ID" style="width: 100%"></div>
+            </div>
+
+            <p class="error" id="error-new-dish-ID" style="margin-left: 20%;"></p>
+            
+            <div class="input-container">
+                <div class="input-label"><label for="new-dish-name">Name</label></div>
+                <div class="input-info-container"><input type="text" name="new-dish-name" id="new-dish-name" style="width: 100%"></div>
+            </div>
+
+            <p class="error" id="error-new-dish-name" style="margin-left: 20%;"></p>
+
+            <div class="input-container">    
+                <div class="input-label"><label for="new-dish-price">Price</label></div>
+                <div class="input-info-container"><input type="number" name="new-dish-price" id="new-dish-price" style="width: 100%"></div>
+            </div>
+
+            <p class="error" id="error-new-dish-price" style="margin-left: 20%;"></p>
+
+            <div class="input-container">
+                <div class="input-label"> <label for="dropdown-add-new-dish-classification">Classification</label></div>
+                <div class="input-info-container">
+                    <select class="dropdown" id="dropdown-add-new-dish-classification">
+                        <option value="all" selected>All</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-container">    
+                <div class="input-label"> <label for="dropdown-add-new-dish-status">Status</label></div>
+                <div class="input-info-container">
+                    <select class="dropdown" id="dropdown-add-new-dish-status">
+                        <option value="all" selected>All</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr>
+
+            <h3 class="bold">Ingredients</h3> 
+
+            <div style="margin-top: 10px;"> 
+                <input type="text" name="new-dish-ingredients-ID" id="new-dish-ingredients-ID" placeholder="ID" style="margin-right: 5px">
+                <input type="number" name="new-dish-ingredients-quantity" id="new-dish-ingredients-quantity" placeholder="Quantity" style="margin-right: 10px">
+                <select class="dropdown" id="dropdown-add-new-dish-ingredients-unit" style="margin-right: 10px">
+                    <option value="all" selected>All</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select>
+                <input class="btn-add" type="button" id="btn-add-new-dish-ingredient" name="btn-add-new-dish-ingredient" value="+">
+            </div>
+            <p class="error" id="error-ingredients"></p>
+
+            <div class="div-table" style="margin-top: 10px;">
+                <table class="table" id="table-add-new-dish">
+                    <thead class="table-head table-sticky-header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                        <tr>
+                            <td>FCHIK</td>
+                            <td>Fried Chicken</td>
+                            <td>2</td>
+                            <td>P 250.00</td>
+                            <td><button class="delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete" id= "new-invoice-delete-table-row-btn"></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    
+            <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-dish-save">Save</button></div>
+        </div>
+
+        <script> 
+            $(document).ready(function() {
+
+                // INPUT VALIDATION- DISH
+                function dishIDValidation(dishID) {
+                    if (dishID == null || dishID == "") {
+                        errorMessage("dishID-empty");
+                        return 1;
+                    }
+                    else if (dishID == 2){ //change
+                        // check if unique
+                        errorMessage("dishID-not-unique");
+                        return 1;
+                    } else
+                        return 0;
+                }
+
+                function dishNameValidation(dishName) {
+                    if (dishName == null || dishName == "") {
+                        errorMessage("dishName");
+                        return 1;
+                    }
+                    else 
+                        return 0;
+                }
+
+                function dishPriceValidation(dishPrice) {
+                    if (dishPrice == null || dishPrice == "") {
+                        errorMessage("dishPrice");
+                        return 1;
+                    }
+                    else 
+                        return 0;
+                }
+
+
+                // INPUT VALIDATION- INGREDIENT
+                function ingredientIDValidation(ingredientID) {
+                    if (ingredientID == null || ingredientID == "") {
+                        errorMessage("ingredientID-empty");
+                        return 1;
+                    } else if (ingredientID == 1){ // change
+                        // check if it exists
+                        errorMessage("ingredientID-not-found");
+                        return 1;
+                    }
+                    else 
+                        return 0;
+                }
+
+                function ingredientQuantityValidation(ingredientQty) {
+                    if (ingredientQty == null || ingredientQty == "") {
+                        errorMessage("ingredientQty");
+                        return 1;
+                    }
+                    else 
+                        return 0;
+                }
+
+                function errorMessage(type) {
+                    if (type == "dishID-empty") {
+                        $("#new-dish-ID").css("border", "1px solid #B00000");
+                        $("#error-new-dish-ID").text("Please enter a Dish ID.");
+                    }
+                    else if (type == "dishID-not-unique") {
+                        $("#new-dish-ID").css("border", "1px solid #B00000");
+                        $("#error-new-dish-ID").text("Dish ID already taken.");
+                    }
+                    else if (type == "dishName") {
+                        $("#new-dish-name").css("border", "1px solid #B00000");
+                        $("#error-new-dish-name").text("Please enter a Dish Name.");
+                    }
+                    else if (type == "dishPrice") {
+                        $("#new-dish-price").css("border", "1px solid #B00000");
+                        $("#error-new-dish-price").text("Please enter a Dish Price.");
+                    }
+                    else if (type == "ingredientID-empty") {
+                        $("#new-dish-ingredients-ID").css("border", "1px solid #B00000");
+                        $("#error-ingredients").text("Please enter an Ingredient ID.");
+                    }
+                    else if (type == "ingredientID-not-found") {
+                        $("#new-dish-ingredients-quantity").css("border", "1px solid #B00000");
+                        $("#error-ingredients").text("Ingredient ID not found.");
+                    }
+                    else if (type == "ingredientQty") {
+                        $("#new-dish-ingredients-quantity").css("border", "1px solid #B00000");
+                        $("#error-ingredients").text("Please enter the Ingredient Quantity.");
+                    }
+                }
+                
+                // Reset ingredient fields
+                function resetIngredients() {
+                    $("#new-dish-ingredients-ID").val("");
+                    $("#new-dish-ingredients-quantity").val("");
+                    //reset dropdown value
+                }
+
+                // Add new ingredient row
+
+                  $('#btn-add-new-dish-ingredient').click(function() {
+                    var ingredientID = $('#new-dish-ingredients-ID').val();
+                    var ingredientQty = $('#new-dish-ingredients-quantity').val();
+                    var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit').val();
+
+                    alert(ingredientID + ", " + ingredientQty + ", " + ingredientUnit);
+
+                    // Validate inputs - change to do it w/o saving
+                    if (!ingredientIDValidation(ingredientID) && !ingredientQuantityValidation(ingredientQty)) {
+						$("#new-dish-ingredients-ID").css("border", "1px solid #DDDDDD");
+                        $("#new-dish-ingredients-quantity").css("border", "1px solid #DDDDDD");
+
+						$("#error-ingredients").text("");
+
+						resetIngredients();
+					}
+                });
+
+               $('#new-dish-ID').keyup(function () {
+                    // Get value 
+                     var dishID = $('#new-dish-ID').val();
+
+                    // Check if reference number exists 
+                    $.get("/getCheckDishID", {dishID: dishID}, function (result) {
+                        if (result.dishID == dishID) {
+                            $("#new-dish-ID").css("border", "1px solid #B00000");
+                            $("#error-new-dish-ID").text("Dish ID already taken.");
+                            $("#btn-add-new-dish-save").prop("disabled", true);
+                            $("#btn-add-new-dish-save").css("background-color", "#b3b3b3");
+                        } else {
+                            $("#new-dish-ID").css("border", "1px solid #DDDDDD");
+                            $("#error-new-dish-ID").text("");
+                            $("#btn-add-new-dish-save").prop("disabled", false);
+                             $("#btn-add-new-dish-save").css("background-color", "#0F84D9");
+                        }
+                    });
+                });
+
+                $('#btn-add-new-dish-save').click(function() {
+                    var dishID = $('#new-dish-ID').val();
+                    var dishName = $('#new-dish-name').val();
+                    var dishPrice = $('#new-dish-price').val();
+                    var dishClassification = $('#dropdown-add-new-dish-classification').val();
+                    var dishStatus = $('#dropdown-add-new-dish-status').val();
+
+                    alert(dishID + ", " + dishName + ", " + dishPrice + ", " + dishClassification + ", " + dishStatus);
+                    
+                    // Validate inputs
+                    if (!dishIDValidation(dishID) && !dishNameValidation(dishName) && !dishPriceValidation(dishPrice)) {
+						$("#new-dish-ID").css("border", "1px solid #DDDDDD");
+                        $("#new-dish-name").css("border", "1px solid #DDDDDD");
+                        $("#new-dish-price").css("border", "1px solid #DDDDDD");
+
+						$("#error-new-dish-ID").text("");
+                        $("#error-new-dish-name").text("");
+                        $("#error-new-dish-price").text("");
+					}
+
+                    $.post('/postAddDish', {dishID, dishName, dishPrice, dishClassification, dishStatus});
+                });
+            })
+        </script>
+
+    </body>
+</html>
