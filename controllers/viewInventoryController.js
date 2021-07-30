@@ -14,12 +14,13 @@ const viewInventoryController = {
 
 	//render existing inventory list
 	getInventory: function (req, res) {
-		var projection = 'ingredientID ingredientName ingredientType unitMeasurement'; 	
+		var projection = '_id ingredientID ingredientName ingredientType unitMeasurement'; 	
 		var ingredients = [];
 		db.findMany (Ingredients, {}, projection, function(result) {
 			
 			for (var i=0; i<result.length; i++) {
 				var ingredient = {
+					systemID: result[i]._id,
 					ingredientID: result[i].ingredientID,
 					ingredientName: result[i].ingredientName,
 					ingredientType: result[i].ingredientType,
@@ -49,6 +50,14 @@ const viewInventoryController = {
 
 			}
 		});
+	},
+
+	getIngredient: function(req, res) {
+		var projection = 'ingredientID ingredientName ingredientType unitMeasurement reorderLevel';
+		db.findOne(Ingredients, {_id:req.params.systemID}, projection, function(result) {
+			res.render('viewIngredient', result);
+		});
+		
 	}
 }
 

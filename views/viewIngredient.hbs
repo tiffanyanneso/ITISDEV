@@ -4,7 +4,7 @@
         <title> View Ingredient </title>
         <meta name="description" content="View Ingredient">
         <meta name="keyword" content="View Ingredient">
-        <link rel="stylesheet" type="text/css" href="../public/css/general.css">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -34,7 +34,7 @@
         <div class="content">
             <div>
                 <div style="display: flex;">
-                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0" id="view-ingredient-ID">Ingredient ID</h1></div>
+                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0" id="view-ingredient-ID">{{ingredientID}}</h1></div>
                     <div class="div-btn-status">
                         <div><button class="btn-status" id="status-view-ingredient">Status</button></div>
                     </div>
@@ -46,12 +46,12 @@
             <div>
                 <div class="label-container">
                     <div class="override-label">Name</div> 
-                    <div class="label-content" id="content-view-ingredient-name">  </div>
+                    <div class="label-content" id="content-view-ingredient-name">{{ingredientName}}</div>
                 </div>
 
                 <div class="label-container">
                     <div class="override-label">Type</div> 
-                    <div class="label-content" id="content-view-ingredient-type">  </div>
+                    <div class="label-content" id="content-view-ingredient-type">{{ingredientType}}</div>
                 </div>
 
                 <div class="label-container" style="margin-top: 0px; width: 50%; float: left; padding-right: 10px;">
@@ -61,12 +61,12 @@
 
                 <div class="label-container" style="margin-top: 0px; width: 50%; float: left; display: flex; justify-content: flex-end; padding-left: 10px;">
                     <div class="override-label">Unit Measurement</div> 
-                    <div class="label-content" id="view-ingredient-unit-measurement">  </div>
+                    <div class="label-content" id="view-ingredient-unit-measurement">{{unitMeasurement}}</div>
                 </div>
 
                 <div class="label-container">
                     <div class="override-label">Reorder Level</div> 
-                    <div class="label-content" id="content-view-ingredient-reorder-level">  </div>
+                    <div class="label-content" id="content-view-ingredient-reorder-level">{{reorderLevel}}</div>
                 </div>
             </div>
 

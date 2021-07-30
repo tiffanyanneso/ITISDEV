@@ -18,4 +18,6 @@ router.get('/inventory', viewInventoryController.getInventory);
 
 router.post('/addIngredient', viewInventoryController.addIngredient);
 
+router.get('/ingredient/:systemID', viewInventoryController.getIngredient);
+
 module.exports = router;
