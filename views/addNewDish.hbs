@@ -106,13 +106,7 @@
                         </tr>
                     </thead>
                     <tbody> 
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>2</td>
-                            <td>P 250.00</td>
-                            <td><button class="delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete" id= "new-invoice-delete-table-row-btn"></button></td>
-                        </tr>
+                    
                     </tbody>
                 </table>
             </div>
@@ -121,6 +115,8 @@
         </div>
 
         <script> 
+            var ingredients = [];
+
             $(document).ready(function() {
 
                 // INPUT VALIDATION- DISH
@@ -201,13 +197,21 @@
                         $("#error-ingredients").text("Please enter an Ingredient ID.");
                     }
                     else if (type == "ingredientID-not-found") {
-                        $("#new-dish-ingredients-quantity").css("border", "1px solid #B00000");
+                        $("#new-dish-ingredients-ID").css("border", "1px solid #B00000");
                         $("#error-ingredients").text("Ingredient ID not found.");
                     }
                     else if (type == "ingredientQty") {
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #B00000");
                         $("#error-ingredients").text("Please enter the Ingredient Quantity.");
                     }
+                }
+
+                // Reset dish fields
+                function resetDish() {
+                    $("#new-dish-ID").val("");
+                    $("#new-dish-name").val("");
+                    $("#new-dish-price").val("");
+                    //reset dropdown value
                 }
                 
                 // Reset ingredient fields
@@ -217,25 +221,56 @@
                     //reset dropdown value
                 }
 
-                // Add new ingredient row
-
-                  $('#btn-add-new-dish-ingredient').click(function() {
+                $('#btn-add-new-dish-ingredient').click(function() {
                     var ingredientID = $('#new-dish-ingredients-ID').val();
                     var ingredientQty = $('#new-dish-ingredients-quantity').val();
                     var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit').val();
 
-                    alert(ingredientID + ", " + ingredientQty + ", " + ingredientUnit);
+                    var ingredientName = "Temp Name";
 
-                    // Validate inputs - change to do it w/o saving
+                    //alert(ingredientID + ", " + ingredientQty + ", " + ingredientUnit);
+
                     if (!ingredientIDValidation(ingredientID) && !ingredientQuantityValidation(ingredientQty)) {
 						$("#new-dish-ingredients-ID").css("border", "1px solid #DDDDDD");
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #DDDDDD");
 
 						$("#error-ingredients").text("");
 
+                        $('#table-add-new-dish').find('tbody').append(
+                             `  <tr> 
+                                    <td> ${ingredientID} </td>
+                                    <td> ${ingredientName}  </td> 
+                                    <td> ${ingredientQty}  </td> 
+                                    <td> ${ingredientUnit}  </td>
+                                    <td> <button class="delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete" class="add-new-dish-delete-table-row-btn"></button> </td>
+                                </tr>`
+                        );
+
+                        //var count = $('#table-add-new-dish tbody tr').length;
+                        //alert(count);
+
+                        /*$('#table-add-new-dish tbody tr').on('click', '.add-new-dish-delete-table-row-btn', function() {
+                            alert("you pressed the button");
+                            //var yup = $(this);
+                            // alert(yup);
+                            //$(this).parents("tr").remove();
+                        };*/
+
 						resetIngredients();
 					}
                 });
+
+                /*function arrayIngredients() {
+                    $('#table-add-new-dish').find('tbody');
+
+                    /*ingredients.push({
+							ingredientID : ingredientID,
+							ingredientName : ingredientName,
+							ingredientQty : ingredientQty,
+							ingredientUnit : ingredientUnit
+						});
+						console.log(ingredients);
+                }*/
 
                $('#new-dish-ID').keyup(function () {
                     // Get value 
@@ -252,7 +287,7 @@
                             $("#new-dish-ID").css("border", "1px solid #DDDDDD");
                             $("#error-new-dish-ID").text("");
                             $("#btn-add-new-dish-save").prop("disabled", false);
-                             $("#btn-add-new-dish-save").css("background-color", "#0F84D9");
+                            $("#btn-add-new-dish-save").css("background-color", "#0F84D9");
                         }
                     });
                 });
@@ -275,9 +310,12 @@
 						$("#error-new-dish-ID").text("");
                         $("#error-new-dish-name").text("");
                         $("#error-new-dish-price").text("");
-					}
 
-                    $.post('/postAddDish', {dishID, dishName, dishPrice, dishClassification, dishStatus});
+                        resetDish();
+
+                        $.post('/postAddDish', {dishID, dishName, dishPrice, dishClassification, dishStatus});
+                      //  $.post('/postAddIngredients', {dishID, ingredientID, quantity, unitMeasurement});
+					}
                 });
             })
         </script>

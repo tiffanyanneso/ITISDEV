@@ -40,6 +40,6 @@ const addNewDishController = {
         });
 	}
 	
-}
+};
 
 module.exports = addNewDishController;

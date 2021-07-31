@@ -6,7 +6,7 @@ const Ingredients = require('../models/IngredientsModel.js');
 
 function IngredientsConst (ingredients) {
 	this.ingredients = ingredients;
-};
+}
 
 //import models
 
@@ -59,6 +59,6 @@ const viewInventoryController = {
 		});
 		
 	}
-}
+};
 
 module.exports = viewInventoryController;
