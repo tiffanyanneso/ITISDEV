@@ -34,7 +34,7 @@
         <div class="content">
             <div>
                 <div style="display: flex;">
-                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0" id="view-ingredient-ID">{{ingredientID}}</h1></div>
+                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0" id="view-ingredient-ID">{{ingredientDetails.ingredientID}}</h1></div>
                     <div class="div-btn-status">
                         <div><button class="btn-status" id="status-view-ingredient">Status</button></div>
                     </div>
@@ -46,12 +46,12 @@
             <div>
                 <div class="label-container">
                     <div class="override-label">Name</div> 
-                    <div class="label-content" id="content-view-ingredient-name">{{ingredientName}}</div>
+                    <div class="label-content" id="content-view-ingredient-name">{{ingredientDetails.ingredientName}}</div>
                 </div>
 
                 <div class="label-container">
                     <div class="override-label">Type</div> 
-                    <div class="label-content" id="content-view-ingredient-type">{{ingredientType}}</div>
+                    <div class="label-content" id="content-view-ingredient-type">{{ingredientDetails.ingredientType}}</div>
                 </div>
 
                 <div class="label-container" style="margin-top: 0px; width: 50%; float: left; padding-right: 10px;">
@@ -61,12 +61,12 @@
 
                 <div class="label-container" style="margin-top: 0px; width: 50%; float: left; display: flex; justify-content: flex-end; padding-left: 10px;">
                     <div class="override-label">Unit Measurement</div> 
-                    <div class="label-content" id="view-ingredient-unit-measurement">{{unitMeasurement}}</div>
+                    <div class="label-content" id="view-ingredient-unit-measurement">{{ingredientDetails.unitMeasurement}}</div>
                 </div>
 
                 <div class="label-container">
                     <div class="override-label">Reorder Level</div> 
-                    <div class="label-content" id="content-view-ingredient-reorder-level">{{reorderLevel}}</div>
+                    <div class="label-content" id="content-view-ingredient-reorder-level">{{ingredientDetails.reorderLevel}}</div>
                 </div>
             </div>
 
@@ -76,7 +76,7 @@
                 <div style="display: flex; width: 50%; float: left; margin-top: 30px;">
                     <h3 class ="bold" style="width: 80%; margin-top: 0px;">Stock</h3>
                 </div>
-                <div style="margin-top: 30px; display: flex; float: left; width: 50%; justify-content: flex-end"><button class="btn-light-blue" id="btn-view-ingredient-new-stock" data-toggle="modal" data-target="#exampleModalCenter">+ New Stock</button></div>
+                <div style="margin-top: 30px; display: flex; float: left; width: 50%; justify-content: flex-end"><button class="btn-light-blue" id="btn-view-ingredient-new-stock" data-toggle="modal" data-target="#modal-add-stock">+ New Stock</button></div>
             </div>
 
             <!-- Modal -->
@@ -103,7 +103,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="btn-add-new-stock">Save</button>
+                        <button type="button" class="btn btn-primary" id="btn-add-new-stock">Add Stock</button>
                       </div>
                   </form>
                 </div>
@@ -121,54 +121,14 @@
                         </tr>
                     </thead>
                     <tbody> 
+                         {{#each stocks}}
                         <tr>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
+                            <td> {{stockID}} </td>
+                            <td> {{stockName }} </td>
+                            <td> {{quantity}} </td>
+                            <td> {{stockUnit}} </td>
                         </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                        </tr>
-                        <tr>
-                            <td>AFLR</td>
-                            <td>All Purpose Flour</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>Salt</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                        </tr>
-                        <tr>
-                            <td>COIL</td>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                        </tr>
-                        <tr>
-                            <td>AFLR</td>
-                            <td>All Purpose Flour</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>Salt</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                        </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div>
@@ -177,8 +137,16 @@
         <script> 
             $(document).ready(function() {
                 $('#btn-add-new-stock').click(function() {
-                    $('#table-view-ingredients-stock').append ("<tr>" + "<td>" + $('#stock-id').val() + "</td>" + "<td>" + $('#stock-name').val() + "</td>" + "<td>" + $('#stock-quantity').val() + "</td>" + "<td>" + $('#dropdown-stock-unit').val() + "</td>");
+                    var stockID =  $('#stock-id').val();
+                    var stockName = $('#stock-name').val(); 
+                    var quantity = $('#stock-quantity').val();
+                    var stockUnit = $('#dropdown-stock-unit').val();
+                    var ingredientID = $('#view-ingredient-ID').text();
+
+                    $('#table-view-ingredients-stock').append ("<tr>" + "<td>" + stockID + "</td>" + "<td>" + stockName + "</td>" + "<td>" + quantity + "</td>" + "<td>" + stockUnit + "</td>");
                     $('#modal-add-stock').modal('toggle');
+                    $('#add-new-stock').trigger('reset');
+                    $.post('/addStock', {stockID, stockName, quantity, stockUnit, ingredientID});
                 });
             })
         </script>

@@ -4,9 +4,7 @@ const db = require('../models/db.js');
 
 const Ingredients = require('../models/IngredientsModel.js');
 
-function IngredientsConst (ingredients) {
-	this.ingredients = ingredients;
-}
+const Stock = require('../models/StockModel.js');
 
 //import models
 
@@ -29,8 +27,7 @@ const viewInventoryController = {
 				};
 				ingredients.push(ingredient);
 			}
-			var postIngredients = new IngredientsConst(ingredients);
-			res.render('viewInventory', postIngredients);
+			res.render('viewInventory', {ingredients});
 		});
 		
 		
@@ -46,17 +43,58 @@ const viewInventoryController = {
 		};
 
 		db.insertOne (Ingredients, ingredient, function (flag) {
-			if (flag) {
-
-			}
+			if (flag) { }
 		});
 	},
 
+	//view individual ingredients and their stock
 	getIngredient: function(req, res) {
 		var projection = 'ingredientID ingredientName ingredientType unitMeasurement reorderLevel';
+
+		//look for the ingredient
 		db.findOne(Ingredients, {_id:req.params.systemID}, projection, function(result) {
-			res.render('viewIngredient', result);
+			//look for stocks of the ingredient
+			var ingredientDetails = result;
+			var stockProjection = 'stockID ingredientID stockName quantity unitMeasurement';
+			var stocks = [];
+
+			db.findMany (Stock, {ingredientID:result.ingredientID}, stockProjection, function(result2) {
+				for (var i=0; i<result2.length; i++) {
+					var stock = {
+						stockID: result2[i].stockID,
+						stockName: result2[i].stockName,
+						quantity: result2[i].quantity,
+						stockUnit: result2[i].stockUnit
+					}
+					stocks.push(stock);
+				}
+				res.render('viewIngredient', {ingredientDetails, stocks});
+			})
+
+			
 		});
+		
+		
+	},
+
+	addStock: function(req, res) {
+		/*if (req.body.stockUnit != req.body.ingredientUnit) {
+			console.log("need conversion");
+			//insert code to convert
+		}*/
+
+		//save to stock after conversion?
+		var stock = {
+			stockID: req.body.stockID,
+			ingredientID: req.body.ingredientID,
+			stockName: req.body.stockName,
+			quantity: req.body.quantity,
+			unitMeasurement: req.body.stockUnit
+		};
+
+		db.insertOne(Stock, stock, function(flag) {
+			if (flag) { }
+		});	
 		
 	}
 };

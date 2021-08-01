@@ -14,7 +14,7 @@ var StockSchema = new mongoose.Schema({
 		required: true
 	},
 
-	name: {
+	stockName: {
 		type: String,
 		required: true
 	},
