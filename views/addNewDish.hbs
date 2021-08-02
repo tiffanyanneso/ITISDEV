@@ -106,10 +106,10 @@
                         </tr>
                     </thead>
                     <tbody> 
-                    
+                        
                     </tbody>
                 </table>
-            </div>
+            </div> 
     
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-dish-save">Save</button></div>
         </div>
@@ -123,11 +123,6 @@
                 function dishIDValidation(dishID) {
                     if (dishID == null || dishID == "") {
                         errorMessage("dishID-empty");
-                        return 1;
-                    }
-                    else if (dishID == 2){ //change
-                        // check if unique
-                        errorMessage("dishID-not-unique");
                         return 1;
                     } else
                         return 0;
@@ -157,10 +152,6 @@
                     if (ingredientID == null || ingredientID == "") {
                         errorMessage("ingredientID-empty");
                         return 1;
-                    } else if (ingredientID == 1){ // change
-                        // check if it exists
-                        errorMessage("ingredientID-not-found");
-                        return 1;
                     }
                     else 
                         return 0;
@@ -180,10 +171,6 @@
                         $("#new-dish-ID").css("border", "1px solid #B00000");
                         $("#error-new-dish-ID").text("Please enter a Dish ID.");
                     }
-                    else if (type == "dishID-not-unique") {
-                        $("#new-dish-ID").css("border", "1px solid #B00000");
-                        $("#error-new-dish-ID").text("Dish ID already taken.");
-                    }
                     else if (type == "dishName") {
                         $("#new-dish-name").css("border", "1px solid #B00000");
                         $("#error-new-dish-name").text("Please enter a Dish Name.");
@@ -195,10 +182,6 @@
                     else if (type == "ingredientID-empty") {
                         $("#new-dish-ingredients-ID").css("border", "1px solid #B00000");
                         $("#error-ingredients").text("Please enter an Ingredient ID.");
-                    }
-                    else if (type == "ingredientID-not-found") {
-                        $("#new-dish-ingredients-ID").css("border", "1px solid #B00000");
-                        $("#error-ingredients").text("Ingredient ID not found.");
                     }
                     else if (type == "ingredientQty") {
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #B00000");
@@ -242,23 +225,21 @@
                                     <td> ${ingredientName}  </td> 
                                     <td> ${ingredientQty}  </td> 
                                     <td> ${ingredientUnit}  </td>
-                                    <td> <button class="delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete" class="add-new-dish-delete-table-row-btn"></button> </td>
+                                    <td> <button class="delete-button add-new-dish-delete-btn" ><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button> </td>
                                 </tr>`
                         );
 
                         //var count = $('#table-add-new-dish tbody tr').length;
                         //alert(count);
 
-                        /*$('#table-add-new-dish tbody tr').on('click', '.add-new-dish-delete-table-row-btn', function() {
-                            alert("you pressed the button");
-                            //var yup = $(this);
-                            // alert(yup);
-                            //$(this).parents("tr").remove();
-                        };*/
-
 						resetIngredients();
 					}
                 });
+
+                $("#table-add-new-dish").on('click','.add-new-dish-delete-btn',function() {
+                    $(this).closest('tr').remove();
+                });
+
 
                 /*function arrayIngredients() {
                     $('#table-add-new-dish').find('tbody');
