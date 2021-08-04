@@ -106,11 +106,10 @@
                         </tr>
                     </thead>
                     <tbody> 
-                        
                     </tbody>
                 </table>
             </div> 
-    
+            <input type="button" id="bt" value="Show Table Data"/>
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-dish-save">Save</button></div>
         </div>
 
@@ -221,10 +220,10 @@
 
                         $('#table-add-new-dish').find('tbody').append(
                              `  <tr> 
-                                    <td> ${ingredientID} </td>
-                                    <td> ${ingredientName}  </td> 
-                                    <td> ${ingredientQty}  </td> 
-                                    <td> ${ingredientUnit}  </td>
+                                    <td>${ingredientID}</td>
+                                    <td>${ingredientName}</td> 
+                                    <td>${ingredientQty}</td> 
+                                    <td>${ingredientUnit}</td>
                                     <td> <button class="delete-button add-new-dish-delete-btn" ><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button> </td>
                                 </tr>`
                         );
@@ -239,19 +238,6 @@
                 $("#table-add-new-dish").on('click','.add-new-dish-delete-btn',function() {
                     $(this).closest('tr').remove();
                 });
-
-
-                /*function arrayIngredients() {
-                    $('#table-add-new-dish').find('tbody');
-
-                    /*ingredients.push({
-							ingredientID : ingredientID,
-							ingredientName : ingredientName,
-							ingredientQty : ingredientQty,
-							ingredientUnit : ingredientUnit
-						});
-						console.log(ingredients);
-                }*/
 
                $('#new-dish-ID').keyup(function () {
                     // Get value 
@@ -273,6 +259,41 @@
                     });
                 });
 
+                function readTable(dishID) {
+                    var myTab = $("#table-add-new-dish")[0];
+
+                    alert(myTab.rows.length);
+
+                    // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+                    for (i = 1; i < myTab.rows.length; i++) {
+
+                        // GET THE CELLS COLLECTION OF THE CURRENT ROW.
+                        var objCells = myTab.rows.item(i).cells;
+
+                        var id = objCells.item(0).innerHTML;
+                        //var name = objCells.item(1).innerHTML;
+                        var quantity = objCells.item(2).innerHTML;
+                        var unit = objCells.item(3).innerHTML;
+                
+                        ingredients.push({
+                            dishID: dishID,
+                            ingredientID : id,
+                            quantity : parseFloat(quantity),
+                            unitMeasurement : unit
+                        });
+                    }
+
+                    for (i= 0; i < ingredients.length; i++) {
+                        alert(ingredients[i].dishID + " " + ingredients[i].ingredientID + " " + ingredients[i].quantity + " " +ingredients[i].unitMeasurement);
+                     }
+
+                    if (myTab.rows.length > 1) {
+                        var JSONIngredients = JSON.stringify(ingredients);
+
+                        $.post('/postAddIngredients', {JSONIngredients});
+                    }
+                }
+
                 $('#btn-add-new-dish-save').click(function() {
                     var dishID = $('#new-dish-ID').val();
                     var dishName = $('#new-dish-name').val();
@@ -280,7 +301,7 @@
                     var dishClassification = $('#dropdown-add-new-dish-classification').val();
                     var dishStatus = $('#dropdown-add-new-dish-status').val();
 
-                    alert(dishID + ", " + dishName + ", " + dishPrice + ", " + dishClassification + ", " + dishStatus);
+                  //  alert(dishID + ", " + dishName + ", " + dishPrice + ", " + dishClassification + ", " + dishStatus);
                     
                     // Validate inputs
                     if (!dishIDValidation(dishID) && !dishNameValidation(dishName) && !dishPriceValidation(dishPrice)) {
@@ -295,7 +316,8 @@
                         resetDish();
 
                         $.post('/postAddDish', {dishID, dishName, dishPrice, dishClassification, dishStatus});
-                      //  $.post('/postAddIngredients', {dishID, ingredientID, quantity, unitMeasurement});
+
+                       readTable(dishID);
 					}
                 });
             })

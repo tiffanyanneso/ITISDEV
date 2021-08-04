@@ -38,7 +38,17 @@ const addNewDishController = {
 
 			} 
         });
-	}
+    },
+    
+    postAddIngredients: function(req, res) {
+        var parsed = JSON.parse(req.body.JSONIngredients);
+
+        db.insertMany (DishIngredients, parsed, function(flag) {
+            if (flag) {
+
+            } 
+        });
+    }
 	
 };
 

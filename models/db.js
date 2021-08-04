@@ -10,6 +10,8 @@ const Dishes = require('./DishesModel.js');
 
 const Stock = require('./StockModel.js');
 
+const DishIngredients = require('../models/DishIngredientsModel.js');
+
 const url = 'mongodb+srv://admin:admin@itisdev.wqab7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
 // additional connection options
@@ -45,7 +47,7 @@ const database = {
     /*
         inserts multiple `docs` to the database based on the model `model`
     */
-    insertMany: function(model, docs) {
+    insertMany: function(model, docs, callback) {
         model.insertMany(docs, function(error, result) {
             if(error) return callback(false);
             console.log('Added ' + result);
@@ -134,7 +136,7 @@ const database = {
         });
     }
 
-}
+};
 
 /*
     exports the object `database` (defined above)
