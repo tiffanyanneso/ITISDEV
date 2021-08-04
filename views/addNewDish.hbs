@@ -109,7 +109,6 @@
                     </tbody>
                 </table>
             </div> 
-            <input type="button" id="bt" value="Show Table Data"/>
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-dish-save">Save</button></div>
         </div>
 
@@ -164,29 +163,26 @@
                         return 0;
                 }
 
-                function searchIngredientID(ingredientID) {
+                $('#new-dish-ingredients-ID').keyup(function () {
+                    // Get value 
+                     var ingredientID = $('#new-dish-ingredients-ID').val();
+                     //alert(ingredientID);
+
                     // Check if reference number exists 
                     $.get("/getCheckIngredientID", {ingredientID: ingredientID}, function (result) {
-                        alert(result.ingredientID + ", " + ingredientID);
-
-                        alert("RESULT ID: " + result.ingredientID);
-                        return result.ingredientID;
+                        if (result.ingredientID != ingredientID && !(ingredientID == null || ingredientID == "")) {
+                            $("#new-dish-ingredients-ID").css("border", "1px solid #B00000");
+                            $("#error-ingredients").text("Ingredient ID does not exist.");
+                            $("#btn-add-new-dish-ingredient").prop("disabled", true);
+                            $("#btn-add-new-dish-ingredient").css("background-color", "#b3b3b3");
+                        } else {
+                            $("#new-dish-ingredients-ID").css("border", "1px solid #DDDDDD");
+                            $("#error-ingredients").text("");
+                            $("#btn-add-new-dish-ingredient").prop("disabled", false);
+                            $("#btn-add-new-dish-ingredient").css("background-color", "#0F84D9");
+                        }
                     });
-                }
-
-                function checkIngredientIDExists(ingredientID) {
-                   var resultID = searchIngredientID(ingredientID);
-
-                   alert("RESULT ID: " + resultID);
-
-                    alert("RESULT ID: " + resultID + ", ING ID: " + ingredientID);
-                    if (resultID != ingredientID) {
-                        errorMessage("ingredientIDNotExist");
-                        return 1;
-                    }
-                    else 
-                        return 0;
-                }
+                });
 
                 function errorMessage(type) {
                     if (type == "dishID-empty") {
@@ -237,7 +233,7 @@
                    //alert(ingredientIDValidation(ingredientID) + ", " + ingredientQuantityValidation(ingredientQty) + ", " + checkIngredientIDExists(ingredientID));
 
                     //alert(checkIngredientIDExists(ingredientID));
-                    if (!ingredientIDValidation(ingredientID) && !ingredientQuantityValidation(ingredientQty) && !checkIngredientIDExists(ingredientID)) {
+                    if (!ingredientIDValidation(ingredientID) && !ingredientQuantityValidation(ingredientQty)) {
 						$("#new-dish-ingredients-ID").css("border", "1px solid #DDDDDD");
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #DDDDDD");
 
