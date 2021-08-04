@@ -6,6 +6,8 @@ const Dishes = require('../models/DishesModel.js');
 
 const DishIngredients = require('../models/DishIngredientsModel.js');
 
+const Ingredients = require('../models/IngredientsModel.js');
+
 //import models
 
 const addNewDishController = {
@@ -19,6 +21,16 @@ const addNewDishController = {
 
         // Look for Dish ID
         db.findOne(Dishes, {dishID: dishID}, 'dishID', function (result) {
+            //console.log(result);
+            res.send(result);
+        });
+    },
+
+    getCheckIngredientID: function(req, res) {
+        var ingredientID = req.query.ingredientID;
+
+        // Look for Ingredient ID
+        db.findOne(Ingredients, {ingredientID: ingredientID}, 'ingredientID', function (result) {
             //console.log(result);
             res.send(result);
         });

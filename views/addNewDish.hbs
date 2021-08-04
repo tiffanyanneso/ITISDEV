@@ -114,8 +114,6 @@
         </div>
 
         <script> 
-            var ingredients = [];
-
             $(document).ready(function() {
 
                 // INPUT VALIDATION- DISH
@@ -148,6 +146,7 @@
 
                 // INPUT VALIDATION- INGREDIENT
                 function ingredientIDValidation(ingredientID) {
+                     var ingredientID = $('#new-dish-ingredients-ID').val();
                     if (ingredientID == null || ingredientID == "") {
                         errorMessage("ingredientID-empty");
                         return 1;
@@ -165,26 +164,49 @@
                         return 0;
                 }
 
+                function searchIngredientID(ingredientID) {
+                    // Check if reference number exists 
+                    $.get("/getCheckIngredientID", {ingredientID: ingredientID}, function (result) {
+                        alert(result.ingredientID + ", " + ingredientID);
+
+                        alert("RESULT ID: " + result.ingredientID);
+                        return result.ingredientID;
+                    });
+                }
+
+                function checkIngredientIDExists(ingredientID) {
+                   var resultID = searchIngredientID(ingredientID);
+
+                   alert("RESULT ID: " + resultID);
+
+                    alert("RESULT ID: " + resultID + ", ING ID: " + ingredientID);
+                    if (resultID != ingredientID) {
+                        errorMessage("ingredientIDNotExist");
+                        return 1;
+                    }
+                    else 
+                        return 0;
+                }
+
                 function errorMessage(type) {
                     if (type == "dishID-empty") {
                         $("#new-dish-ID").css("border", "1px solid #B00000");
                         $("#error-new-dish-ID").text("Please enter a Dish ID.");
-                    }
-                    else if (type == "dishName") {
+                    } else if (type == "dishName") {
                         $("#new-dish-name").css("border", "1px solid #B00000");
                         $("#error-new-dish-name").text("Please enter a Dish Name.");
-                    }
-                    else if (type == "dishPrice") {
+                    } else if (type == "dishPrice") {
                         $("#new-dish-price").css("border", "1px solid #B00000");
                         $("#error-new-dish-price").text("Please enter a Dish Price.");
-                    }
-                    else if (type == "ingredientID-empty") {
+                    } else if (type == "ingredientID-empty") {
                         $("#new-dish-ingredients-ID").css("border", "1px solid #B00000");
                         $("#error-ingredients").text("Please enter an Ingredient ID.");
-                    }
-                    else if (type == "ingredientQty") {
+                    } else if (type == "ingredientQty") {
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #B00000");
                         $("#error-ingredients").text("Please enter the Ingredient Quantity.");
+                    } else if (type == "ingredientIDNotExist") {
+                        $("#new-dish-ingredients-ID").css("border", "1px solid #B00000");
+                        $("#error-ingredients").text("Ingredient ID does not exist.");
                     }
                 }
 
@@ -212,7 +234,10 @@
 
                     //alert(ingredientID + ", " + ingredientQty + ", " + ingredientUnit);
 
-                    if (!ingredientIDValidation(ingredientID) && !ingredientQuantityValidation(ingredientQty)) {
+                   //alert(ingredientIDValidation(ingredientID) + ", " + ingredientQuantityValidation(ingredientQty) + ", " + checkIngredientIDExists(ingredientID));
+
+                    //alert(checkIngredientIDExists(ingredientID));
+                    if (!ingredientIDValidation(ingredientID) && !ingredientQuantityValidation(ingredientQty) && !checkIngredientIDExists(ingredientID)) {
 						$("#new-dish-ingredients-ID").css("border", "1px solid #DDDDDD");
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #DDDDDD");
 
@@ -260,6 +285,8 @@
                 });
 
                 function readTable(dishID) {
+                    var ingredients = [];
+
                     var myTab = $("#table-add-new-dish")[0];
 
                     alert(myTab.rows.length);
@@ -317,7 +344,9 @@
 
                         $.post('/postAddDish', {dishID, dishName, dishPrice, dishClassification, dishStatus});
 
-                       readTable(dishID);
+                        readTable(dishID);
+
+                        // clear table
 					}
                 });
             })

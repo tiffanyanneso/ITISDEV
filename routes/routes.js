@@ -28,8 +28,12 @@ router.get('/addNewDish', addNewDishController.getAddNewDish);
 
 router.get('/getCheckDishID', addNewDishController.getCheckDishID);
 
+router.get('/getCheckIngredientID', addNewDishController.getCheckIngredientID);
+
 router.post('/postAddDish', addNewDishController.postAddDish);
 
 router.post('/postAddIngredients', addNewDishController.postAddIngredients);
+
+
 
 module.exports = router;
