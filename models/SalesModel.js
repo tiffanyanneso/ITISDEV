@@ -5,12 +5,12 @@ var mongoose = require('mongoose');
 var SalesSchema = new mongoose.Schema({
 
 	salesID: {
-		type: Number,
+		type: String,
 		required: true
 	},
 
 	employeeID: {
-		type: Number,
+		type: String,
 		required: true
 	},
 

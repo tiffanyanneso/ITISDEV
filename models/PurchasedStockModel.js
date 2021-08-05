@@ -5,12 +5,12 @@ var mongoose = require('mongoose');
 var PurchasedStockSchema = new mongoose.Schema({
 
 	purchasedStockID: {
-		type: Number,
+		type: String,
 		required: true
 	},
 
 	purchaseID: {
-		type: Number,
+		type: String,
 		required: true
 	},
 
