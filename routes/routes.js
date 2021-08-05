@@ -28,7 +28,9 @@ router.get('/addNewDish', addNewDishController.getAddNewDish);
 
 router.get('/getCheckDishID', addNewDishController.getCheckDishID);
 
-router.get('/getCheckIngredientID', addNewDishController.getCheckIngredientID);
+router.get('/getIngredientID', addNewDishController.getIngredientID);
+
+router.get('/getIngredientName', addNewDishController.getIngredientName);
 
 router.post('/postAddDish', addNewDishController.postAddDish);
 

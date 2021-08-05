@@ -169,7 +169,7 @@
                      //alert(ingredientID);
 
                     // Check if reference number exists 
-                    $.get("/getCheckIngredientID", {ingredientID: ingredientID}, function (result) {
+                    $.get("/getIngredientID", {ingredientID: ingredientID}, function (result) {
                         if (result.ingredientID != ingredientID && !(ingredientID == null || ingredientID == "")) {
                             $("#new-dish-ingredients-ID").css("border", "1px solid #B00000");
                             $("#error-ingredients").text("Ingredient ID does not exist.");
@@ -226,28 +226,34 @@
                     var ingredientQty = $('#new-dish-ingredients-quantity').val();
                     var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit').val();
 
-                    var ingredientName = "Temp Name";
+                    var ingredientName = null;
 
                     //alert(ingredientID + ", " + ingredientQty + ", " + ingredientUnit);
 
                    //alert(ingredientIDValidation(ingredientID) + ", " + ingredientQuantityValidation(ingredientQty) + ", " + checkIngredientIDExists(ingredientID));
 
-                    //alert(checkIngredientIDExists(ingredientID));
+
                     if (!ingredientIDValidation(ingredientID) && !ingredientQuantityValidation(ingredientQty)) {
 						$("#new-dish-ingredients-ID").css("border", "1px solid #DDDDDD");
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #DDDDDD");
 
 						$("#error-ingredients").text("");
 
-                        $('#table-add-new-dish').find('tbody').append(
-                             `  <tr> 
-                                    <td>${ingredientID}</td>
-                                    <td>${ingredientName}</td> 
-                                    <td>${ingredientQty}</td> 
-                                    <td>${ingredientUnit}</td>
-                                    <td> <button class="delete-button add-new-dish-delete-btn" ><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button> </td>
-                                </tr>`
-                        );
+                        // get name of ingredient
+                        $.get("/getIngredientName", {ingredientID: ingredientID}, function (result) {
+                            if (result.ingredientID == ingredientID) 
+                                ingredientName = result.ingredientName;
+
+                            $('#table-add-new-dish').find('tbody').append(
+                                `  <tr> 
+                                        <td>${ingredientID}</td>
+                                        <td>${ingredientName}</td> 
+                                        <td>${ingredientQty}</td> 
+                                        <td>${ingredientUnit}</td>
+                                        <td> <button class="delete-button add-new-dish-delete-btn" ><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button> </td>
+                                    </tr>`
+                            );
+                        });
 
                         //var count = $('#table-add-new-dish tbody tr').length;
                         //alert(count);

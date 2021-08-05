@@ -26,12 +26,22 @@ const addNewDishController = {
         });
     },
 
-    getCheckIngredientID: function(req, res) {
+    getIngredientID: function(req, res) {
         var ingredientID = req.query.ingredientID;
 
         // Look for Ingredient ID
         db.findOne(Ingredients, {ingredientID: ingredientID}, 'ingredientID', function (result) {
-            //console.log(result);
+           // console.log(result);
+            res.send(result);
+        });
+    },
+
+    getIngredientName: function(req, res) { 
+        var ingredientID = req.query.ingredientID;
+
+        var projection = 'ingredientID ingredientName';
+
+        db.findOne(Ingredients, {ingredientID: ingredientID}, projection, function(result) {
             res.send(result);
         });
     },
