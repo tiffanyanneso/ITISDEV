@@ -24,7 +24,7 @@ var StockSchema = new mongoose.Schema({
 		required: true
 	},
 
-	unitMeasurement: {
+	stockUnit: {
 		type: String,
 		required: true
 	}

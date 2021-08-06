@@ -6,12 +6,12 @@ var PurchasedStockSchema = new mongoose.Schema({
 
 	purchasedStockID: {
 		type: Number,
-		required: true
+		required: false
 	},
 
 	purchaseID: {
 		type: Number,
-		required: true
+		required: false
 	},
 
 	stockID: {

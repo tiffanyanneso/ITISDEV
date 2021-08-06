@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>New Purchase</title>
+        <meta name="description" content="Add Stock">
+        <meta name="keyword" content="Add Stock">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        
+    </head>
+    <body>
+
+        <!-- PARTIALS -->
+        <div id="navbar"> 
+            <div class="navbar-logout"> 
+                <a href= "#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="#">Home</a>
+            <a href="#">New Order</a>
+            <a href="#">View Menu</a>
+        </div>
+
+        <div class="content">
+            <h1 class="bold color-blue margin-bottom-0">New Purchase</h1> 
+            <h4 id="date" style="float:right;">${date}</h3>
+            <hr style="margin-bottom: 5px;">
+
+            <div style="margin-bottom: 10px;">
+                <div style="display: flex;">
+                    <div style="width: 50%;"><h3 class="bold margin-bottom-0">Stock</h3> </div>
+                    <div class="div-btn-status">
+                        <div> 
+                            <select class="dropdown" id="dropdown-add-stock">
+                                <option value="all" selected>All</option>
+                                <option value="option2">Option 2</option>
+                                <option value="option3">Option 3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="div-table table-height-185">
+                <table class="table" id="table-add-stock-stock">
+                    <thead class="table-head table-sticky-header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                        {{#each stocks}}
+                        <tr>
+                            <td>{{stockID}}</td>
+                            <td>{{stockName}}</td>
+                            <td>{{quantity}}</td>
+                            <td>{{stockUnit}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+
+            <hr style="margin-bottom: 5px;">
+
+            <div style="margin-top: 20px;"> 
+                <input type="text" name="add-stock-ID" id="add-stock-ID" placeholder="Stock ID" style="margin-right: 5px">
+                <input type="number" name="add-stock-count" id="add-stock-count" placeholder="Count" style="margin-right: 10px">
+                <input type="number" name="add-stock-price" id="add-stock-price" placeholder="Price" style="margin-right: 10px">
+                <input class="btn-add" type="button" id="btn-add-stock" name="btn-add-stock" value="+">
+            </div>
+
+            <p class="error" id="error-add-stock"> error message here</p>
+
+            <div class="div-table table-height-185" style="margin-top: 10px;">
+                <table class="table" id="table-add-stock-new-stock">
+                    <thead class="table-head table-sticky-header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Count</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Unit Price</th>
+                            <th>Amount</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-add-stock-body"> 
+                        
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="summary-container" style= "margin-top: 20px;">    
+                <div class="summary-text">Total</div>
+                <div class="summary-info-container"><div id="add-stock-total" class="summary-info">0</div></div>
+            </div>
+
+            <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-stock-save">Save</button></div>
+        </div>
+
+        <script>
+            $(document).ready(function() {
+
+                var d = new Date();
+                var date = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+                $('#date').html(date);
+
+                 function deleteRow(){
+                    $(this).closest('tr').remove;
+                };
+
+
+                $('#btn-add-stock').click(function() {
+                    var stockID = $('#add-stock-ID').val();
+                    var count = $('#add-stock-count').val();
+                    var price = $('#add-stock-price').val();
+
+
+                    $.get('/getStockName', {stockID:stockID}, function (result) {
+                        //stockID was found in DB
+                        if (result!="") {
+                                var total = count*price;
+                                $('#table-add-stock-new-stock').append (
+                                `<tr>
+                                    <td class="stockID">${stockID}</td>
+                                    <td class="stockName">${result.stockName}</td>
+                                    <td class="count">${count}</td>
+                                    <td class-"quantity">${result.quantity}</td>
+                                    <td class="stockUnit">${result.stockUnit}</td>
+                                    <td class="price">${price}</td>
+                                    <td class="total">${total}</td>
+                                    <td><button class="delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button></td>
+                                </tr>`);
+
+                                $('#add-stock-ID').val(''); 
+                                $('#add-stock-count').val('');    
+                                $('#add-stock-price').val('');  
+
+                                var overallTotal = parseInt($('#add-stock-total').text()) + total;
+                                $('#add-stock-total').text(overallTotal);
+
+                                //insert code to delete rows 
+                            }
+
+                        //stockDB not found, ask to create new stock
+                        else{
+                            //add code to open modal
+                        }
+                    });
+                                        
+                });
+
+                $('#btn-add-stock-save').click (function() {
+                    var newStocks = [];
+                   
+                   $("#table-add-stock-body > tr").each(function () {
+                        var stock= {
+                            stockID: $(this).children('.stockID').text(),
+                            //stockName: $(this).children('.stockName').text(),
+                            count: $(this).children('.count').text(),
+                            //quantity: $(this).children('.quantity').text(),
+                            //stockUnit: $(this).children('.stockUnit').text(),
+                            unitPrice: $(this).children('.price').text(),
+                            //amount: $(this).children('.total').text()
+                        }
+                        newStocks.push(stock);
+                    });
+                   var datePurchased = $('#date').text();
+                   var stockString = JSON.stringify(newStocks);
+                   var purchaseTotal = $('#add-stock-total').text();
+                   $.post('/addPurchase', {datePurchased, stockString, purchaseTotal});
+                   $("#table-add-stock-new-stock tbody tr").remove();
+                   $('#add-stock-total').text('');
+                }); 
+            });
+            
+        </script>
+    </body>
+</html>

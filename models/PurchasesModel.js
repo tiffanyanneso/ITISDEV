@@ -6,11 +6,11 @@ var PurchasesSchema = new mongoose.Schema({
 
 	purchaseID: {
 		type: Number,
-		required: true
+		required: false
 	},
 
 	dateBought: {
-		type: Date,
+		type: String,
 		required: true
 	},
 

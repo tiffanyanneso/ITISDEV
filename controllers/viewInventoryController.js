@@ -29,8 +29,6 @@ const viewInventoryController = {
 			}
 			res.render('viewInventory', {ingredients});
 		});
-		
-		
 	},
 
 	addIngredient: function(req, res) {
@@ -55,7 +53,7 @@ const viewInventoryController = {
 		db.findOne(Ingredients, {_id:req.params.systemID}, projection, function(result) {
 			//look for stocks of the ingredient
 			var ingredientDetails = result;
-			var stockProjection = 'stockID ingredientID stockName quantity unitMeasurement';
+			var stockProjection = 'stockID ingredientID stockName quantity stockUnit';
 			var stocks = [];
 
 			db.findMany (Stock, {ingredientID:result.ingredientID}, stockProjection, function(result2) {
@@ -70,8 +68,6 @@ const viewInventoryController = {
 				}
 				res.render('viewIngredient', {ingredientDetails, stocks});
 			})
-
-			
 		});
 		
 		
@@ -89,7 +85,7 @@ const viewInventoryController = {
 			ingredientID: req.body.ingredientID,
 			stockName: req.body.stockName,
 			quantity: req.body.quantity,
-			unitMeasurement: req.body.stockUnit
+			stockUnit: req.body.stockUnit
 		};
 
 		db.insertOne(Stock, stock, function(flag) {

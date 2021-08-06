@@ -8,5 +8,4 @@ node_modules
 *.txt
 package-lock.json
 package.json
-public/js/buttons.js
-views/addStock.html
+
