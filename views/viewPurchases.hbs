@@ -61,6 +61,14 @@
                         </tr>
                     </thead>
                     <tbody> 
+                        {{#each purchases}}
+                        <tr class="link" data-href="/purchase/{{systemID}}">
+                            <td>{{dateBought}}</td>
+                            <td>{{purchaseID }}</td>
+                            <td>{{employeeName}}</td>
+                            <td>{{total}}</td>
+                        </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div>
