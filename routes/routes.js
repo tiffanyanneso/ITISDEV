@@ -10,7 +10,7 @@ const viewInventoryController = require('../controllers/viewInventoryController.
 
 const addNewDishController = require('../controllers/addNewDishController.js');
 
-const purchasesController = require('../controllers/purchasesController.js');
+const purchaseController = require('../controllers/purchaseController.js');
 
 router.get('/favicon.ico', controller.getFavicon);
 
@@ -38,7 +38,7 @@ router.post('/postAddDish', addNewDishController.postAddDish);
 
 router.post('/postAddIngredients', addNewDishController.postAddIngredients);
 
-router.get('/viewPurchases', purchasesController.getViewPurchases);
+router.get('/viewPurchases', purchaseController.getViewPurchases);
 
 
 
