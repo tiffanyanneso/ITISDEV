@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var ShrinkageSchema = new mongoose.Schema({
 
 	discrepancyID: {
-		type: Number,
+		type: String,
 		required: true
 	},
 
@@ -40,7 +40,7 @@ var ShrinkageSchema = new mongoose.Schema({
 	},
 
 	employeeID: {
-		type: Number, 
+		type: String, 
 		required:true
 	}
 

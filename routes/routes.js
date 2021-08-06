@@ -10,7 +10,7 @@ const viewInventoryController = require('../controllers/viewInventoryController.
 
 const addNewDishController = require('../controllers/addNewDishController.js');
 
-const purchaseController = require('../controllers/purchaseController.js');
+const purchasesController = require('../controllers/purchasesController.js');
 
 router.get('/favicon.ico', controller.getFavicon);
 
@@ -26,12 +26,6 @@ router.get('/ingredient/:systemID', viewInventoryController.getIngredient);
 
 router.post('/addStock', viewInventoryController.addStock);
 
-router.get('/newPurchase', purchaseController.renderPurchase);
-
-router.get('/getStockName', purchaseController.getStockName);
-
-router.post('/addPurchase', purchaseController.addPurchase)
-
 router.get('/addNewDish', addNewDishController.getAddNewDish);
 
 router.get('/getCheckDishID', addNewDishController.getCheckDishID);
@@ -43,6 +37,8 @@ router.get('/getIngredientName', addNewDishController.getIngredientName);
 router.post('/postAddDish', addNewDishController.postAddDish);
 
 router.post('/postAddIngredients', addNewDishController.postAddIngredients);
+
+router.get('/viewPurchases', purchasesController.getViewPurchases);
 
 
 

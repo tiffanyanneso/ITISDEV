@@ -5,8 +5,8 @@ var mongoose = require('mongoose');
 var PurchasesSchema = new mongoose.Schema({
 
 	purchaseID: {
-		type: Number,
-		required: false
+		type: String,
+		required: true
 	},
 
 	dateBought: {
@@ -20,7 +20,7 @@ var PurchasesSchema = new mongoose.Schema({
 	},
 
 	employeeID: {
-		type: Number,
+		type: String,
 		required: true
 	}
 });

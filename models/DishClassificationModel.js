@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var DishClassificationSchema = new mongoose.Schema({
 
 	dishClassificationID: {
-		type: Number,
+		type: String,
 		required: true
 	},
 

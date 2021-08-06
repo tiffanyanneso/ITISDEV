@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var SalesDishesSchema = new mongoose.Schema({
 
 	salesID: {
-		type: Number,
+		type: String,
 		required: true
 	},
 

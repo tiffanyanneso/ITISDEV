@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var EmployeesSchema = new mongoose.Schema({
 
 	employeeID: {
-		type: Number,
+		type: String,
 		required: true
 	},
 
@@ -20,7 +20,7 @@ var EmployeesSchema = new mongoose.Schema({
 	},
 
 	position: {
-		type: Number,
+		type: String,
 		required: true
 	},
 

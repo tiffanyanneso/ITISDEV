@@ -10,8 +10,8 @@ var PurchasedStockSchema = new mongoose.Schema({
 	},
 
 	purchaseID: {
-		type: Number,
-		required: false
+		type: String,
+		required: true
 	},
 
 	stockID: {
