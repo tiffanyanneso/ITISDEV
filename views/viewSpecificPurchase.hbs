@@ -4,7 +4,7 @@
         <title> View Purchase </title>
         <meta name="description" content="View Purchase">
         <meta name="keyword" content="View Purchase">
-        <link rel="stylesheet" type="text/css" href="../public/css/general.css">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -34,9 +34,9 @@
         <div class="content">
             <div>
                 <div style="display: flex;">
-                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-specific-purchase-ID">ID #1</h1></div>
+                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-specific-purchase-ID">{{purchase._id}}</h1></div>
                     <div class="div-btn-status">
-                        <h3 id="date-view-specific-purchase" class="margin-bottom-0">MM/DD/YYYY</h3>
+                
                     </div>
                 </div>
             </div>
@@ -46,12 +46,12 @@
             <div>
                 <div class="label-container">
                     <div class="override-label">Date</div> 
-                    <div class="label-content" id="content-view-specific-purchase-date">  </div>
+                    <div class="label-content" id="content-view-specific-purchase-date"> {{purchase.dateBought}}</div>
                 </div>
 
                 <div class="label-container">
                     <div class="override-label">Purchased By</div> 
-                    <div class="label-content" id="content-view-specific-purchase-purchased-by">  </div>
+                    <div class="label-content" id="content-view-specific-purchase-purchased-by">{{employeeName}}</div>
                 </div>
             </div>
 
@@ -62,6 +62,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Count</th>
                             <th>Quantity</th>
                             <th>Unit</th>
                             <th>Unit Price</th>
@@ -69,21 +70,26 @@
                         </tr>
                     </thead>
                     <tbody> 
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>2</td>
-                            <td>P 250.00</td>
-                            <td>P 500.00</td>
-                            <td>P 500.00</td>
-                        </tr>
+                        {{#each stockInfos}}
+                            <tr>
+                                <td>{{stockID}}</td>
+                                <td>{{stockName}}</td>
+                                <td>{{quantity}}</td>
+                                <td>{{unit}}</td>
+                        {{/each}}
+                        {{#each purchasedStocks}}
+                                <td>{{count}}</td>
+                                <td>{{unitPrice}}</td>
+                                <td>{{amount}}</td>
+                            </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div>
 
             <div class="summary-total-container" style="margin-top: 20px;">
                 <div class="summary-total-text">Total</div>
-                <div class="summary-info-container"><div id="view-specific-purchase-total"class="summary-total-info">P 200.00</div></div>
+                <div class="summary-info-container"><div id="view-specific-purchase-total"class="summary-total-info">{{purchase.total}}</div></div>
             </div>
         </div>
     </body>

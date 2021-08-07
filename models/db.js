@@ -46,6 +46,15 @@ const database = {
         });
     },
 
+    //inserts a single doc and returns the result
+    insertOneResult: function(model, doc, callback) {
+        model.create(doc, function(error, result) {
+            if(error) return callback(false);
+            console.log('Added ' + result);
+            return callback(result);
+        });
+    },
+
     /*
         inserts multiple `docs` to the database based on the model `model`
     */

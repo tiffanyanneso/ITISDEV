@@ -6,7 +6,7 @@ var PurchasesSchema = new mongoose.Schema({
 
 	purchaseID: {
 		type: String,
-		required: true
+		required: false
 	},
 
 	dateBought: {

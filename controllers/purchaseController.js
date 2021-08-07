@@ -45,24 +45,26 @@ const purchaseController = {
 		var stocks = JSON.parse(req.body.stockString);
 		var purchaseTotal = req.body.purchaseTotal;
 
+
 		var purchaseDetails = {
 			dateBought: datePurchased,
 			total: purchaseTotal,
 			employeeID: 1
 		}
 
-		var puchaseID;
+		var purchaseID;
 		//store to Purchases
-		db.insertOne(Purchases, purchaseDetails, function (flag) {
-			if (flag) { }
-		});
+		db.insertOneResult(Purchases, purchaseDetails, function (result) {
+			purchaseID = result._id;
 
-		//get puchase id from insertOne
+			for (var i=0; i<stocks.length; i++)
+				stocks[i].purchaseID = purchaseID;
 
-
-		//store individual purhcased stock
-		db.insertMany(PurchasedStock, stocks, function(flag) {
-			if (flag) { }
+			//store individual purhcased stock
+			db.insertMany (PurchasedStock, stocks, function(flag) {
+				if (flag) { }
+			});
+			
 		});
 	},
 
@@ -103,6 +105,58 @@ const purchaseController = {
                 res.render('viewPurchases', {purchases});
             });
         });
+    },
+
+    viewSpecificPurchase: function (req, res) {
+    	var projection = '_id dateBought total employeeID';
+
+    	//find specific purchase id
+    	db.findOne (Purchases, {_id:req.params.systemID}, projection, function(result) {
+    		var purchase = result;
+
+    		//find employee name
+    		db.findOne (Employees, {employeeID:result.employeeID}, 'name', function (result2) {
+    			var employeeName=result2.name;
+    			var projection2 = 'stockID unitPrice count';
+
+    			//find all purchased stock
+    			db.findMany(PurchasedStock, {purchaseID:req.params.systemID}, projection2, function(result3) {
+    				var purchasedStocks = [];
+    				var stockInfos = [];
+
+    				for (var i=0; i<result3.length; i++) {
+    					var purchasedStock = {
+    						count: result3[i].count,
+    						unitPrice: result3[i].unitPrice,
+    						amount: result3[i].unitPrice * result3[i].count
+    					}
+    					purchasedStocks.push(purchasedStock);
+
+    					var projection3 = 'stockID stockName quantity stockUnit';
+
+    					db.findOne (Stock, {stockID:result3[i].stockID}, projection3, function(result4) {
+    			
+    						var stockInfo = {
+    							stockID: result4.stockID,
+    							stockName: result4.stockName,
+    							quantity: result4.quantity,
+    							unit: result4.stockUnit
+    						};
+    						stockInfos.push (stockInfo);
+    						console.log("**stockInfos");
+    						console.log(stockInfos);
+    						console.log("**stockInfo");
+    						console.log(stockInfo);
+    					});	
+    					console.log(stockInfos);
+    					
+    				}    				
+    				res.render ('viewSpecificPurchase', {purchase, employeeName, purchasedStocks, stockInfos});
+    			});
+    			
+    		});
+    		
+    	});
     }
 }
 

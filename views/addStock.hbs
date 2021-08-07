@@ -170,11 +170,13 @@
                    
                    $("#table-add-stock-body > tr").each(function () {
                         var stock= {
+                            purchaseID:0, 
                             stockID: $(this).children('.stockID').text(),
                             //stockName: $(this).children('.stockName').text(),
                             count: $(this).children('.count').text(),
                             //quantity: $(this).children('.quantity').text(),
                             //stockUnit: $(this).children('.stockUnit').text(),
+
                             unitPrice: $(this).children('.price').text(),
                             //amount: $(this).children('.total').text()
                         }
@@ -183,7 +185,7 @@
                    var datePurchased = $('#date').text();
                    var stockString = JSON.stringify(newStocks);
                    var purchaseTotal = $('#add-stock-total').text();
-                   $.post('/addPurchase', {datePurchased, stockString, purchaseTotal});
+                   $.post('/savePurchase', {datePurchased, stockString, purchaseTotal});
                    $("#table-add-stock-new-stock tbody tr").remove();
                    $('#add-stock-total').text('');
                 }); 

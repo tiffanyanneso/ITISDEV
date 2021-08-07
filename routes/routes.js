@@ -38,7 +38,15 @@ router.post('/postAddDish', addNewDishController.postAddDish);
 
 router.post('/postAddIngredients', addNewDishController.postAddIngredients);
 
+router.get('/newPurchase', purchaseController.renderPurchase);
+
+router.get('/getStockName', purchaseController.getStockName);
+
+router.post('/savePurchase', purchaseController.addPurchase);
+
 router.get('/viewPurchases', purchaseController.getViewPurchases);
+
+router.get('/purchase/:systemID', purchaseController.viewSpecificPurchase);
 
 
 
