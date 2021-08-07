@@ -66,6 +66,15 @@ const database = {
         });
     },
 
+    //inserts multiple docs and returns the result
+    insertManyResult: function(model, docs, callback) {
+        model.insertMany(docs, function(error, result) {
+            if(error) return callback(false);
+            console.log('Added ' + result);
+            return callback(result);
+        });
+    },
+
     /*
         searches for a single document based on the model `model`
         filtered through the object `query`
@@ -79,6 +88,12 @@ const database = {
         });
     },
 
+    findOneExtraParam: function(model, query, projection, param, callback) {
+        model.findOne(query, projection, function(error, result) {
+            if(error) return callback(false);
+            return callback(result, param);
+        });
+    },
     /*
         searches for multiple documents based on the model `model`
         filtered through the object `query`

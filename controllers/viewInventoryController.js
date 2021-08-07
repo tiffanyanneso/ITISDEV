@@ -36,6 +36,7 @@ const viewInventoryController = {
 			ingredientID: req.body.ingredientId,
 			ingredientName: req.body.ingredientName,
 			ingredientType: req.body.ingredientType,
+			quantityAvailable: 0,
 			unitMeasurement: req.body.ingredientUnit,
 			reorderLevel: 10
 		};
@@ -47,7 +48,7 @@ const viewInventoryController = {
 
 	//view individual ingredients and their stock
 	getIngredient: function(req, res) {
-		var projection = 'ingredientID ingredientName ingredientType unitMeasurement reorderLevel';
+		var projection = 'ingredientID ingredientName ingredientType quantityAvailable unitMeasurement reorderLevel';
 
 		//look for the ingredient
 		db.findOne(Ingredients, {_id:req.params.systemID}, projection, function(result) {
@@ -74,12 +75,6 @@ const viewInventoryController = {
 	},
 
 	addStock: function(req, res) {
-		/*if (req.body.stockUnit != req.body.ingredientUnit) {
-			console.log("need conversion");
-			//insert code to convert
-		}*/
-
-		//save to stock after conversion?
 		var stock = {
 			stockID: req.body.stockID,
 			ingredientID: req.body.ingredientID,

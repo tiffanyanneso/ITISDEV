@@ -21,7 +21,7 @@ var IngredientsSchema = new mongoose.Schema({
 
 	quantityAvailable: {
 		type: Number,
-		required: false
+		required: true
 	},
 
 	unitMeasurement: {

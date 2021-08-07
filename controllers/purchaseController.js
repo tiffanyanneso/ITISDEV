@@ -9,6 +9,8 @@ const PurchasedStock = require('../models/PurchasedStockModel.js');
 
 const Employees = require('../models/EmployeesModel.js');
 
+const Ingredients = require('../models/IngredientsModel.js');
+
 const { json } = require('express');
 
 const purchaseController = {
@@ -61,9 +63,29 @@ const purchaseController = {
 				stocks[i].purchaseID = purchaseID;
 
 			//store individual purhcased stock
-			db.insertMany (PurchasedStock, stocks, function(flag) {
-				if (flag) { }
+			db.insertManyResult (PurchasedStock, stocks, function(result2) {
+				for (j=0; j<result2.length; j++) {
+					var currentStock = result2[j];
+
+					//compute total quantity purchased
+					db.findOneExtraParam (Stock, {stockID: result2[j].stockID}, 'ingredientID quantity', currentStock, function (result3, currentStock) {
+						var purchasedQuantity = currentStock.count * result3.quantity
+
+						//look for ingredient to get currentAvailableQuantity
+						db.findOneExtraParam (Ingredients, {ingredientID:result3.ingredientID}, 'ingredientID quantityAvailable', purchasedQuantity, function (result4, purchasedQuantity) {
+							var currentQuantity = purchasedQuantity + result4.quantityAvailable;
+							console.log("totalQ " + currentQuantity);
+
+							//update quantityAvailable in ingredient
+							db.updateOne (Ingredients, {ingredientID: result4.ingredientID}, {quantityAvailable:currentQuantity}, function(flag) {
+
+							})
+						});
+					});
+				}
 			});
+
+
 			
 		});
 	},
