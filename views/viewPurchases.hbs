@@ -36,8 +36,8 @@
             <h1 class="bold color-blue">Purchases</h1>
 
             <div class="div-search">
-                <input type="search" placeholder="Search" name="search" class="search-field" id="view-purchases-search-field">
-                <button type="submit" id="view-purchases-search-button"><i class="fa fa-search" ></i></button>
+                <input type="search" placeholder="Purchase ID" name="search" class="search-field" id="view-purchases-search-field">
+                <button type="submit" style="height: 34px" id="view-purchases-search-button"><i class="fa fa-search"></i></button>
             </div>
 
             <div class= "div-dates">
@@ -45,6 +45,7 @@
                 <input style="height: 34px" type="date" id="start-date-purchases" name="start-date-purchases">
                 <label class="date-label" style="margin-left: 10px;" for="end-date-purchases">End Date</label>
                 <input style="height: 34px" type="date" id="end-date-purchases" name="end-date-purchases">
+                <button type="submit" style="height: 34px; margin-left: 10px" id="view-purchases-date-button"><i class="fa fa-search"></i></button>
             </div>
 
             <br>
@@ -57,14 +58,14 @@
                             <th>Date</th>
                             <th>ID</th>
                             <th>Purchased By</th>
-                            <th>Total</th>
+                            <th>Amount</th>
                         </tr>
                     </thead>
                     <tbody> 
                         {{#each purchases}}
                         <tr class="link" data-href="/purchase/{{systemID}}">
                             <td>{{dateBought}}</td>
-                            <td>{{purchaseID }}</td>
+                            <td>{{systemID}}</td>
                             <td>{{employeeName}}</td>
                             <td>{{total}}</td>
                         </tr>
@@ -74,7 +75,7 @@
             </div>
             <div class="summary-total-container" style= "margin-top: 10px;">    
                 <div class="summary-total-text">Total</div>
-                <div class="summary-info-container"><div id="view-purchases-total" class="summary-total-info">P 200.00</div></div>
+                <div class="summary-info-container"><div id="view-purchases-total" class="summary-total-info">{{total}}</div></div>
             </div>
         </div>
 
@@ -83,7 +84,56 @@
                 $(".link").click(function() {
                     window.location = $(this).data("href");
                 });
-            })
+
+                $('#view-purchases-search-button').click(function() {
+                    alert($("#view-purchases-search-field").val());
+
+                    var _id = $("#view-purchases-search-field").val();
+
+
+                    if (_id == null || _id == "") {
+                        $("#view-purchases-search-field").css("border", "1px solid #B00000");
+                        //$("#view-purchases-search-field").attr("placeholder", "Enter Purchase ID.");
+                    } else {
+                        $("#view-purchases-search-field").css("border", "1px solid #DDDDDD");
+
+                        $("#view-purchases-search-field").val("");
+
+                        $.get("/getSearchPurchase", {_id: _id}, function (result) {
+                            if (_id == result._id) 
+                                alert(result);
+                        });
+                    }   
+                });
+
+                $("#view-purchases-date-button").click(function() {
+                    var startDate = $("#start-date-purchases").val();
+                    var endDate = $("#end-date-purchases").val();
+
+                    if (startDate == null || startDate == "" || endDate == null || endDate == "") {
+                        if (startDate == null || startDate == "")
+                            $("#start-date-purchases").css("border", "1px solid #B00000")
+
+                        if (endDate == null || endDate == "")
+                            $("#end-date-purchases").css("border", "1px solid #B00000")
+                    }
+                    else {
+                        var convertedStartDate = new Date(startDate);
+                        var convertedEndDate = new Date(endDate);
+
+                        if(convertedStartDate > convertedEndDate) {
+                            alert("endDate is before startDate");
+                            $("#start-date-purchases").css("border", "1px solid #B00000");
+                            $("#end-date-purchases").css("border", "1px solid #B00000");
+                        }
+                        else {
+                            alert("Valid dates");
+                            $("#start-date-purchases").css("border", "1px solid #DDDDDD");
+                            $("#end-date-purchases").css("border", "1px solid #DDDDDD");
+                        }
+                    }
+                });
+            });
         </script>
     </body>
 </html>
