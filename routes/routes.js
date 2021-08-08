@@ -48,6 +48,6 @@ router.get('/viewPurchases', purchaseController.getViewPurchases);
 
 router.get('/purchase/:systemID', purchaseController.viewSpecificPurchase);
 
-
+router.get('/getSearchPurchase', purchaseController.getSearchPurchase);
 
 module.exports = router;

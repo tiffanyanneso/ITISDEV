@@ -25,11 +25,11 @@ const purchaseController = {
 					stockName: result[i].stockName,
 					quantity: result[i].quantity,
 					stockUnit: result[i].stockUnit
-				}
+				};
 				stocks.push(stock);
 			}
 			res.render('addStock', {stocks});
-		})
+		});
 	},
 
 	getStockName: function (req, res) {
@@ -52,7 +52,7 @@ const purchaseController = {
 			dateBought: datePurchased,
 			total: purchaseTotal,
 			employeeID: 1
-		}
+		};
 
 		var purchaseID;
 		//store to Purchases
@@ -79,7 +79,7 @@ const purchaseController = {
 							//update quantityAvailable in ingredient
 							db.updateOne (Ingredients, {ingredientID: result4.ingredientID}, {quantityAvailable:currentQuantity}, function(flag) {
 
-							})
+							});
 						});
 					});
 				}
@@ -104,7 +104,7 @@ const purchaseController = {
                     systemID: result[i]._id,
                     purchaseID: result[i].purchaseID,
                     dateBought: date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear(),
-                    total: result[i].total,
+                    total: parseFloat(result[i].total).toFixed(2),
                     employeeID: result[i].employeeID,
                     employeeName : "name"
                 };
@@ -113,18 +113,23 @@ const purchaseController = {
             }
 
             db.findMany (Employees, {}, 'employeeID name', function(result2) {
-                var employeeName = result2.name;
-
+				//var employeeName = result2.name;
+				
+				var total = 0;
 
                 for (var k = 0; k < purchases.length; k++) {
+					total += parseFloat(purchases[k].total);
                     for (var l = 0; l < result2.length; l++) {
                         if (purchases[k].employeeID == result2[l].employeeID)
                                 purchases[k].employeeName = result2[l].name;
                             //console.log(purchases[k].employeeID + ", " + result2[l].employeeID);
                     }
-                }
+				}
+
+				total = total.toFixed(2);
+
                 //console.log(purchases);
-                res.render('viewPurchases', {purchases});
+                res.render('viewPurchases', {purchases, total});
             });
         });
     },
@@ -151,7 +156,7 @@ const purchaseController = {
     						count: result3[i].count,
     						unitPrice: result3[i].unitPrice,
     						amount: result3[i].unitPrice * result3[i].count
-    					}
+    					};
 						purchasedStocks.push(purchasedStock);
 
 						var projection3 = 'stockID stockName quantity stockUnit';
@@ -180,7 +185,19 @@ const purchaseController = {
     		});
     		
     	});
-    }
-}
+	},
+	
+	getSearchPurchase: function(res, req) {
+		console.log(req.query._id);
+
+		var _id = req.query._id;
+		var projection = '_id purchaseID dateBought total employeeID';
+
+		db.findOne(Purchases, {_id: _id}, projection, function (result) {
+            console.log(result);
+            res.send(result);
+        });
+	}
+};
 
 module.exports = purchaseController;
