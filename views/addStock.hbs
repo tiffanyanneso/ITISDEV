@@ -81,6 +81,38 @@
                 <input type="number" name="add-stock-count" id="add-stock-count" placeholder="Count" style="margin-right: 10px">
                 <input type="number" name="add-stock-price" id="add-stock-price" placeholder="Price" style="margin-right: 10px">
                 <input class="btn-add" type="button" id="btn-add-stock" name="btn-add-stock" value="+">
+
+                <!-- Modal -->
+                <div class="modal fade" id="modal-add-stock" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h3 class="modal-title" id="modalTitle">Add New Stock</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form id="add-new-stock">
+                            <label for="ingredientID">Ingredient ID</label> <input id="ingredient-id" type="text"><br>
+                            <label for="stock-id">Stock ID</label> <input id="stock-id" type="text"> <br>
+                            <label for="stock-name">Name</label> <input id="stock-name" type="text"><br>
+                            <label for="stock-quantity">Quantity</label> <input id="stock-quantity" type="text"> <br>
+                            <label for="dropdown-stock-unit">Unit of Measurement</label>
+                            <select class="dropdown" id="dropdown-stock-unit">
+                                <option value="ml">ml</option>
+                                <option value="g">g</option>
+                                <option value="lbs">lbs</option>
+                            </select><br>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="btn-add-new-stock">Add Stock</button>
+                          </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
             </div>
 
             <p class="error" id="error-add-stock"> error message here</p>
@@ -125,6 +157,7 @@
                 };
 
 
+                //gets stocks name
                 $('#btn-add-stock').click(function() {
                     var stockID = $('#add-stock-ID').val();
                     var count = $('#add-stock-count').val();
@@ -158,38 +191,56 @@
                             }
 
                         //stockDB not found, ask to create new stock
-                        else{
-                            //add code to open modal
+                        else{                          
+                            $('#modal-add-stock').modal('show');
+                            $('#stock-id').val(stockID);
                         }
                     });
                                         
                 });
 
-                $('#btn-add-stock-save').click (function() {
-                    var newStocks = [];
-                   
-                   $("#table-add-stock-body > tr").each(function () {
-                        var stock= {
-                            purchaseID:0, 
-                            stockID: $(this).children('.stockID').text(),
-                            //stockName: $(this).children('.stockName').text(),
-                            count: $(this).children('.count').text(),
-                            //quantity: $(this).children('.quantity').text(),
-                            //stockUnit: $(this).children('.stockUnit').text(),
 
-                            unitPrice: $(this).children('.price').text(),
-                            //amount: $(this).children('.total').text()
-                        }
-                        newStocks.push(stock);
-                    });
-                   var datePurchased = $('#date').text();
-                   var stockString = JSON.stringify(newStocks);
-                   var purchaseTotal = $('#add-stock-total').text();
-                   $.post('/savePurchase', {datePurchased, stockString, purchaseTotal});
-                   $("#table-add-stock-new-stock tbody tr").remove();
-                   $('#add-stock-total').text('');
-                }); 
+                //saves new stock to db
+                $('#btn-add-new-stock').click(function() {
+                    var stockID =  $('#stock-id').val();
+                    var stockName = $('#stock-name').val(); 
+                    var quantity = $('#stock-quantity').val();
+                    var stockUnit = $('#dropdown-stock-unit').val();
+                    var ingredientID = $('#ingredient-id').val();
+
+                    $('#table-add-stock-stock').append ("<tr>" + "<td>" + stockID + "</td>" + "<td>" + stockName + "</td>" + "<td>" + quantity + "</td>" + "<td>" + stockUnit + "</td>");
+                    $('#modal-add-stock').modal('toggle');
+                    $('#add-new-stock').trigger('reset');
+                    $.post('/addStock', {stockID, stockName, quantity, stockUnit, ingredientID});
+                });
             });
+
+
+            //saves purchase to db
+            $('#btn-add-stock-save').click (function() {
+                var newStocks = [];
+               
+               $("#table-add-stock-body > tr").each(function () {
+                    var stock= {
+                        purchaseID:0, 
+                        stockID: $(this).children('.stockID').text(),
+                        //stockName: $(this).children('.stockName').text(),
+                        count: $(this).children('.count').text(),
+                        //quantity: $(this).children('.quantity').text(),
+                        //stockUnit: $(this).children('.stockUnit').text(),
+
+                        unitPrice: $(this).children('.price').text(),
+                        //amount: $(this).children('.total').text()
+                    }
+                    newStocks.push(stock);
+                });
+               var datePurchased = $('#date').text();
+               var stockString = JSON.stringify(newStocks);
+               var purchaseTotal = $('#add-stock-total').text();
+               $.post('/savePurchase', {datePurchased, stockString, purchaseTotal});
+               $("#table-add-stock-new-stock tbody tr").remove();
+               $('#add-stock-total').text('');
+            }); 
             
         </script>
     </body>

@@ -135,13 +135,13 @@ const purchaseController = {
     	//find specific purchase id
     	db.findOne (Purchases, {_id:req.params.systemID}, projection, function(result) {
     		var purchase = result;
-
     		//find employee name
     		db.findOne (Employees, {employeeID:result.employeeID}, 'name', function (result2) {
     			var employeeName=result2.name;
     			var projection2 = 'stockID unitPrice count';
 
     			//find all purchased stock
+    			
     			db.findMany(PurchasedStock, {purchaseID:req.params.systemID}, projection2, function(result3) {
     				var purchasedStocks = [];
     				var stockInfos = [];
@@ -152,27 +152,28 @@ const purchaseController = {
     						unitPrice: result3[i].unitPrice,
     						amount: result3[i].unitPrice * result3[i].count
     					}
-    					purchasedStocks.push(purchasedStock);
+						purchasedStocks.push(purchasedStock);
 
-    					var projection3 = 'stockID stockName quantity stockUnit';
+						var projection3 = 'stockID stockName quantity stockUnit';
 
-    					db.findOne (Stock, {stockID:result3[i].stockID}, projection3, function(result4) {
-    			
-    						var stockInfo = {
-    							stockID: result4.stockID,
-    							stockName: result4.stockName,
-    							quantity: result4.quantity,
-    							unit: result4.stockUnit
-    						};
-    						stockInfos.push (stockInfo);
-    						console.log("**stockInfos");
-    						console.log(stockInfos);
-    						console.log("**stockInfo");
-    						console.log(stockInfo);
-    					});	
-    					console.log(stockInfos);
-    					
-    				}    				
+						db.findOne (Stock, {stockID:result3[i].stockID}, projection3, function(result4) {
+				
+							var stockInfo = {
+								stockID: result4.stockID,
+								stockName: result4.stockName,
+								quantity: result4.quantity,
+								unit: result4.stockUnit
+							};
+							stockInfos.push (stockInfo);
+							//everything displays here
+							/*console.log("**stockInfos");
+							console.log(stockInfos);
+							console.log("**stockInfo");
+							console.log(stockInfo);*/
+						});	
+    				} 
+    				//does not display here
+    				console.log(stockInfos);				
     				res.render ('viewSpecificPurchase', {purchase, employeeName, purchasedStocks, stockInfos});
     			});
     			
