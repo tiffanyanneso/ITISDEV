@@ -97,12 +97,37 @@
                     } else {
                         $("#view-purchases-search-field").css("border", "1px solid #DDDDDD");
 
-                        $("#view-purchases-search-field").val("");
-
+                        //var JSONid = JSON.stringify(_id);
+                        //alert("ID: " + _id);
                         $.get("/getSearchPurchase", {_id: _id}, function (result) {
-                            if (_id == result._id) 
-                                alert(result);
+                            if (_id == result._id) {
+
+                                var resultID = result._id;
+                                var resultDate = result.dateBought;
+                                var resultTotal = result.total;
+                                var resultEmpID = result.employeeID;
+
+                                $.get("/getEmployeeName", {employeeID: resultEmpID}, function(result2) {
+
+                                    var resultName = result2.name;
+
+                                    $("#table-view-purchases tbody tr").remove();
+
+                                    $("#table-view-purchases").find("tbody").append(
+                                    `  <tr class="link" data-href="/purchase/${resultID}"> 
+                                            <td>${resultDate}</td>
+                                            <td>${resultID}</td> 
+                                            <td>${resultName}</td> 
+                                            <td>${resultTotal}</td>
+                                        </tr>`
+                                    );
+
+                                    $("#view-purchases-total").text(resultTotal);
+                                });
+                            }
                         });
+
+                        $("#view-purchases-search-field").val("");
                     }   
                 });
 

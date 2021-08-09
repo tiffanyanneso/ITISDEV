@@ -92,7 +92,7 @@ const purchaseController = {
 
 	// render existing purchases
     getViewPurchases: function (req, res) {
-        var projection = '_id purchaseID dateBought total employeeID';
+        var projection = '_id dateBought total employeeID';
         var purchases = [];
 
         db.findMany (Purchases, {}, projection, function(result) {
@@ -102,7 +102,7 @@ const purchaseController = {
 
                 var purchase = {
                     systemID: result[i]._id,
-                    purchaseID: result[i].purchaseID,
+                   // purchaseID: result[i].purchaseID,
                     dateBought: date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear(),
                     total: parseFloat(result[i].total).toFixed(2),
                     employeeID: result[i].employeeID,
@@ -187,15 +187,43 @@ const purchaseController = {
     	});
 	},
 	
-	getSearchPurchase: function(res, req) {
-		console.log(req.query._id);
-
+	getSearchPurchase: function(req, res) {
 		var _id = req.query._id;
-		var projection = '_id purchaseID dateBought total employeeID';
+		var projection = '_id dateBought total employeeID';
 
 		db.findOne(Purchases, {_id: _id}, projection, function (result) {
-            console.log(result);
-            res.send(result);
+			console.log(result);
+			res.send(result);
+
+			/*if (_id == result._id) {
+				var employeeID = result.employeeID;
+			
+				db.findOne(Employees, {employeeID: employeeID}, 'name', function(result2) {
+					
+				});
+	
+				
+			}*/
+        });
+	},
+
+	getEmployeeName: function(req, res) {
+		var employeeID = req.query.employeeID;
+		//var projection = '_id dateBought total employeeID';
+
+		db.findOne(Employees, {employeeID: employeeID}, 'name', function (result2) {
+			console.log(result2);
+			res.send(result2);
+
+			/*if (_id == result._id) {
+				var employeeID = result.employeeID;
+			
+				db.findOne(Employees, {employeeID: employeeID}, 'name', function(result2) {
+					
+				});
+	
+				
+			}*/
         });
 	}
 };

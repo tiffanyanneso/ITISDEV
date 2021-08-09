@@ -50,4 +50,6 @@ router.get('/purchase/:systemID', purchaseController.viewSpecificPurchase);
 
 router.get('/getSearchPurchase', purchaseController.getSearchPurchase);
 
+router.get('/getEmployeeName', purchaseController.getEmployeeName);
+
 module.exports = router;
