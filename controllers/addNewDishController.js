@@ -16,22 +16,22 @@ const addNewDishController = {
         res.render('addNewDish');
     },
 
-    getCheckDishID: function(req, res) {
-        var dishID = req.query.dishID;
+    getCheckDishName: function(req, res) {
+        var dishName = req.query.dishName;
 
-        // Look for Dish ID
-        db.findOne(Dishes, {dishID: dishID}, 'dishID', function (result) {
+        // Look for Dish Name
+        db.findOne(Dishes, {dishName: dishName}, 'dishName', function (result) {
             //console.log(result);
             res.send(result);
         });
     },
 
     getIngredientID: function(req, res) {
-        var ingredientID = req.query.ingredientID;
+        var ingredientName = req.query.ingredientName;
 
         // Look for Ingredient ID
-        db.findOne(Ingredients, {ingredientID: ingredientID}, 'ingredientID', function (result) {
-           // console.log(result);
+        db.findOne(Ingredients, {ingredientName: ingredientName}, '_id', function (result) {
+            console.log(result);
             res.send(result);
         });
     },
@@ -48,18 +48,20 @@ const addNewDishController = {
 
     postAddDish: function(req, res) {
 		var dish = {
-			dishID: req.body.dishID,
-			dishName: req.body.dishName,
-			dishPrice: parseFloat(req.body.dishPrice),
-			dishStatus: req.body.dishStatus,
-			dishClassification: req.body.dishClassification
+			dishName: req.query.dishName,
+			dishPrice: parseFloat(req.query.dishPrice),
+			dishStatus: req.query.dishStatus,
+			dishClassification: req.query.dishClassification
         };
 
         db.insertOne (Dishes, dish, function (flag) {
 			if (flag) {
-
+                db.findOne(Dishes, {dishName: dish.dishName}, '_id', function(result) {
+                    res.send(result);
+                });
 			} 
         });
+
     },
     
     postAddIngredients: function(req, res) {

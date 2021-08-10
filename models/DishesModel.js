@@ -4,10 +4,6 @@ var mongoose = require('mongoose');
 // defines the schema for collection `users`
 var DishesSchema = new mongoose.Schema({
 
-	dishID: {
-		type: String,
-		required: true
-	},
 
 	dishName: {
 		type: String,

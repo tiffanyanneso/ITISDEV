@@ -28,13 +28,13 @@ router.post('/addStock', viewInventoryController.addStock);
 
 router.get('/addNewDish', addNewDishController.getAddNewDish);
 
-router.get('/getCheckDishID', addNewDishController.getCheckDishID);
+router.get('/getCheckDishName', addNewDishController.getCheckDishName);
 
 router.get('/getIngredientID', addNewDishController.getIngredientID);
 
 router.get('/getIngredientName', addNewDishController.getIngredientName);
 
-router.post('/postAddDish', addNewDishController.postAddDish);
+router.get('/postAddDish', addNewDishController.postAddDish);
 
 router.post('/postAddIngredients', addNewDishController.postAddIngredients);
 
@@ -50,6 +50,6 @@ router.get('/purchase/:systemID', purchaseController.viewSpecificPurchase);
 
 router.get('/getSearchPurchase', purchaseController.getSearchPurchase);
 
-router.get('/getEmployeeName', purchaseController.getEmployeeName);
+router.get('/getFilteredRows', purchaseController.getFilteredRows);
 
 module.exports = router;

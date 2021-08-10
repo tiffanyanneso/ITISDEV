@@ -35,12 +35,12 @@
         <div class="content">
             <h1 class="bold color-blue">Purchases</h1>
 
-            <div class="div-search">
+            <!--<div class="div-search">
                 <input type="search" placeholder="Purchase ID" name="search" class="search-field" id="view-purchases-search-field">
                 <button type="submit" style="height: 34px" id="view-purchases-search-button"><i class="fa fa-search"></i></button>
-            </div>
+            </div>-->
 
-            <div class= "div-dates">
+            <div  style="justify-content: flex-start">
                 <label class="date-label" for="start-date-purchases;">Start Date</label>
                 <input style="height: 34px" type="date" id="start-date-purchases" name="start-date-purchases">
                 <label class="date-label" style="margin-left: 10px;" for="end-date-purchases">End Date</label>
@@ -51,12 +51,11 @@
             <br>
 
             <!-- make rows clickable -->
-            <div class="div-table" style= "margin-top: 30px; height: 500px">
+            <div class="div-table" style= "height: 500px">
                 <table class="table" id="table-view-purchases">
                     <thead class="table-head table-sticky-header">
                         <tr>
                             <th>Date</th>
-                            <th>ID</th>
                             <th>Purchased By</th>
                             <th>Amount</th>
                         </tr>
@@ -65,7 +64,6 @@
                         {{#each purchases}}
                         <tr class="link" data-href="/purchase/{{systemID}}">
                             <td>{{dateBought}}</td>
-                            <td>{{systemID}}</td>
                             <td>{{employeeName}}</td>
                             <td>{{total}}</td>
                         </tr>
@@ -85,7 +83,7 @@
                     window.location = $(this).data("href");
                 });
 
-                $('#view-purchases-search-button').click(function() {
+                /*$('#view-purchases-search-button').click(function() {
                     alert($("#view-purchases-search-field").val());
 
                     var _id = $("#view-purchases-search-field").val();
@@ -129,7 +127,7 @@
 
                         $("#view-purchases-search-field").val("");
                     }   
-                });
+                });*/
 
                 $("#view-purchases-date-button").click(function() {
                     var startDate = $("#start-date-purchases").val();
@@ -155,6 +153,29 @@
                             alert("Valid dates");
                             $("#start-date-purchases").css("border", "1px solid #DDDDDD");
                             $("#end-date-purchases").css("border", "1px solid #DDDDDD");
+
+                            $.get("/getFilteredRows", {startDate: convertedStartDate, endDate: convertedEndDate}, function (result) {
+
+                                for (var i = 0; i < result.length; i++) {
+                                    var resultSystemID = result[i]._id;
+                                    var resultDate = result[i].dateBought;
+                                    var resultTotal = result[i].total;
+                                    var resultEmpID = result[i].employeeID;
+
+                                    $("#table-view-purchases tbody tr").remove();
+
+                                    $("#table-view-purchases").find("tbody").append(
+                                        `  <tr class="link" data-href="/purchase/${resultSystemID}"> 
+                                                <td>${resultDate}</td>
+                                                <td>${resultEmpID}</td> 
+                                                <td>${resultTotal}</td>
+                                            </tr>`
+                                    );
+
+                                    //$("#view-purchases-total").text(resultTotal);
+                                }
+                            }
+                        });
                         }
                     }
                 });

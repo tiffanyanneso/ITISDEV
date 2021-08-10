@@ -225,6 +225,14 @@ const purchaseController = {
 				
 			}*/
         });
+	},
+
+	getFilteredRows: function(req, res) {
+		var startDate = req.query.startDate;
+		var endDate = req.query.endDate;
+
+		var projection = '_id dateBought total employeeID';
+        var purchases = [];
 	}
 };
 

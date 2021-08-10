@@ -35,13 +35,6 @@
            <h1 style="margin-bottom: 0px;" class="bold color-blue">Add New Dish</h1>
 
            <hr>
-
-            <div class="input-container" style="margin-top: 20px;">
-                <div class="input-label"> <label for="new-dish-ID">Dish ID</label></div>
-                <div class="input-info-container"><input type="text" name="new-dish-ID" id="new-dish-ID" style="width: 100%"></div>
-            </div>
-
-            <p class="error" id="error-new-dish-ID" style="margin-left: 20%;"></p>
             
             <div class="input-container">
                 <div class="input-label"><label for="new-dish-name">Name</label></div>
@@ -83,7 +76,7 @@
             <h3 class="bold">Ingredients</h3> 
 
             <div style="margin-top: 10px;"> 
-                <input type="text" name="new-dish-ingredients-ID" id="new-dish-ingredients-ID" placeholder="ID" style="margin-right: 5px">
+                <input type="text" name="new-dish-ingredients-name" id="new-dish-ingredients-name" placeholder="Name" style="margin-right: 5px">
                 <input type="number" name="new-dish-ingredients-quantity" id="new-dish-ingredients-quantity" placeholder="Quantity" style="margin-right: 10px">
                 <select class="dropdown" id="dropdown-add-new-dish-ingredients-unit" style="margin-right: 10px">
                     <option value="all" selected>All</option>
@@ -98,7 +91,6 @@
                 <table class="table" id="table-add-new-dish">
                     <thead class="table-head table-sticky-header">
                         <tr>
-                            <th>ID</th>
                             <th>Name</th>
                             <th>Quantity</th>
                             <th>Unit</th>
@@ -116,14 +108,6 @@
             $(document).ready(function() {
 
                 // INPUT VALIDATION- DISH
-                function dishIDValidation(dishID) {
-                    if (dishID == null || dishID == "") {
-                        errorMessage("dishID-empty");
-                        return 1;
-                    } else
-                        return 0;
-                }
-
                 function dishNameValidation(dishName) {
                     if (dishName == null || dishName == "") {
                         errorMessage("dishName");
@@ -142,19 +126,8 @@
                         return 0;
                 }
 
-
                 // INPUT VALIDATION- INGREDIENT
-                function ingredientIDValidation(ingredientID) {
-                     var ingredientID = $('#new-dish-ingredients-ID').val();
-                    if (ingredientID == null || ingredientID == "") {
-                        errorMessage("ingredientID-empty");
-                        return 1;
-                    }
-                    else 
-                        return 0;
-                }
-
-                function ingredientQuantityValidation(ingredientQty) {
+                function ingredientQuantityValidation(ingredientQty) { // add for more than 0
                     if (ingredientQty == null || ingredientQty == "") {
                         errorMessage("ingredientQty");
                         return 1;
@@ -163,100 +136,72 @@
                         return 0;
                 }
 
-                $('#new-dish-ingredients-ID').keyup(function () {
-                    // Get value 
-                     var ingredientID = $('#new-dish-ingredients-ID').val();
-                     //alert(ingredientID);
-
-                    // Check if reference number exists 
-                    $.get("/getIngredientID", {ingredientID: ingredientID}, function (result) {
-                        if (result.ingredientID != ingredientID && !(ingredientID == null || ingredientID == "")) {
-                            $("#new-dish-ingredients-ID").css("border", "1px solid #B00000");
-                            $("#error-ingredients").text("Ingredient ID does not exist.");
-                            $("#btn-add-new-dish-ingredient").prop("disabled", true);
-                            $("#btn-add-new-dish-ingredient").css("background-color", "#b3b3b3");
-                        } else {
-                            $("#new-dish-ingredients-ID").css("border", "1px solid #DDDDDD");
-                            $("#error-ingredients").text("");
-                            $("#btn-add-new-dish-ingredient").prop("disabled", false);
-                            $("#btn-add-new-dish-ingredient").css("background-color", "#0F84D9");
-                        }
-                    });
-                });
-
                 function errorMessage(type) {
-                    if (type == "dishID-empty") {
-                        $("#new-dish-ID").css("border", "1px solid #B00000");
-                        $("#error-new-dish-ID").text("Please enter a Dish ID.");
-                    } else if (type == "dishName") {
+                    if (type == "dishName") {
                         $("#new-dish-name").css("border", "1px solid #B00000");
                         $("#error-new-dish-name").text("Please enter a Dish Name.");
                     } else if (type == "dishPrice") {
                         $("#new-dish-price").css("border", "1px solid #B00000");
                         $("#error-new-dish-price").text("Please enter a Dish Price.");
-                    } else if (type == "ingredientID-empty") {
-                        $("#new-dish-ingredients-ID").css("border", "1px solid #B00000");
-                        $("#error-ingredients").text("Please enter an Ingredient ID.");
                     } else if (type == "ingredientQty") {
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #B00000");
                         $("#error-ingredients").text("Please enter the Ingredient Quantity.");
-                    } else if (type == "ingredientIDNotExist") {
-                        $("#new-dish-ingredients-ID").css("border", "1px solid #B00000");
-                        $("#error-ingredients").text("Ingredient ID does not exist.");
-                    }
+                    } 
                 }
+
+                $('#new-dish-name').keyup(function () { // change this to check Name
+                    // Get value 
+                     var dishName = $('#new-dish-name').val();
+
+                    // Check if reference number exists 
+                    $.get("/getCheckDishName", {dishName: dishName}, function (result) {
+                        if (result.dishName == dishName) {
+                            $("#new-dish-name").css("border", "1px solid #B00000");
+                            $("#error-new-dish-name").text("Dish Name already taken.");
+                            $("#btn-add-new-dish-save").prop("disabled", true);
+                            $("#btn-add-new-dish-save").css("background-color", "#b3b3b3");
+                        } else {
+                            $("#new-dish-name").css("border", "1px solid #DDDDDD");
+                            $("#error-new-dish-name").text("");
+                            $("#btn-add-new-dish-save").prop("disabled", false);
+                            $("#btn-add-new-dish-save").css("background-color", "#0F84D9");
+                        }
+                    });
+                });
 
                 // Reset dish fields
                 function resetDish() {
-                    $("#new-dish-ID").val("");
                     $("#new-dish-name").val("");
                     $("#new-dish-price").val("");
-                    //reset dropdown value
+                    $("#dropdown-add-new-dish-classification")[0].selectedIndex = 0; 
+                    $("#dropdown-add-new-dish-status")[0].selectedIndex = 0; 
                 }
                 
                 // Reset ingredient fields
                 function resetIngredients() {
-                    $("#new-dish-ingredients-ID").val("");
+                    $("#new-dish-ingredients-name").val("");
                     $("#new-dish-ingredients-quantity").val("");
-                    //reset dropdown value
+                    $("#dropdown-add-new-dish-ingredients-unit")[0].selectedIndex = 0; 
                 }
 
                 $('#btn-add-new-dish-ingredient').click(function() {
-                    var ingredientID = $('#new-dish-ingredients-ID').val();
+                    var ingredientName = $('#new-dish-ingredients-name').val();
                     var ingredientQty = $('#new-dish-ingredients-quantity').val();
                     var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit').val();
 
-                    var ingredientName = null;
-
-                    //alert(ingredientID + ", " + ingredientQty + ", " + ingredientUnit);
-
-                   //alert(ingredientIDValidation(ingredientID) + ", " + ingredientQuantityValidation(ingredientQty) + ", " + checkIngredientIDExists(ingredientID));
-
-
-                    if (!ingredientIDValidation(ingredientID) && !ingredientQuantityValidation(ingredientQty)) {
-						$("#new-dish-ingredients-ID").css("border", "1px solid #DDDDDD");
+                    if (!ingredientQuantityValidation(ingredientQty)) {
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #DDDDDD");
 
 						$("#error-ingredients").text("");
 
-                        // get name of ingredient
-                        $.get("/getIngredientName", {ingredientID: ingredientID}, function (result) {
-                            if (result.ingredientID == ingredientID) 
-                                ingredientName = result.ingredientName;
-
-                            $('#table-add-new-dish').find('tbody').append(
-                                `  <tr> 
-                                        <td>${ingredientID}</td>
-                                        <td>${ingredientName}</td> 
-                                        <td>${ingredientQty}</td> 
-                                        <td>${ingredientUnit}</td>
-                                        <td> <button class="delete-button add-new-dish-delete-btn" ><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button> </td>
-                                    </tr>`
+                        $('#table-add-new-dish').find('tbody').append(
+                            `  <tr> 
+                                    <td>${ingredientName}</td> 
+                                    <td>${ingredientQty}</td> 
+                                    <td>${ingredientUnit}</td>
+                                    <td> <button class="delete-button add-new-dish-delete-btn"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button> </td>
+                                </tr>`
                             );
-                        });
-
-                        //var count = $('#table-add-new-dish tbody tr').length;
-                        //alert(count);
 
 						resetIngredients();
 					}
@@ -266,90 +211,95 @@
                     $(this).closest('tr').remove();
                 });
 
-               $('#new-dish-ID').keyup(function () {
-                    // Get value 
-                     var dishID = $('#new-dish-ID').val();
-
-                    // Check if reference number exists 
-                    $.get("/getCheckDishID", {dishID: dishID}, function (result) {
-                        if (result.dishID == dishID) {
-                            $("#new-dish-ID").css("border", "1px solid #B00000");
-                            $("#error-new-dish-ID").text("Dish ID already taken.");
-                            $("#btn-add-new-dish-save").prop("disabled", true);
-                            $("#btn-add-new-dish-save").css("background-color", "#b3b3b3");
-                        } else {
-                            $("#new-dish-ID").css("border", "1px solid #DDDDDD");
-                            $("#error-new-dish-ID").text("");
-                            $("#btn-add-new-dish-save").prop("disabled", false);
-                            $("#btn-add-new-dish-save").css("background-color", "#0F84D9");
-                        }
-                    });
-                });
-
-                function readTable(dishID) {
+                function readTable(dishID) { // REMOVE DISH ID
                     var ingredients = [];
+                    //var dishID = "ABC"
+
+                    alert("READ TABLE " + dishID);
 
                     var myTab = $("#table-add-new-dish")[0];
 
                     alert(myTab.rows.length);
 
                     // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
-                    for (i = 1; i < myTab.rows.length; i++) {
+                     for (i = 1; i < myTab.rows.length + 1; i++) {
 
                         // GET THE CELLS COLLECTION OF THE CURRENT ROW.
                         var objCells = myTab.rows.item(i).cells;
 
-                        var id = objCells.item(0).innerHTML;
-                        //var name = objCells.item(1).innerHTML;
-                        var quantity = objCells.item(2).innerHTML;
-                        var unit = objCells.item(3).innerHTML;
-                
-                        ingredients.push({
-                            dishID: dishID,
-                            ingredientID : id,
-                            quantity : parseFloat(quantity),
-                            unitMeasurement : unit
+                        alert(objCells.item(0).innerHTML + " " + objCells.item(1).innerHTML + " " + objCells.item(2).innerHTML);
+
+                        var name = objCells.item(0).innerHTML; 
+                        var quantity = objCells.item(1).innerHTML;
+                        var unit = objCells.item(2).innerHTML;
+                        var id = "ID";
+
+                        //alert(dishID + " " + id + " " + parseFloat(quantity) + " " + unit);      
+
+                        alert("DISH ID: " + dishID);
+
+                        // get ingredient id based on name
+
+                         $.get('/getIngredientID', {ingredientName: name}, function(result) {
+
+                            alert(dishID + " " + result._id + " " + parseFloat(quantity) + " " + unit); 
+                            ingredients.push({
+                                dishID: dishID,
+                                ingredientID : "INGID",
+                                quantity : parseFloat(quantity),
+                                unitMeasurement : unit
+                            });
                         });
                     }
 
-                    /*for (i= 0; i < ingredients.length; i++) {
-                        alert(ingredients[i].dishID + " " + ingredients[i].ingredientID + " " + ingredients[i].quantity + " " +ingredients[i].unitMeasurement);
-                     }*/
+                    //for (i= 0; i < ingredients.length; i++) {
+                       // alert(ingredients[i].dishID + " " + ingredients[i].ingredientID + " " + ingredients[i].quantity + " " +ingredients[i].unitMeasurement);
+                    //}
 
-                    if (myTab.rows.length > 1) {
-                        var JSONIngredients = JSON.stringify(ingredients);
+                    //alert(ingredients);
 
-                        $.post('/postAddIngredients', {JSONIngredients});
-                    }
+                            /*if (myTab.rows.length > 1) {
+                                var JSONIngredients = JSON.stringify(ingredients);
+
+                                $.post('/postAddIngredients', {JSONIngredients});
+                            }*/
                 }
 
                 $('#btn-add-new-dish-save').click(function() {
-                    var dishID = $('#new-dish-ID').val();
+                    //var dishID = $('#new-dish-ID').val();
                     var dishName = $('#new-dish-name').val();
                     var dishPrice = $('#new-dish-price').val();
                     var dishClassification = $('#dropdown-add-new-dish-classification').val();
                     var dishStatus = $('#dropdown-add-new-dish-status').val();
+                    var dishID;
 
-                  //  alert(dishID + ", " + dishName + ", " + dishPrice + ", " + dishClassification + ", " + dishStatus);
+                    alert(dishName + ", " + dishPrice + ", " + dishClassification + ", " + dishStatus);
                     
                     // Validate inputs
-                    if (!dishIDValidation(dishID) && !dishNameValidation(dishName) && !dishPriceValidation(dishPrice)) {
-						$("#new-dish-ID").css("border", "1px solid #DDDDDD");
+                    if (!dishNameValidation(dishName) && !dishPriceValidation(dishPrice)) {
                         $("#new-dish-name").css("border", "1px solid #DDDDDD");
                         $("#new-dish-price").css("border", "1px solid #DDDDDD");
 
-						$("#error-new-dish-ID").text("");
                         $("#error-new-dish-name").text("");
                         $("#error-new-dish-price").text("");
 
                         resetDish();
 
-                        $.post('/postAddDish', {dishID, dishName, dishPrice, dishClassification, dishStatus});
+                        //svar ingredients = [];
+                        //ingredients = readTable();
 
-                        readTable(dishID);
+                        // does not work
+                        $.get('/postAddDish', {dishName: dishName, dishPrice: dishPrice, dishClassification: dishClassification, dishStatus: dishStatus}, function(result) {
+                            //alert(result._id);
+                            dishID = result._id;
+                            //alert(result._id);
+                            
+                            readTable(dishID);
+                        });
 
                         // clear table
-                        $("#table-add-new-dish tbody tr").remove();
+                        // table does not clear
+                        //$("#table-add-new-dish tbody tr").remove();
 					}
                 });
             })
