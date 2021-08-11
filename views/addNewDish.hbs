@@ -64,9 +64,9 @@
                 <div class="input-label"> <label for="dropdown-add-new-dish-status">Status</label></div>
                 <div class="input-info-container">
                     <select class="dropdown" id="dropdown-add-new-dish-status">
-                        <option value="all" selected>All</option>
-                        <option value="option2">Option 2</option>
-                        <option value="option3">Option 3</option>
+                        {{#each statuses}}
+                            <option value={{_id}}>{{status}}</option>
+                        {{/each}}
                     </select>
                 </div>
             </div>

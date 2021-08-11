@@ -10,14 +10,17 @@ const Ingredients = require('../models/IngredientsModel.js');
 
 const DishClassification = require('../models/DishClassificationModel.js');
 
+const DishStatus = require('../models/DishStatusModel.js');
+
 //import models
 
 const addNewDishController = {
 
     getAddNewDish: function (req, res) {
-        /*var projection1 = '_id classification';
+        var projection1 = '_id classification';
         var classifications = [];
 
+        /*
         var dishClass = {
 			classification: "Drink",
         };
@@ -30,14 +33,28 @@ const addNewDishController = {
 
         db.findMany(DishClassification, {}, projection1, function (result) {
             //console.log(result);
-			for (var i=0; i<result.length; i++) {
+			for (var i = 0; i < result.length; i++) {
 				var classification = {
 					_id: result[i]._id,
 					name: result[i].classification,
 				};
 				classifications.push(classification);
             }
-            res.render('addNewDish', {classifications});
+
+            var projection2 = '_id status';
+            var statuses = [];
+
+            db.findMany(DishStatus, {}, projection2, function (result2) {
+                //console.log(result2);
+                for (var j = 0; j < result2.length; j++) {
+                    var status = {
+                        _id: result2[j]._id,
+                        status: result2[j].status,
+                    };
+                    statuses.push(status);
+                }
+                res.render('addNewDish', {classifications, statuses});
+            });
 		});
     },
 

@@ -14,6 +14,8 @@ const DishIngredients = require('../models/DishIngredientsModel.js');
 
 const DishClassification = require('../models/DishClassificationModel.js');
 
+const DishStatus = require('../models/DishStatusModel.js');
+
 const Purchases = require('../models/PurchasesModel.js');
 
 const url = 'mongodb+srv://admin:admin@itisdev.wqab7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
