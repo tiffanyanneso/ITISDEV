@@ -12,14 +12,13 @@ const viewInventoryController = {
 
 	//render existing inventory list
 	getInventory: function (req, res) {
-		var projection = '_id ingredientID ingredientName ingredientType unitMeasurement'; 	
+		var projection = '_id ingredientName ingredientType unitMeasurement'; 	
 		var ingredients = [];
 		db.findMany (Ingredients, {}, projection, function(result) {
 			
 			for (var i=0; i<result.length; i++) {
 				var ingredient = {
 					systemID: result[i]._id,
-					ingredientID: result[i].ingredientID,
 					ingredientName: result[i].ingredientName,
 					ingredientType: result[i].ingredientType,
 					quantityAvailable: 10,
@@ -33,7 +32,6 @@ const viewInventoryController = {
 
 	addIngredient: function(req, res) {
 		var ingredient = {
-			ingredientID: req.body.ingredientId,
 			ingredientName: req.body.ingredientName,
 			ingredientType: req.body.ingredientType,
 			quantityAvailable: 0,
@@ -48,19 +46,18 @@ const viewInventoryController = {
 
 	//view individual ingredients and their stock
 	getIngredient: function(req, res) {
-		var projection = 'ingredientID ingredientName ingredientType quantityAvailable unitMeasurement reorderLevel';
+		var projection = 'ingredientName ingredientType quantityAvailable unitMeasurement reorderLevel';
 
 		//look for the ingredient
 		db.findOne(Ingredients, {_id:req.params.systemID}, projection, function(result) {
 			//look for stocks of the ingredient
 			var ingredientDetails = result;
-			var stockProjection = 'stockID ingredientID stockName quantity stockUnit';
+			var stockProjection = 'stockName quantity stockUnit';
 			var stocks = [];
 
-			db.findMany (Stock, {ingredientID:result.ingredientID}, stockProjection, function(result2) {
+			db.findMany (Stock, {ingredientName:result.ingredientName}, stockProjection, function(result2) {
 				for (var i=0; i<result2.length; i++) {
 					var stock = {
-						stockID: result2[i].stockID,
 						stockName: result2[i].stockName,
 						quantity: result2[i].quantity,
 						stockUnit: result2[i].stockUnit
@@ -76,12 +73,13 @@ const viewInventoryController = {
 
 	addStock: function(req, res) {
 		var stock = {
-			stockID: req.body.stockID,
-			ingredientID: req.body.ingredientID,
 			stockName: req.body.stockName,
+			ingredientName: req.body.ingredientName,
 			quantity: req.body.quantity,
 			stockUnit: req.body.stockUnit
 		};
+
+		console.log(stock);
 
 		db.insertOne(Stock, stock, function(flag) {
 			if (flag) { }

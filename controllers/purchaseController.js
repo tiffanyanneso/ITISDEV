@@ -16,12 +16,11 @@ const { json } = require('express');
 const purchaseController = {
 
 	renderPurchase: function (req, res) {
-		var projection = 'stockID stockName quantity stockUnit';
+		var projection = 'stockName quantity stockUnit';
 		var stocks = [];
 		db.findMany (Stock, {}, projection, function (result) {
 			for (var i=0; i<result.length; i++) {
 				var stock = {
-					stockID: result[i].stockID,
 					stockName: result[i].stockName,
 					quantity: result[i].quantity,
 					stockUnit: result[i].stockUnit
@@ -33,11 +32,10 @@ const purchaseController = {
 	},
 
 	getStockName: function (req, res) {
-		 var stockID = req.query.stockID;
 
-        var projection = 'stockID stockName quantity stockUnit';
+        var projection = 'stockName quantity stockUnit';
 
-        db.findOne(Stock, {stockID: stockID}, projection, function(result) {
+        db.findOne(Stock, {stockID: req.query.stockName}, projection, function(result) {
             res.send(result);
         });
 	},
@@ -68,16 +66,16 @@ const purchaseController = {
 					var currentStock = result2[j];
 
 					//compute total quantity purchased
-					db.findOneExtraParam (Stock, {stockID: result2[j].stockID}, 'ingredientID quantity', currentStock, function (result3, currentStock) {
+					db.findOneExtraParam (Stock, {stockName: result2[j].stockName}, 'ingredientName quantity', currentStock, function (result3, currentStock) {
 						var purchasedQuantity = currentStock.count * result3.quantity
 
 						//look for ingredient to get currentAvailableQuantity
-						db.findOneExtraParam (Ingredients, {ingredientID:result3.ingredientID}, 'ingredientID quantityAvailable', purchasedQuantity, function (result4, purchasedQuantity) {
+						db.findOneExtraParam (Ingredients, {ingredientName:result3.ingredientName}, 'ingredientID quantityAvailable', purchasedQuantity, function (result4, purchasedQuantity) {
 							var currentQuantity = purchasedQuantity + result4.quantityAvailable;
 							console.log("totalQ " + currentQuantity);
 
 							//update quantityAvailable in ingredient
-							db.updateOne (Ingredients, {ingredientID: result4.ingredientID}, {quantityAvailable:currentQuantity}, function(flag) {
+							db.updateOne (Ingredients, {ingredientName: result4.ingredientName}, {quantityAvailable:currentQuantity}, function(flag) {
 
 							});
 						});
@@ -143,7 +141,7 @@ const purchaseController = {
     		//find employee name
     		db.findOne (Employees, {employeeID:result.employeeID}, 'name', function (result2) {
     			var employeeName=result2.name;
-    			var projection2 = 'stockID unitPrice count';
+    			var projection2 = 'stockName unitPrice count';
 
     			//find all purchased stock
     			
@@ -159,12 +157,11 @@ const purchaseController = {
     					};
 						purchasedStocks.push(purchasedStock);
 
-						var projection3 = 'stockID stockName quantity stockUnit';
+						var projection3 = 'stockName quantity stockUnit';
 
-						db.findOne (Stock, {stockID:result3[i].stockID}, projection3, function(result4) {
+						db.findOne (Stock, {stockID:result3[i].stockName}, projection3, function(result4) {
 				
 							var stockInfo = {
-								stockID: result4.stockID,
 								stockName: result4.stockName,
 								quantity: result4.quantity,
 								unit: result4.stockUnit

@@ -14,7 +14,7 @@ var PurchasedStockSchema = new mongoose.Schema({
 		required: true
 	},
 
-	stockID: {
+	stockName: {
 		type: String,
 		required: true
 	},

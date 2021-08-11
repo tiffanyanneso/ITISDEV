@@ -9,7 +9,6 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        
     </head>
     <body>
 
@@ -55,7 +54,6 @@
                 <table class="table" id="table-add-stock-stock">
                     <thead class="table-head table-sticky-header">
                         <tr>
-                            <th>ID</th>
                             <th>Name</th>
                             <th>Quantity</th>
                             <th>Unit</th>
@@ -64,7 +62,6 @@
                     <tbody> 
                         {{#each stocks}}
                         <tr>
-                            <td>{{stockID}}</td>
                             <td>{{stockName}}</td>
                             <td>{{quantity}}</td>
                             <td>{{stockUnit}}</td>
@@ -77,7 +74,7 @@
             <hr style="margin-bottom: 5px;">
 
             <div style="margin-top: 20px;"> 
-                <input type="text" name="add-stock-ID" id="add-stock-ID" placeholder="Stock ID" style="margin-right: 5px">
+                <input type="text" name="add-stock-ID" id="add-stock-ID" placeholder="Stock Name" style="margin-right: 5px">
                 <input type="number" name="add-stock-count" id="add-stock-count" placeholder="Count" style="margin-right: 10px">
                 <input type="number" name="add-stock-price" id="add-stock-price" placeholder="Price" style="margin-right: 10px">
                 <input class="btn-add" type="button" id="btn-add-stock" name="btn-add-stock" value="+">
@@ -94,9 +91,8 @@
                       </div>
                       <div class="modal-body">
                         <form id="add-new-stock">
-                            <label for="ingredientID">Ingredient ID</label> <input id="ingredient-id" type="text"><br>
-                            <label for="stock-id">Stock ID</label> <input id="stock-id" type="text"> <br>
-                            <label for="stock-name">Name</label> <input id="stock-name" type="text"><br>
+                            <label for="ingredient-name">Ingredient Name</label> <input id="ingredient-name" type="text"><br>
+                            <label for="stock-name">Stock Name</label> <input id="stock-name" type="text"> <br>
                             <label for="stock-quantity">Quantity</label> <input id="stock-quantity" type="text"> <br>
                             <label for="dropdown-stock-unit">Unit of Measurement</label>
                             <select class="dropdown" id="dropdown-stock-unit">
@@ -121,7 +117,6 @@
                 <table class="table" id="table-add-stock-new-stock">
                     <thead class="table-head table-sticky-header">
                         <tr>
-                            <th>ID</th>
                             <th>Name</th>
                             <th>Count</th>
                             <th>Quantity</th>
@@ -170,7 +165,6 @@
                                 var total = count*price;
                                 $('#table-add-stock-new-stock').append (
                                 `<tr>
-                                    <td class="stockID">${stockID}</td>
                                     <td class="stockName">${result.stockName}</td>
                                     <td class="count">${count}</td>
                                     <td class-"quantity">${result.quantity}</td>
@@ -202,16 +196,15 @@
 
                 //saves new stock to db
                 $('#btn-add-new-stock').click(function() {
-                    var stockID =  $('#stock-id').val();
                     var stockName = $('#stock-name').val(); 
                     var quantity = $('#stock-quantity').val();
                     var stockUnit = $('#dropdown-stock-unit').val();
-                    var ingredientID = $('#ingredient-id').val();
+                    var ingredientName = $('#ingredient-id').val();
 
-                    $('#table-add-stock-stock').append ("<tr>" + "<td>" + stockID + "</td>" + "<td>" + stockName + "</td>" + "<td>" + quantity + "</td>" + "<td>" + stockUnit + "</td>");
+                    $('#table-add-stock-stock').append ("<tr>" + "<td>" + stockName + "</td>" + "<td>" + quantity + "</td>" + "<td>" + stockUnit + "</td>");
                     $('#modal-add-stock').modal('toggle');
                     $('#add-new-stock').trigger('reset');
-                    $.post('/addStock', {stockID, stockName, quantity, stockUnit, ingredientID});
+                    $.post('/addStock', {stockName, quantity, stockUnit, ingredientName});
                 });
             });
 
@@ -223,7 +216,7 @@
                $("#table-add-stock-body > tr").each(function () {
                     var stock= {
                         purchaseID:0, 
-                        stockID: $(this).children('.stockID').text(),
+                        stockName: $(this).children('.stockName').text(),
                         //stockName: $(this).children('.stockName').text(),
                         count: $(this).children('.count').text(),
                         //quantity: $(this).children('.quantity').text(),

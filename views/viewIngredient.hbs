@@ -34,7 +34,7 @@
         <div class="content">
             <div>
                 <div style="display: flex;">
-                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0" id="view-ingredient-ID">{{ingredientDetails.ingredientID}}</h1></div>
+                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0" id="view-ingredient-name">{{ingredientDetails.ingredientName}}</h1></div>
                     <div class="div-btn-status">
                         <div><button class="btn-status" id="status-view-ingredient">Status</button></div>
                     </div>
@@ -44,10 +44,6 @@
             <hr>
 
             <div>
-                <div class="label-container">
-                    <div class="override-label">Name</div> 
-                    <div class="label-content" id="content-view-ingredient-name">{{ingredientDetails.ingredientName}}</div>
-                </div>
 
                 <div class="label-container">
                     <div class="override-label">Type</div> 
@@ -91,7 +87,6 @@
                   </div>
                   <div class="modal-body">
                     <form id="add-new-stock">
-                        <label for="stock-id">Stock ID</label> <input id="stock-id" type="text"> <br>
                         <label for="stock-name">Name</label> <input id="stock-name" type="text"><br>
                         <label for="stock-quantity">Quantity</label> <input id="stock-quantity" type="text"> <br>
                         <label for="dropdown-stock-unit">Unit of Measurement</label>
@@ -114,7 +109,6 @@
                 <table class="table" id="table-view-ingredients-stock">
                     <thead class="table-head table-sticky-header">
                         <tr>
-                            <th>ID</th>
                             <th>Name</th>
                             <th>Quantity</th>
                             <th>Unit</th>
@@ -123,7 +117,6 @@
                     <tbody> 
                          {{#each stocks}}
                         <tr>
-                            <td>{{stockID}}</td>
                             <td>{{stockName}}</td>
                             <td>{{quantity}}</td>
                             <td>{{stockUnit}}</td>
@@ -136,17 +129,25 @@
 
         <script> 
             $(document).ready(function() {
+                function capitalize(string){
+                    var words = string.toLowerCase().split(' ');
+                    for (i=0; i<words.length; i++)
+                        words[i] = words[i].charAt(0).toUpperCase() + words[i].substring(1);
+                    return words.join(' ');
+                };
+
+
                 $('#btn-add-new-stock').click(function() {
-                    var stockID =  $('#stock-id').val();
-                    var stockName = $('#stock-name').val(); 
+
+                    var stockName = capitalize($('#stock-name').val());
                     var quantity = $('#stock-quantity').val();
                     var stockUnit = $('#dropdown-stock-unit').val();
-                    var ingredientID = $('#view-ingredient-ID').text();
+                    var ingredientName = $('#view-ingredient-name').text();
 
-                    $('#table-view-ingredients-stock').append ("<tr>" + "<td>" + stockID + "</td>" + "<td>" + stockName + "</td>" + "<td>" + quantity + "</td>" + "<td>" + stockUnit + "</td>");
+                    $('#table-view-ingredients-stock').append ("<tr>" + "<td>" + stockName + "</td>" + "<td>" + quantity + "</td>" + "<td>" + stockUnit + "</td>");
                     $('#modal-add-stock').modal('toggle');
                     $('#add-new-stock').trigger('reset');
-                    $.post('/addStock', {stockID, stockName, quantity, stockUnit, ingredientID});
+                    $.post('/addStock', {stockName, quantity, stockUnit, ingredientName});
                 });
             })
         </script>

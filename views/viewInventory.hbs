@@ -56,7 +56,6 @@
                   </div>
                   <div class="modal-body">
                     <form id="add-new-ingredient">
-                        <label for="ingredient-id">ID</label> <input id="ingredient-id" type="text"> <br>
                         <label for="ingredient-name">Name</label> <input id="ingredient-name" type="text"><br>
                         <label for="dropdown-ingredient-type">Ingredient Type</label>
                         <select class="dropdown" id="dropdown-ingredient-type"> 
@@ -104,7 +103,6 @@
                 <table class="table" id="table-view-inventory">
                     <thead class="table-head table-sticky-header">
                         <tr>
-                            <th>ID</th>
                             <th>Name</th>
                             <th>Type</th>
                             <th>Quantity</th>
@@ -115,7 +113,6 @@
                     <tbody> 
                         {{#each ingredients}}
                         <tr class="link" data-href="/ingredient/{{systemID}}">
-                            <td> {{ingredientID}} </td>
                             <td> {{ingredientName }} </td>
                             <td> {{ingredientType}} </td>
                             <td> {{quantityAvailable}} </td>
@@ -129,17 +126,25 @@
         </div>
         <script> 
             $(document).ready(function() {
+
+                function capitalize(string){
+                    var words = string.toLowerCase().split(' ');
+                    for (i=0; i<words.length; i++)
+                        words[i] = words[i].charAt(0).toUpperCase() + words[i].substring(1);
+                    return words.join(' ');
+                };
+
+
                 $('#btn-add-new-ingredient').click(function() {
-                    var ingredientId = $('#ingredient-id').val();
-                    var ingredientName = $('#ingredient-name').val();
+                    var ingredientName = capitalize($('#ingredient-name').val());
                     var ingredientType = $('#dropdown-ingredient-type').val();
                     var ingredientUnit = $('#dropdown-ingredient-unit').val();
 
-                    $('#table-view-inventory').append ("<tr>" + "<td>" + ingredientId + "</td>" + "<td>" + ingredientName + "</td>" + "<td>" + ingredientType + "</td>" + "<td>" + "</td>" + "<td>" + ingredientUnit + "</td>" + "<td>" + "</td>");
+                    $('#table-view-inventory').append ("<tr>" + "<td>" + ingredientName + "</td>" + "<td>" + ingredientType + "</td>" + "<td>0</td>" + "<td>" + ingredientUnit + "</td>" + "<td>Out of Stock</td>");
 
                     $('#modal-add-ingredient').modal('toggle');
                     $('#add-new-ingredient').trigger('reset');
-                    $.post('/addIngredient', {ingredientId, ingredientName, ingredientType, ingredientUnit});
+                    $.post('/addIngredient', {ingredientName, ingredientType, ingredientUnit});
                 });
 
                 $(".link").click(function() {
