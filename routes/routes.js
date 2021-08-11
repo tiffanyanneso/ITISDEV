@@ -38,6 +38,8 @@ router.get('/postAddDish', addNewDishController.postAddDish);
 
 router.post('/postAddIngredients', addNewDishController.postAddIngredients);
 
+router.post('/postAddOneIngredient', addNewDishController.postAddOneIngredient); 
+
 router.get('/newPurchase', purchaseController.renderPurchase);
 
 router.get('/getStockName', purchaseController.getStockName);

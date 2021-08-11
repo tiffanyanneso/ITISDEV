@@ -8,12 +8,37 @@ const DishIngredients = require('../models/DishIngredientsModel.js');
 
 const Ingredients = require('../models/IngredientsModel.js');
 
+const DishClassification = require('../models/DishClassificationModel.js');
+
 //import models
 
 const addNewDishController = {
 
     getAddNewDish: function (req, res) {
-        res.render('addNewDish');
+        /*var projection1 = '_id classification';
+        var classifications = [];
+
+        var dishClass = {
+			classification: "Drink",
+        };
+
+        db.insertOne (DishClassification, dishClass, function (flag) {
+			if (flag) {
+
+			} 
+        });*/
+
+        db.findMany(DishClassification, {}, projection1, function (result) {
+            //console.log(result);
+			for (var i=0; i<result.length; i++) {
+				var classification = {
+					_id: result[i]._id,
+					name: result[i].classification,
+				};
+				classifications.push(classification);
+            }
+            res.render('addNewDish', {classifications});
+		});
     },
 
     getCheckDishName: function(req, res) {
@@ -59,6 +84,22 @@ const addNewDishController = {
                 db.findOne(Dishes, {dishName: dish.dishName}, '_id', function(result) {
                     res.send(result);
                 });
+			} 
+        });
+
+    },
+
+    postAddOneIngredient: function(req, res) {
+		var dishIngredient = {
+			dishID: req.body.dishID,
+			ingredientID: req.body.ingredientID,
+			quantity: req.body.quantity,
+			unitMeasurement: req.body.unit
+        };
+
+        db.insertOne (DishIngredients, dishIngredient, function (flag) {
+			if (flag) {
+
 			} 
         });
 
