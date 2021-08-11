@@ -126,6 +126,8 @@ const purchaseController = {
 
 				total = total.toFixed(2);
 
+				purchases.reverse();
+
                 //console.log(purchases);
                 res.render('viewPurchases', {purchases, total});
             });

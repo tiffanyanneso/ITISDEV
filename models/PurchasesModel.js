@@ -10,7 +10,7 @@ var PurchasesSchema = new mongoose.Schema({
 	},
 
 	dateBought: {
-		type: String,
+		type: Date,
 		required: true
 	},
 
