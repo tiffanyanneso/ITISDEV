@@ -88,6 +88,31 @@ const addNewDishController = {
         });
     },
 
+    getCheckIngredientName: function(req, res) { 
+        var ingredientName = req.query.ingredientName;
+
+        db.findOne(Ingredients, {ingredientName: ingredientName}, 'ingredientName', function(result) {
+            res.send(result);
+        });
+    },
+
+    getAutoIngredientName: function (req, res) {
+		console.log(req.query.query);
+		//$options:i denotes case insensitive searching
+		db.findMany (Ingredients, {ingredientName:{$regex:req.query.query, $options:'i'}}, 'ingredientName', function (result) {
+			var formattedResults = [];
+			//reason for the for loop: https://stackoverflow.com/questions/5077409/what-does-autocomplete-request-server-response-look-like
+			for (var i=0; i<result.length; i++) {
+				var formattedResult = {
+					label: result[i].ingredientName,
+					value: result[i].ingredientName
+				};
+				formattedResults.push(formattedResult);
+			}
+			res.send(formattedResults);
+		});
+	},
+
     postAddDish: function(req, res) {
 		var dish = {
 			dishName: req.query.dishName,

@@ -9,6 +9,9 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         
     </head>
     <body>
@@ -108,6 +111,22 @@
         <script> 
             $(document).ready(function() {
 
+                $( "#new-dish-ingredients-name" ).autocomplete({
+                    source:function(request, response) {
+                    $.ajax({
+                                url: `/getAutoIngredientName?query=${request.term}`,
+                                dataType: "json",
+                                data: {
+                                    //request.term refers to the value currently in the text input
+                                    term: request.term,
+                                },
+                                success: function (data) {
+                                    response(data);
+                                }
+                         });
+                    }
+                });
+
                 // INPUT VALIDATION- DISH
                 function dishNameValidation(dishName) {
                     if (dishName == null || dishName == "") {
@@ -128,6 +147,44 @@
                 }
 
                 // INPUT VALIDATION- INGREDIENT
+                function ingredientNameValidation(ingredientName) { 
+                    if (ingredientName == null || ingredientName == "") {
+                        errorMessage("ingredientName");
+                        return 1;
+                    } 
+                    else 
+                        return 0;
+                }
+
+                function checkIngredientName(ingredientName) {
+                    capitalize(ingredientName);
+
+                    if (!(ingredientName == null || ingredientName == "")) {
+
+                        // Check if reference number exists 
+                        $.get("/getCheckIngredientName", {ingredientName: ingredientName}, function (result) {
+                            if (result.ingredientName != ingredientName) {
+                                //$("#new-dish-ingredients-name").css("border", "1px solid #B00000");
+                                //$("#error-ingredients").text("Ingredient Name does not exist.");
+                                //$("#btn-add-new-dish-ingredient").prop("disabled", true);
+                                //$("#btn-add-new-dish-ingredient").css("background-color", "#b3b3b3");
+                                errorMessage("ingredientNameNotExist");
+                                return 1;
+                            } else {
+                                //$("#new-dish-ingredients-name").css("border", "1px solid #DDDDDD");
+                                //$("#error-ingredients").text("");
+                                //$("#btn-add-new-dish-ingredient").prop("disabled", false);
+                                //$("#btn-add-new-dish-ingredient").css("background-color", "#0F84D9");
+                                return 0;
+                            }
+                        });
+                    }
+                }
+
+                function checkIngredientName2(value) {
+                    return value;
+                }
+
                 function ingredientQuantityValidation(ingredientQty) { // add for more than 0
                     if (ingredientQty == null || ingredientQty == "") {
                         errorMessage("ingredientQty");
@@ -147,12 +204,18 @@
                     } else if (type == "ingredientQty") {
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #B00000");
                         $("#error-ingredients").text("Please enter the Ingredient Quantity.");
+                    } else if (type == "ingredientName") {
+                        $("#new-dish-ingredients-name").css("border", "1px solid #B00000");
+                        $("#error-ingredients").text("Please enter an Ingredient Name.");
+                    } else if (type == "ingredientNameNotExist") {
+                        $("#new-dish-ingredients-name").css("border", "1px solid #B00000");
+                        $("#error-ingredients").text("Ingredient does not exist.");
                     } 
                 }
 
-                function capitalize(string){
+                function capitalize(string) {
                     var words = string.toLowerCase().split(' ');
-                    for (i=0; i<words.length; i++)
+                    for (var i = 0; i < words.length; i++)
                         words[i] = words[i].charAt(0).toUpperCase() + words[i].substring(1);
                     return words.join(' ');
                 };
@@ -163,13 +226,12 @@
 
                     // Check if reference number exists 
                     $.get("/getCheckDishName", {dishName: dishName}, function (result) {
-                            if (result.dishName == dishName) {
-                                $("#new-dish-name").css("border", "1px solid #B00000");
-                                $("#error-new-dish-name").text("Dish Name already taken.");
-                                $("#btn-add-new-dish-save").prop("disabled", true);
-                                $("#btn-add-new-dish-save").css("background-color", "#b3b3b3");
-                            } 
-                        else {
+                        if (result.dishName == dishName) {
+                            $("#new-dish-name").css("border", "1px solid #B00000");
+                            $("#error-new-dish-name").text("Dish Name already taken.");
+                            $("#btn-add-new-dish-save").prop("disabled", true);
+                            $("#btn-add-new-dish-save").css("background-color", "#b3b3b3");
+                        } else {
                             $("#new-dish-name").css("border", "1px solid #DDDDDD");
                             $("#error-new-dish-name").text("");
                             $("#btn-add-new-dish-save").prop("disabled", false);
@@ -198,10 +260,13 @@
                     var ingredientQty = $('#new-dish-ingredients-quantity').val();
                     var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit').val();
 
-                    if (!ingredientQuantityValidation(ingredientQty)) {
-                        $("#new-dish-ingredients-quantity").css("border", "1px solid #DDDDDD");
+                    alert(checkIngredientName(ingredientName));
 
-						$("#error-ingredients").text("");
+                    if (!ingredientNameValidation(ingredientName) && !ingredientQuantityValidation(ingredientQty)) {
+                        $("#new-dish-ingredients-quantity").css("border", "1px solid #DDDDDD");
+                        $("#new-dish-ingredients-name").css("border", "1px solid #DDDDDD");
+						
+                        $("#error-ingredients").text("");
 
                         $('#table-add-new-dish').find('tbody').append(
                             `  <tr> 
@@ -299,7 +364,7 @@
                         //$("#table-add-new-dish tbody tr").remove();
 					}
                 });
-            })
+        });
         </script>
 
     </body>

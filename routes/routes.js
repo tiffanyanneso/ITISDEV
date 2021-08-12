@@ -34,6 +34,10 @@ router.get('/getIngredientID', addNewDishController.getIngredientID);
 
 router.get('/getIngredientName', addNewDishController.getIngredientName);
 
+router.get('/getCheckIngredientName', addNewDishController.getCheckIngredientName);
+
+router.get('/getAutoIngredientName', addNewDishController.getAutoIngredientName);
+
 router.get('/postAddDish', addNewDishController.postAddDish);
 
 router.post('/postAddIngredients', addNewDishController.postAddIngredients);
