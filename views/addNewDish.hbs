@@ -101,6 +101,7 @@
                     </tbody>
                 </table>
             </div> 
+
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-dish-save">Save</button></div>
         </div>
 
@@ -149,9 +150,16 @@
                     } 
                 }
 
+                function capitalize(string){
+                    var words = string.toLowerCase().split(' ');
+                    for (i=0; i<words.length; i++)
+                        words[i] = words[i].charAt(0).toUpperCase() + words[i].substring(1);
+                    return words.join(' ');
+                };
+
                 $('#new-dish-name').keyup(function () { 
                     // Get value 
-                     var dishName = $('#new-dish-name').val();
+                     var dishName = capitalize($('#new-dish-name').val());
 
                     // Check if reference number exists 
                     $.get("/getCheckDishName", {dishName: dishName}, function (result) {
@@ -223,7 +231,7 @@
                     alert(myTab.rows.length);
 
                     // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
-                     for (var i = 1; i < myTab.rows.length + 1; i++) {
+                     for (var i = 1; i < myTab.rows.length; i++) {
                          var ingredientID;
 
                         // GET THE CELLS COLLECTION OF THE CURRENT ROW.
@@ -256,7 +264,7 @@
 
                 $('#btn-add-new-dish-save').click(function() {
                     //var dishID = $('#new-dish-ID').val();
-                    var dishName = $('#new-dish-name').val();
+                    var dishName = capitalize($('#new-dish-name').val());
                     var dishPrice = $('#new-dish-price').val();
                     var dishClassification = $('#dropdown-add-new-dish-classification').val();
                     var dishStatus = $('#dropdown-add-new-dish-status').val();
