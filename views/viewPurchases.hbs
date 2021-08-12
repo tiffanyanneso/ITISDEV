@@ -155,25 +155,31 @@
                             $("#end-date-purchases").css("border", "1px solid #DDDDDD");
 
                             $.get("/getFilteredRows", {startDate: convertedStartDate, endDate: convertedEndDate}, function (result) {
+                                var total = 0;
+
+                                $("#table-view-purchases tbody tr").remove();
 
                                 for (var i = 0; i < result.length; i++) {
-                                    var resultSystemID = result[i]._id;
+                                    var resultSystemID = result[i].systemID;
                                     var resultDate = result[i].dateBought;
                                     var resultTotal = result[i].total;
-                                    var resultEmpID = result[i].employeeID;
+                                    var resultEmpName = result[i].employeeName;
 
-                                    $("#table-view-purchases tbody tr").remove();
-
+                                    total += parseFloat(resultTotal);
+                                    
                                     $("#table-view-purchases").find("tbody").append(
                                         `  <tr class="link" data-href="/purchase/${resultSystemID}"> 
                                                 <td>${resultDate}</td>
-                                                <td>${resultEmpID}</td> 
+                                                <td>${resultEmpName}</td> 
                                                 <td>${resultTotal}</td>
                                             </tr>`
                                     );
 
-                                    //$("#view-purchases-total").text(resultTotal);
+                                    $(".link").click(function() {
+                                        window.location = $(this).data("href");
+                                    });
                                 }
+                                $("#view-purchases-total").text(total.toFixed(2));
                             });
                         }
                     }

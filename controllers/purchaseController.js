@@ -227,11 +227,51 @@ const purchaseController = {
 	},
 
 	getFilteredRows: function(req, res) {
-		var startDate = req.query.startDate;
-		var endDate = req.query.endDate;
+		var startDate = new Date(req.query.startDate);
+		var endDate = new Date(req.query.endDate);
+		startDate.setHours(0,0,0,0);
+		endDate.setHours(0,0,0,0);
 
 		var projection = '_id dateBought total employeeID';
-        var purchases = [];
+		var purchases = [];
+		
+		db.findMany(Purchases, {}, projection, function(result) {
+			for (var i = 0; i < result.length; i++) {
+				var date = new Date(result[i].dateBought);
+				date.setHours(0,0,0,0);
+				
+				if (!(startDate > date || date > endDate)) {
+					var purchase = {
+						systemID: result[i]._id,
+						dateBought: date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear(),
+						total: parseFloat(result[i].total).toFixed(2),
+						employeeID: result[i].employeeID,
+						employeeName : "name"
+					};
+	
+					purchases.push(purchase);
+				}
+			}
+
+			db.findMany (Employees, {}, 'employeeID name', function(result2) {
+				//var employeeName = result2.name;
+				
+				//var total = 0;
+
+                for (var k = 0; k < purchases.length; k++) {
+					// total += parseFloat(purchases[k].total);
+                    for (var l = 0; l < result2.length; l++) {
+                        if (purchases[k].employeeID == result2[l].employeeID)
+                                purchases[k].employeeName = result2[l].name;
+                            //console.log(purchases[k].employeeID + ", " + result2[l].employeeID);
+                    }
+				}
+
+				console.log(purchases);
+
+				res.send(purchases);
+            });
+		});
 	}
 };
 

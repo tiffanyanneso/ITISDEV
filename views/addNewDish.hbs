@@ -155,12 +155,13 @@
 
                     // Check if reference number exists 
                     $.get("/getCheckDishName", {dishName: dishName}, function (result) {
-                        if (result.dishName == dishName) {
-                            $("#new-dish-name").css("border", "1px solid #B00000");
-                            $("#error-new-dish-name").text("Dish Name already taken.");
-                            $("#btn-add-new-dish-save").prop("disabled", true);
-                            $("#btn-add-new-dish-save").css("background-color", "#b3b3b3");
-                        } else {
+                            if (result.dishName == dishName) {
+                                $("#new-dish-name").css("border", "1px solid #B00000");
+                                $("#error-new-dish-name").text("Dish Name already taken.");
+                                $("#btn-add-new-dish-save").prop("disabled", true);
+                                $("#btn-add-new-dish-save").css("background-color", "#b3b3b3");
+                            } 
+                        else {
                             $("#new-dish-name").css("border", "1px solid #DDDDDD");
                             $("#error-new-dish-name").text("");
                             $("#btn-add-new-dish-save").prop("disabled", false);
