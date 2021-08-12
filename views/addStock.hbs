@@ -196,7 +196,7 @@
                                     <td class="stockUnit">${result.stockUnit}</td>
                                     <td class="price">${price}</td>
                                     <td class="total">${total}</td>
-                                    <td><button class="delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button></td>
+                                    <td><button class="delete-button add-stock-delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button></td>
                                 </tr>`);
 
                                 $('#add-stock-name').val(''); 
@@ -215,6 +215,10 @@
                             $('#stock-name').val(stockName);
                         }
                     });                   
+                });
+
+                 $("#table-add-stock-new-stock").on('click','.add-stock-delete-button',function() {
+                    $(this).closest('tr').remove();
                 });
 
 

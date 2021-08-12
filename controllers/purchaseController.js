@@ -32,7 +32,6 @@ const purchaseController = {
 	},
 
 	getStockName: function (req, res) {
-		console.log(req.query.query);
 		//$options:i denotes case insensitive searching
 		db.findMany (Stock, {stockName:{$regex:req.query.query, $options:'i'}}, 'stockName', function (result) {
 			var formattedResults = [];
@@ -52,7 +51,7 @@ const purchaseController = {
 
         var projection = 'quantity stockUnit';
 
-        db.findOne(Stock, {stockName: req.body.stockName}, projection, function(result) {
+        db.findOne(Stock, {stockName: req.query.stockName}, projection, function(result) {
             res.send(result);
         });
 	},

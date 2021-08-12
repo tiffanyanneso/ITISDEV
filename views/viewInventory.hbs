@@ -112,12 +112,12 @@
                     </thead>
                     <tbody> 
                         {{#each ingredients}}
-                        <tr class="link" data-href="/ingredient/{{systemID}}">
-                            <td> {{ingredientName }} </td>
-                            <td> {{ingredientType}} </td>
-                            <td> {{quantityAvailable}} </td>
-                            <td> {{unitMeasurement}} </td>
-                            <td> in stock </td>
+                        <tr class="link" data-href="/ingredient/{{systemID}}" style="visibility:visible;">
+                            <td>{{ingredientName}}</td>
+                            <td>{{ingredientType}}</td>
+                            <td>{{quantityAvailable}}</td>
+                            <td>{{unitMeasurement}}</td>
+                            <td>in stock</td>
                         </tr>
                         {{/each}}
                     </tbody>
@@ -150,6 +150,17 @@
                 $(".link").click(function() {
                     window.location = $(this).data("href");
                 });
+
+                $('#view-inventory-search-field').keyup(function() {
+                    $('#table-view-inventory tr').show();
+                    var searchItem = $(this).val().toLowerCase();
+                 
+                    $('#table-view-inventory > tbody > tr').each(function(index) {
+                        var ingredientName = $(this).children('td:first').text().toLowerCase();
+                        if (!ingredientName.includes(searchItem))
+                            $(this).toggle();
+                    })
+                })
             })
         </script>
     </body>
