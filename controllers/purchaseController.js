@@ -32,10 +32,27 @@ const purchaseController = {
 	},
 
 	getStockName: function (req, res) {
+		console.log(req.query.query);
+		//$options:i denotes case insensitive searching
+		db.findMany (Stock, {stockName:{$regex:req.query.query, $options:'i'}}, 'stockName', function (result) {
+			var formattedResults = [];
+			//reason for the for loop: https://stackoverflow.com/questions/5077409/what-does-autocomplete-request-server-response-look-like
+			for (var i=0; i<result.length; i++) {
+				var formattedResult = {
+					label: result[i].stockName,
+					value: result[i].stockName
+				}
+				formattedResults.push(formattedResult);
+			}
+			res.send(formattedResults);
+		})
+	},
 
-        var projection = 'stockName quantity stockUnit';
+	getStockInfo: function (req, res) {
 
-        db.findOne(Stock, {stockID: req.query.stockName}, projection, function(result) {
+        var projection = 'quantity stockUnit';
+
+        db.findOne(Stock, {stockName: req.body.stockName}, projection, function(result) {
             res.send(result);
         });
 	},

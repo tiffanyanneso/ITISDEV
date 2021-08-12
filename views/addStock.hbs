@@ -8,6 +8,9 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+         rel = "stylesheet">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
     <body>
@@ -74,7 +77,7 @@
             <hr style="margin-bottom: 5px;">
 
             <div style="margin-top: 20px;"> 
-                <input type="text" name="add-stock-ID" id="add-stock-ID" placeholder="Stock Name" style="margin-right: 5px">
+                <input type="text" name="add-stock-name" id="add-stock-name" placeholder="Stock Name" style="margin-right: 5px">
                 <input type="number" name="add-stock-count" id="add-stock-count" placeholder="Count" style="margin-right: 10px">
                 <input type="number" name="add-stock-price" id="add-stock-price" placeholder="Price" style="margin-right: 10px">
                 <input class="btn-add" type="button" id="btn-add-stock" name="btn-add-stock" value="+">
@@ -143,6 +146,22 @@
         <script>
             $(document).ready(function() {
 
+                $( "#add-stock-name" ).autocomplete({
+                    source:function(request, response) {
+                    $.ajax({
+                                url: `/getStockName?query=${request.term}`,
+                                dataType: "json",
+                                data: {
+                                    //request.term refers to the value currently in the text input
+                                    term: request.term,
+                                },
+                                success: function (data) {
+                                    response(data);
+                                }
+                         });
+                    }
+                });
+
                 var d = new Date();
                 var date = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
                 $('#date').html(date);
@@ -151,21 +170,27 @@
                     $(this).closest('tr').remove;
                 };
 
+                function capitalize(string){
+                    var words = string.toLowerCase().split(' ');
+                    for (i=0; i<words.length; i++)
+                        words[i] = words[i].charAt(0).toUpperCase() + words[i].substring(1);
+                    return words.join(' ');
+                };
 
-                //gets stocks name
+                //gets stocks info
                 $('#btn-add-stock').click(function() {
-                    var stockID = $('#add-stock-ID').val();
+                    var stockName = $('#add-stock-name').val();
                     var count = $('#add-stock-count').val();
                     var price = $('#add-stock-price').val();
 
 
-                    $.get('/getStockName', {stockID:stockID}, function (result) {
+                    $.get('/getStockInfo', {stockName:stockName}, function (result) {
                         //stockID was found in DB
                         if (result!="") {
                                 var total = count*price;
                                 $('#table-add-stock-new-stock').append (
                                 `<tr>
-                                    <td class="stockName">${result.stockName}</td>
+                                    <td class="stockName">${stockName}</td>
                                     <td class="count">${count}</td>
                                     <td class-"quantity">${result.quantity}</td>
                                     <td class="stockUnit">${result.stockUnit}</td>
@@ -174,7 +199,7 @@
                                     <td><button class="delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button></td>
                                 </tr>`);
 
-                                $('#add-stock-ID').val(''); 
+                                $('#add-stock-name').val(''); 
                                 $('#add-stock-count').val('');    
                                 $('#add-stock-price').val('');  
 
@@ -187,10 +212,9 @@
                         //stockDB not found, ask to create new stock
                         else{                          
                             $('#modal-add-stock').modal('show');
-                            $('#stock-id').val(stockID);
+                            $('#stock-name').val(stockName);
                         }
-                    });
-                                        
+                    });                   
                 });
 
 
@@ -206,35 +230,36 @@
                     $('#add-new-stock').trigger('reset');
                     $.post('/addStock', {stockName, quantity, stockUnit, ingredientName});
                 });
-            });
 
 
-            //saves purchase to db
-            $('#btn-add-stock-save').click (function() {
-                var newStocks = [];
-               
-               $("#table-add-stock-body > tr").each(function () {
-                    var stock= {
-                        purchaseID:0, 
-                        stockName: $(this).children('.stockName').text(),
-                        //stockName: $(this).children('.stockName').text(),
-                        count: $(this).children('.count').text(),
-                        //quantity: $(this).children('.quantity').text(),
-                        //stockUnit: $(this).children('.stockUnit').text(),
+                //saves purchase to db
+                $('#btn-add-stock-save').click (function() {
+                    var newStocks = [];
+                   
+                   $("#table-add-stock-body > tr").each(function () {
+                        var stock= {
+                            purchaseID:0, 
+                            stockName: $(this).children('.stockName').text(),
+                            //stockName: $(this).children('.stockName').text(),
+                            count: $(this).children('.count').text(),
+                            //quantity: $(this).children('.quantity').text(),
+                            //stockUnit: $(this).children('.stockUnit').text(),
 
-                        unitPrice: $(this).children('.price').text(),
-                        //amount: $(this).children('.total').text()
-                    }
-                    newStocks.push(stock);
+                            unitPrice: $(this).children('.price').text(),
+                            //amount: $(this).children('.total').text()
+                        }
+                        newStocks.push(stock);
+                    });
+                   var datePurchased = $('#date').text();
+                   var stockString = JSON.stringify(newStocks);
+                   var purchaseTotal = $('#add-stock-total').text();
+                   $.post('/savePurchase', {datePurchased, stockString, purchaseTotal});
+                   $("#table-add-stock-new-stock tbody tr").remove();
+                   $('#add-stock-total').text('');
                 });
-               var datePurchased = $('#date').text();
-               var stockString = JSON.stringify(newStocks);
-               var purchaseTotal = $('#add-stock-total').text();
-               $.post('/savePurchase', {datePurchased, stockString, purchaseTotal});
-               $("#table-add-stock-new-stock tbody tr").remove();
-               $('#add-stock-total').text('');
-            }); 
-            
+
+
+            });
         </script>
     </body>
 </html>
