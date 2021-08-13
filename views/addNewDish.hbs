@@ -256,7 +256,7 @@
                 }
 
                 $('#btn-add-new-dish-ingredient').click(function() {
-                    var ingredientName = $('#new-dish-ingredients-name').val();
+                    var ingredientName = capitalize($('#new-dish-ingredients-name').val());
                     var ingredientQty = $('#new-dish-ingredients-quantity').val();
                     var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit').val();
 
@@ -265,19 +265,27 @@
                     if (!ingredientNameValidation(ingredientName) && !ingredientQuantityValidation(ingredientQty)) {
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #DDDDDD");
                         $("#new-dish-ingredients-name").css("border", "1px solid #DDDDDD");
-						
                         $("#error-ingredients").text("");
 
-                        $('#table-add-new-dish').find('tbody').append(
-                            `  <tr> 
-                                    <td>${ingredientName}</td> 
-                                    <td>${ingredientQty}</td> 
-                                    <td>${ingredientUnit}</td>
-                                    <td> <button class="delete-button add-new-dish-delete-btn"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button> </td>
-                                </tr>`
-                            );
+                        $.get("/getCheckIngredientName", {ingredientName: ingredientName}, function (result) {
+                            if (result.ingredientName != ingredientName) {
+                                errorMessage("ingredientNameNotExist");
+                            } else {
+                                $("#new-dish-ingredients-name").css("border", "1px solid #DDDDDD");
+                                $("#error-ingredients").text("");
 
-						resetIngredients();
+                                $('#table-add-new-dish').find('tbody').append(
+                                    `  <tr> 
+                                            <td>${ingredientName}</td> 
+                                            <td>${ingredientQty}</td> 
+                                            <td>${ingredientUnit}</td>
+                                            <td> <button class="delete-button add-new-dish-delete-btn"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button> </td>
+                                        </tr>`
+                                    );
+
+                                resetIngredients();
+                            }
+                        });
 					}
                 });
 
