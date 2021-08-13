@@ -57,6 +57,7 @@
                   <div class="modal-body">
                     <form id="add-new-ingredient">
                         <label for="ingredient-name">Name</label> <input id="ingredient-name" type="text"><br>
+                        <p class="error" id="error-new-ingredient-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
                         <label for="dropdown-ingredient-type">Ingredient Type</label>
                         <select class="dropdown" id="dropdown-ingredient-type"> 
                             <option value="all-type">All</option>
@@ -112,7 +113,7 @@
                     </thead>
                     <tbody> 
                         {{#each ingredients}}
-                        <tr class="link" data-href="/ingredient/{{systemID}}" style="visibility:visible;">
+                        <tr class="link" data-href="/ingredient/{{systemID}}">
                             <td>{{ingredientName}}</td>
                             <td>{{ingredientType}}</td>
                             <td>{{quantityAvailable}}</td>
@@ -134,6 +135,24 @@
                     return words.join(' ');
                 };
 
+
+                $('#ingredient-name').keyup(function() {
+                    var ingredientName = capitalize($('#ingredient-name').val());
+                    $.get('/getCheckIngredientName', {ingredientName: ingredientName}, function (result) {
+                            if (result.ingredientName == ingredientName) {
+                                $("#ingredient-name").css("border", "1px solid #B00000");
+                                $('#error-new-ingredient-name').text("Ingredient already exists");
+                                $("#btn-add-new-ingredient").prop("disabled", true);
+                                $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                            }
+                            else {
+                                $("#ingredient-name").css("border", "1px solid #DDDDDD");
+                                $("#error-new-ingredient-name").text("");
+                                $("#btn-add-new-ingredient").prop("disabled", false);
+                                $("#btn-add-new-ingredient").css("background-color", "#0F84D9");
+                            }
+                    });
+                }); 
 
                 $('#btn-add-new-ingredient').click(function() {
                     var ingredientName = capitalize($('#ingredient-name').val());

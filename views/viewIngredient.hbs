@@ -88,7 +88,10 @@
                   <div class="modal-body">
                     <form id="add-new-stock">
                         <label for="stock-name">Name</label> <input id="stock-name" type="text"><br>
-                        <label for="stock-quantity">Quantity</label> <input id="stock-quantity" type="text"> <br>
+                        <p class="error" id="error-new-stock-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
+                        <label for="stock-quantity">Quantity</label> <input id="stock-quantity" type="number"> <br>
+                        <p class="error" id="error-stock-quantity" style="margin-top: 3px; margin-bottom: 3px;"></p>
+                        <p class="error" id="error-new-stock-quantity" style="margin-top: 3px; margin-bottom: 3px;"></p>
                         <label for="dropdown-stock-unit">Unit of Measurement</label>
                         <select class="dropdown" id="dropdown-stock-unit">
                             <option value="ml">ml</option>
@@ -98,7 +101,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="btn-add-new-stock">Add Stock</button>
+                        <button type="button" class="btn btn-primary" id="btn-add-new-stock" disabled="=true">Add Stock</button>
                       </div>
                   </form>
                 </div>
@@ -136,9 +139,59 @@
                     return words.join(' ');
                 };
 
+                function isFilled () {
+                    var stockName = capitalize($('#stock-name').val());
+                    var stockQuantity = $('#stock-quantity').val();
+
+                    if (stockName=="" || stockQuantity=="")
+                        return false;
+                    else
+                        return true;
+                }
+
+                $('#stock-name').keyup(function() {
+                    var stockName = capitalize($('#stock-name').val());
+                    $.get('/getCheckStockName', {stockName:stockName}, function(result) {
+                        if (result.stockName == stockName) {
+                            $("#stock-name").css("border", "1px solid #B00000");
+                            $('#error-new-stock-name').text("Stock already exists");
+                            $("#btn-add-new-stock").prop("disabled", true);
+                            $("#btn-add-new-stock").css("background-color", "#b3b3b3");
+                        }
+                        else if (!isFilled() || $('#error-stock-quantity').val()!="") 
+                            $("#btn-add-new-stock").prop("disabled", true);
+                        else { 
+                            $("#stock-name").css("border", "1px solid #DDDDDD");
+                            $("#error-new-stock-name").text("");
+                            $("#btn-add-new-stock").prop("disabled", false);
+                            $("#btn-add-new-stock").css("background-color", "#0F84D9");
+                        }
+                    })
+                });
+
+                $('#stock-quantity').keyup(function() {
+                    var stockQuantity = $('#stock-quantity').val();
+                    if (stockQuantity <= 0) {
+                        $("#stock-quantity").css("border", "1px solid #B00000");
+                        $('#error-stock-quantity').text("Stock quantity should be greater than 0");
+                        $("#btn-add-new-stock").prop("disabled", true);
+                        $("#btn-add-new-stock").css("background-color", "#b3b3b3");
+                    }
+                    else if (!isFilled() || $('#error-new-stock-name').val()!="") {
+                        $("#btn-add-new-stock").prop("disabled", true);
+                        $("#error-stock-quantity").text("");
+                    }
+                    else {
+                        $("#stock-quantity").css("border", "1px solid #DDDDDD");
+                        $("#error-stock-quantity").text("");
+                        $("#btn-add-new-stock").prop("disabled", false);
+                        $("#btn-add-new-stock").css("background-color", "#0F84D9");
+                    }
+                });
+
+
 
                 $('#btn-add-new-stock').click(function() {
-
                     var stockName = capitalize($('#stock-name').val());
                     var quantity = $('#stock-quantity').val();
                     var stockUnit = $('#dropdown-stock-unit').val();
