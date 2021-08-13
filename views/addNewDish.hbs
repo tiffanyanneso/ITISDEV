@@ -111,19 +111,20 @@
         <script> 
             $(document).ready(function() {
 
+                // Autocomplete for Ingredient Name
                 $( "#new-dish-ingredients-name" ).autocomplete({
                     source:function(request, response) {
                     $.ajax({
-                                url: `/getAutoIngredientName?query=${request.term}`,
-                                dataType: "json",
-                                data: {
-                                    //request.term refers to the value currently in the text input
-                                    term: request.term,
-                                },
-                                success: function (data) {
-                                    response(data);
-                                }
-                         });
+                            url: `/getAutoIngredientName?query=${request.term}`,
+                            dataType: "json",
+                            data: {
+                                //request.term refers to the value currently in the text input
+                                term: request.term,
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
                     }
                 });
 
@@ -156,38 +157,12 @@
                         return 0;
                 }
 
-                function checkIngredientName(ingredientName) {
-                    capitalize(ingredientName);
-
-                    if (!(ingredientName == null || ingredientName == "")) {
-
-                        // Check if reference number exists 
-                        $.get("/getCheckIngredientName", {ingredientName: ingredientName}, function (result) {
-                            if (result.ingredientName != ingredientName) {
-                                //$("#new-dish-ingredients-name").css("border", "1px solid #B00000");
-                                //$("#error-ingredients").text("Ingredient Name does not exist.");
-                                //$("#btn-add-new-dish-ingredient").prop("disabled", true);
-                                //$("#btn-add-new-dish-ingredient").css("background-color", "#b3b3b3");
-                                errorMessage("ingredientNameNotExist");
-                                return 1;
-                            } else {
-                                //$("#new-dish-ingredients-name").css("border", "1px solid #DDDDDD");
-                                //$("#error-ingredients").text("");
-                                //$("#btn-add-new-dish-ingredient").prop("disabled", false);
-                                //$("#btn-add-new-dish-ingredient").css("background-color", "#0F84D9");
-                                return 0;
-                            }
-                        });
-                    }
-                }
-
-                function checkIngredientName2(value) {
-                    return value;
-                }
-
-                function ingredientQuantityValidation(ingredientQty) { // add for more than 0
+                function ingredientQuantityValidation(ingredientQty) { 
                     if (ingredientQty == null || ingredientQty == "") {
                         errorMessage("ingredientQty");
+                        return 1;
+                    } else if (parseFloat(ingredientQty) <= 0) {
+                        errorMessage("ingredientQtyInvalid");
                         return 1;
                     }
                     else 
@@ -210,6 +185,9 @@
                     } else if (type == "ingredientNameNotExist") {
                         $("#new-dish-ingredients-name").css("border", "1px solid #B00000");
                         $("#error-ingredients").text("Ingredient does not exist.");
+                    } else if (type == "ingredientQtyInvalid") {
+                        $("#new-dish-ingredients-quantity").css("border", "1px solid #B00000");
+                        $("#error-ingredients").text("Invalid quantity.");
                     } 
                 }
 
@@ -224,7 +202,7 @@
                     // Get value 
                      var dishName = capitalize($('#new-dish-name').val());
 
-                    // Check if reference number exists 
+                    // Check if dish name exists 
                     $.get("/getCheckDishName", {dishName: dishName}, function (result) {
                         if (result.dishName == dishName) {
                             $("#new-dish-name").css("border", "1px solid #B00000");
@@ -260,20 +238,22 @@
                     var ingredientQty = $('#new-dish-ingredients-quantity').val();
                     var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit').val();
 
-                    alert(checkIngredientName(ingredientName));
-
+                    // Call validation functions
                     if (!ingredientNameValidation(ingredientName) && !ingredientQuantityValidation(ingredientQty)) {
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #DDDDDD");
                         $("#new-dish-ingredients-name").css("border", "1px solid #DDDDDD");
                         $("#error-ingredients").text("");
 
+                        // Check if ingredient name is valid
                         $.get("/getCheckIngredientName", {ingredientName: ingredientName}, function (result) {
                             if (result.ingredientName != ingredientName) {
                                 errorMessage("ingredientNameNotExist");
                             } else {
+                                // Clear error messages
                                 $("#new-dish-ingredients-name").css("border", "1px solid #DDDDDD");
                                 $("#error-ingredients").text("");
 
+                                // Append row to table
                                 $('#table-add-new-dish').find('tbody').append(
                                     `  <tr> 
                                             <td>${ingredientName}</td> 
@@ -293,15 +273,14 @@
                     $(this).closest('tr').remove();
                 });
 
-                function readTable(dishID) { // REMOVE DISH ID
+                function readTable(dishID) { 
                     var ingredients = [];
-                    //var dishID = "ABC"
 
-                    alert("READ TABLE " + dishID);
+                    //alert("READ TABLE " + dishID);
 
                     var myTab = $("#table-add-new-dish")[0];
 
-                    alert(myTab.rows.length);
+                    //alert(myTab.rows.length);
 
                     // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
                      for (var i = 1; i < myTab.rows.length; i++) {
@@ -310,7 +289,7 @@
                         // GET THE CELLS COLLECTION OF THE CURRENT ROW.
                         var objCells = myTab.rows.item(i).cells;
 
-                        alert(objCells.item(0).innerHTML + " " + objCells.item(1).innerHTML + " " + objCells.item(2).innerHTML);
+                        //alert(objCells.item(0).innerHTML + " " + objCells.item(1).innerHTML + " " + objCells.item(2).innerHTML);
 
                         var name = objCells.item(0).innerHTML; 
                         var quantity = parseFloat(objCells.item(1).innerHTML);
@@ -332,18 +311,20 @@
                             $.post('/postAddOneIngredient', {dishID, ingredientID, quantity, unit});
 
                         });
-                    }            
+                    }
+
+                    // Clear table
+                    $("#table-add-new-dish tbody tr").remove();            
                 }
 
                 $('#btn-add-new-dish-save').click(function() {
-                    //var dishID = $('#new-dish-ID').val();
                     var dishName = capitalize($('#new-dish-name').val());
                     var dishPrice = $('#new-dish-price').val();
                     var dishClassification = $('#dropdown-add-new-dish-classification').val();
                     var dishStatus = $('#dropdown-add-new-dish-status').val();
                     var dishID;
 
-                    alert(dishName + ", " + dishPrice + ", " + dishClassification + ", " + dishStatus);
+                    //alert(dishName + ", " + dishPrice + ", " + dishClassification + ", " + dishStatus);
                     
                     // Validate inputs
                     if (!dishNameValidation(dishName) && !dishPriceValidation(dishPrice)) {
@@ -355,21 +336,11 @@
 
                         resetDish();
 
-                        //svar ingredients = [];
-                        //ingredients = readTable();
-
-                        // does not work
                         $.get('/postAddDish', {dishName: dishName, dishPrice: dishPrice, dishClassification: dishClassification, dishStatus: dishStatus}, function(result) {
-                            //alert(result._id);
                             dishID = result._id;
-                            //alert(result._id);
                             
                             readTable(dishID);
                         });
-
-                        // clear table
-                        // table does not clear
-                        //$("#table-add-new-dish tbody tr").remove();
 					}
                 });
         });
