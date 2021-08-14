@@ -64,5 +64,16 @@
                 </div>-->
             </div>
         </div>
+
+        <script> 
+            $(document).ready(function() {
+                $('#dash-view-inventory').click(function() {
+                    alert("click");
+                    // does not work
+                    $.get('inventory');
+                });
+            })
+        </script>
+
     </body>
 </html>

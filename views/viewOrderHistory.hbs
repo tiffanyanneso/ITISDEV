@@ -4,7 +4,7 @@
         <title> View Order History </title>
         <meta name="description" content="View Order History">
         <meta name="keyword" content="View Order History">
-        <link rel="stylesheet" type="text/css" href="../public/css/general.css">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -35,13 +35,8 @@
         <div class="content">
             <h1 class="bold color-blue">Order History</h1>
 
-            <div class="div-search">
-                <input type="search" placeholder="Search" name="search" class="search-field" id="view-order-history-search-field">
-                <button type="submit" style="height: 34px" id="view-order-history-search-button"><i class="fa fa-search" ></i></button>
-            </div>
-
-            <div class="div-dates">
-                <label class="date-label" for="start-date-order-history;">Start Date</label>
+            <div style="justify-content: flex-start">
+                <label class="date-label" for="start-date-order-history">Start Date</label>
                 <input style="height: 34px" type="date" id="start-date-order-history" name="start-date-order-history">
                 <label class= "date-label" style="margin-left: 10px;" for="end-date-order-history">End Date</label>
                 <input style="height: 34px" type="date" id="end-date-order-history" name="end-date-order-history">
@@ -51,12 +46,11 @@
             <br>
 
             <!-- make rows clickable -->
-            <div class="div-table" style= "margin-top: 30px; height: 500px">
+            <div class="div-table" style= "height: 500px">
                 <table class="table" id="table-view-order-history">
                     <thead class="table-head table-sticky-header">
                         <tr>
                             <th>Date</th>
-                            <th>ID</th>
                             <th>Name</th>
                             <th>Total</th>
                         </tr>
@@ -64,73 +58,61 @@
                     <tbody> 
                         <tr>
                             <td>COIL</td>
-                            <td>Canola Oil</td>
                             <td>1</td>
                             <td>Cup</td>
                         </tr>
                         <tr>
                             <td>CHIK</td>
-                            <td>Chicken</td>
                             <td>500</td>
                             <td>Grams</td>
                         </tr>
                         <tr>
                             <td>AFLR</td>
-                            <td>All Purpose Flour</td>
                             <td>1</td>
                             <td>Cup</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
-                            <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
                         </tr>
                         <tr>
                             <td>COIL</td>
-                            <td>Canola Oil</td>
                             <td>1</td>
                             <td>Cup</td>
                         </tr>
                         <tr>
                             <td>CHIK</td>
-                            <td>Chicken</td>
                             <td>500</td>
                             <td>Grams</td>
                         </tr>
                         <tr>
                             <td>AFLR</td>
-                            <td>All Purpose Flour</td>
                             <td>1</td>
                             <td>Cup</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
-                            <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
                         </tr>
                         <tr>
                             <td>AFLR</td>
-                            <td>All Purpose Flour</td>
                             <td>1</td>
                             <td>Cup</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
-                            <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
-                            <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
                         </tr>
                         <tr>
                             <td>SLT</td>
-                            <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
                         </tr>
@@ -142,5 +124,70 @@
                 <div class="summary-info-container"><div id="view-purchases-total" class="summary-total-info">P 200.00</div></div>
             </div>
         </div>
+
+        <script> 
+            $(document).ready(function() {
+                $(".link").click(function() {
+                    window.location = $(this).data("href");
+                });
+
+                $("#view-order-history-date-button").click(function() {
+                    var startDate = $("#start-date-order-history").val();
+                    var endDate = $("#end-date-order-history").val();
+
+                    if (startDate == null || startDate == "" || endDate == null || endDate == "") {
+                        if (startDate == null || startDate == "")
+                            $("#start-date-order-history").css("border", "1px solid #B00000")
+
+                        if (endDate == null || endDate == "")
+                            $("#end-date-order-history").css("border", "1px solid #B00000")
+                    }
+                    else {
+                        var convertedStartDate = new Date(startDate);
+                        var convertedEndDate = new Date(endDate);
+
+                        if(convertedStartDate > convertedEndDate) {
+                            alert("endDate is before startDate");
+                            $("#start-date-order-history").css("border", "1px solid #B00000");
+                            $("#end-date-order-history").css("border", "1px solid #B00000");
+                        }
+                        else {
+                            alert("Valid dates");
+                            $("#start-date-order-history").css("border", "1px solid #DDDDDD");
+                            $("#end-date-order-history").css("border", "1px solid #DDDDDD");
+
+                            /*$.get("/getFilteredRows", {startDate: convertedStartDate, endDate: convertedEndDate}, function (result) {
+                                var total = 0;
+
+                                $("#table-view-order-history tbody tr").remove();
+
+                                for (var i = 0; i < result.length; i++) {
+                                    var resultSystemID = result[i].systemID;
+                                    var resultDate = result[i].dateBought;
+                                    var resultTotal = result[i].total;
+                                    var resultEmpName = result[i].employeeName;
+
+                                    total += parseFloat(resultTotal);
+                                    
+                                    $("#table-view-order-history").find("tbody").append(
+                                        `  <tr class="link" data-href="/purchase/${resultSystemID}"> 
+                                                <td>${resultDate}</td>
+                                                <td>${resultEmpName}</td> 
+                                                <td>${resultTotal}</td>
+                                            </tr>`
+                                    );
+
+                                    $(".link").click(function() {
+                                        window.location = $(this).data("href");
+                                    });
+                                }
+                                $("#view-purchases-total").text(total.toFixed(2));
+                            });*/
+                        }
+                    }
+                });
+            });
+        </script>
+
     </body>
 </html>

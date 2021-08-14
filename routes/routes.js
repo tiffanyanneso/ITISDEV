@@ -14,6 +14,8 @@ const purchaseController = require('../controllers/purchaseController.js');
 
 const menuController = require('../controllers/menuController.js');
 
+const orderHistoryController = require('../controllers/orderHistoryController.js');
+
 router.get('/favicon.ico', controller.getFavicon);
 
 router.get('/', controller.getIndex);
@@ -65,5 +67,9 @@ router.get('/getSearchPurchase', purchaseController.getSearchPurchase);
 router.get('/getFilteredRows', purchaseController.getFilteredRows);
 
 router.get('/menu', menuController.getMenu);
+
+router.get('/getFilteredRows', purchaseController.getFilteredRows);
+
+router.get('/orderHistory', orderHistoryController.getOrderHistory);
 
 module.exports = router;
