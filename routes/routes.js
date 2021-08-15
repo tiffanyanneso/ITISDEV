@@ -68,8 +68,10 @@ router.get('/getFilteredRows', purchaseController.getFilteredRows);
 
 router.get('/menu', menuController.getMenu);
 
-router.get('/getFilteredRows', purchaseController.getFilteredRows);
-
 router.get('/orderHistory', orderHistoryController.getOrderHistory);
+
+router.get('/order/:systemID', orderHistoryController.getViewSpecificOrder);
+
+router.get('/getFilteredRowsOrderHistory', orderHistoryController.getFilteredRowsOrderHistory);
 
 module.exports = router;

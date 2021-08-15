@@ -69,6 +69,54 @@ const orderHistoryController = {
                 res.render('viewOrderHistory', {orders, total});
             });
         });
+    },
+
+    getFilteredRowsOrderHistory: function(req, res) {
+		var startDate = new Date(req.query.startDate);
+		var endDate = new Date(req.query.endDate);
+		startDate.setHours(0,0,0,0);
+		endDate.setHours(0,0,0,0);
+
+		var projection = '_id date total employeeID';
+		var orders = [];
+		
+		db.findMany(Sales, {}, projection, function(result) {
+			for (var i = 0; i < result.length; i++) {
+				var date = new Date(result[i].date);
+				date.setHours(0,0,0,0);
+				
+				if (!(startDate > date || date > endDate)) {
+					var order = {
+						systemID: result[i]._id,
+						date: date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear(),
+						total: parseFloat(result[i].total).toFixed(2),
+						employeeID: result[i].employeeID,
+						employeeName : "name"
+					};
+	
+					orders.push(order);
+				}
+			}
+
+			db.findMany (Employees, {}, '_id name', function(result2) {
+
+                for (var k = 0; k < orders.length; k++) {
+                    for (var l = 0; l < result2.length; l++) {
+                        if (orders[k].employeeID == result2[l]._id)
+                            orders[k].employeeName = result2[l].name;
+                            //console.log(purchases[k].employeeID + ", " + result2[l].employeeID);
+                    }
+				}
+
+				//console.log(orders);
+
+				res.send(orders);
+            });
+		});
+	},
+
+    getViewSpecificOrder: function (req, res) {
+        res.render('viewOrder');
     }
 	
 };

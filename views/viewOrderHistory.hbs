@@ -68,7 +68,7 @@
             </div>
             <div class="summary-total-container" style= "margin-top: 10px;">    
                 <div class="summary-total-text">Total</div>
-                <div class="summary-info-container"><div id="view-purchases-total" class="summary-total-info">{{total}}</div></div>
+                <div class="summary-info-container"><div id="view-order-history-total" class="summary-total-info">{{total}}</div></div>
             </div>
         </div>
 
@@ -103,24 +103,24 @@
                             $("#start-date-order-history").css("border", "1px solid #DDDDDD");
                             $("#end-date-order-history").css("border", "1px solid #DDDDDD");
 
-                            /*$.get("/getFilteredRows", {startDate: convertedStartDate, endDate: convertedEndDate}, function (result) {
+                            $.get("/getFilteredRowsOrderHistory", {startDate: convertedStartDate, endDate: convertedEndDate}, function (result) {
                                 var total = 0;
 
                                 $("#table-view-order-history tbody tr").remove();
 
                                 for (var i = 0; i < result.length; i++) {
                                     var resultSystemID = result[i].systemID;
-                                    var resultDate = result[i].dateBought;
+                                    var resultDate = result[i].date;
                                     var resultTotal = result[i].total;
                                     var resultEmpName = result[i].employeeName;
 
                                     total += parseFloat(resultTotal);
                                     
                                     $("#table-view-order-history").find("tbody").append(
-                                        `  <tr class="link" data-href="/purchase/${resultSystemID}"> 
+                                        `  <tr class="link" data-href="/order/${resultSystemID}"> 
                                                 <td>${resultDate}</td>
-                                                <td>${resultEmpName}</td> 
-                                                <td>${resultTotal}</td>
+                                                <td>${resultTotal}</td> 
+                                                <td>${resultEmpName}</td>
                                             </tr>`
                                     );
 
@@ -128,8 +128,8 @@
                                         window.location = $(this).data("href");
                                     });
                                 }
-                                $("#view-purchases-total").text(total.toFixed(2));
-                            });*/
+                                $("#view-order-history-total").text(total.toFixed(2));
+                            });
                         }
                     }
                 });
