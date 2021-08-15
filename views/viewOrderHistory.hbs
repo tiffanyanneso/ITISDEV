@@ -59,7 +59,7 @@
                         {{#each orders}}
                             <tr class="link" data-href="/order/{{systemID}}">
                                 <td>{{date}}</td>
-                                <td>{{total}}</td>
+                                <td>₱ {{total}}</td>
                                 <td>{{employeeName}}</td>
                             </tr>
                         {{/each}}
@@ -68,7 +68,7 @@
             </div>
             <div class="summary-total-container" style= "margin-top: 10px;">    
                 <div class="summary-total-text">Total</div>
-                <div class="summary-info-container"><div id="view-order-history-total" class="summary-total-info">{{total}}</div></div>
+                <div class="summary-info-container"><div id="view-order-history-total" class="summary-total-info">₱ {{total}}</div></div>
             </div>
         </div>
 
@@ -119,7 +119,7 @@
                                     $("#table-view-order-history").find("tbody").append(
                                         `  <tr class="link" data-href="/order/${resultSystemID}"> 
                                                 <td>${resultDate}</td>
-                                                <td>${resultTotal}</td> 
+                                                <td>₱ ${resultTotal}</td> 
                                                 <td>${resultEmpName}</td>
                                             </tr>`
                                     );
