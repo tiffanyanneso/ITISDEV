@@ -65,7 +65,7 @@ const purchaseController = {
 		var purchaseDetails = {
 			dateBought: datePurchased,
 			total: purchaseTotal,
-			employeeID: 1
+			employeeID: "610c0a3a76be1fa0308b0ef5"
 		};
 
 		var purchaseID;
@@ -126,7 +126,7 @@ const purchaseController = {
                 purchases.push(purchase);
             }
 
-            db.findMany (Employees, {}, 'employeeID name', function(result2) {
+            db.findMany (Employees, {}, '_id name', function(result2) {
 				//var employeeName = result2.name;
 				
 				var total = 0;
@@ -134,7 +134,7 @@ const purchaseController = {
                 for (var k = 0; k < purchases.length; k++) {
 					total += parseFloat(purchases[k].total);
                     for (var l = 0; l < result2.length; l++) {
-                        if (purchases[k].employeeID == result2[l].employeeID)
+                        if (purchases[k].employeeID == result2[l]._id)
                                 purchases[k].employeeName = result2[l].name;
                             //console.log(purchases[k].employeeID + ", " + result2[l].employeeID);
                     }
@@ -157,8 +157,8 @@ const purchaseController = {
     	db.findOne (Purchases, {_id:req.params.systemID}, projection, function(result) {
     		var purchase = result;
     		//find employee name
-    		db.findOne (Employees, {employeeID:result.employeeID}, 'name', function (result2) {
-    			var employeeName=result2.name;
+    		db.findOne (Employees, {_id:result.employeeID}, 'name', function (result2) {
+    			var employeeName = result2.name;
     			var projection2 = 'stockName unitPrice count';
 
     			//find all purchased stock
@@ -269,7 +269,7 @@ const purchaseController = {
 				}
 			}
 
-			db.findMany (Employees, {}, 'employeeID name', function(result2) {
+			db.findMany (Employees, {}, '_id name', function(result2) {
 				//var employeeName = result2.name;
 				
 				//var total = 0;
@@ -277,7 +277,7 @@ const purchaseController = {
                 for (var k = 0; k < purchases.length; k++) {
 					// total += parseFloat(purchases[k].total);
                     for (var l = 0; l < result2.length; l++) {
-                        if (purchases[k].employeeID == result2[l].employeeID)
+                        if (purchases[k].employeeID == result2[l]._id)
                                 purchases[k].employeeName = result2[l].name;
                             //console.log(purchases[k].employeeID + ", " + result2[l].employeeID);
                     }

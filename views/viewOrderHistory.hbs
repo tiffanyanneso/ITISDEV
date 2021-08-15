@@ -51,77 +51,24 @@
                     <thead class="table-head table-sticky-header">
                         <tr>
                             <th>Date</th>
-                            <th>Name</th>
                             <th>Total</th>
+                            <th>Processed By</th>
                         </tr>
                     </thead>
                     <tbody> 
-                        <tr>
-                            <td>COIL</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                        </tr>
-                        <tr>
-                            <td>AFLR</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                        </tr>
-                        <tr>
-                            <td>COIL</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>CHIK</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                        </tr>
-                        <tr>
-                            <td>AFLR</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                        </tr>
-                        <tr>
-                            <td>AFLR</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                        </tr>
-                        <tr>
-                            <td>SLT</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                        </tr>
+                        {{#each orders}}
+                            <tr class="link" data-href="/order/{{systemID}}">
+                                <td>{{date}}</td>
+                                <td>{{total}}</td>
+                                <td>{{employeeName}}</td>
+                            </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div>
             <div class="summary-total-container" style= "margin-top: 10px;">    
                 <div class="summary-total-text">Total</div>
-                <div class="summary-info-container"><div id="view-purchases-total" class="summary-total-info">P 200.00</div></div>
+                <div class="summary-info-container"><div id="view-purchases-total" class="summary-total-info">{{total}}</div></div>
             </div>
         </div>
 

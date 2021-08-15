@@ -18,6 +18,8 @@ const DishStatus = require('../models/DishStatusModel.js');
 
 const Purchases = require('../models/PurchasesModel.js');
 
+const Sales = require('../models/SalesModel.js');
+
 const url = 'mongodb+srv://admin:admin@itisdev.wqab7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
 // additional connection options
