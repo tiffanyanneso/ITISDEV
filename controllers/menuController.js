@@ -12,71 +12,61 @@ const MenuController = {
 
 		var projection = '_id classification'; 	
 		var menu = [];
+		var classifications = [];
 
-		/*var dish = {
-			systemID: 1231,
-			dishName: 'Fried Chicken',
-			dishPrice: 10,
-			dishStatus: 'Available',
-			dishClassification: 'classification'
-		};
-
-		menu.push(dish);*/
 
 		db.findMany (DishClassification, {}, projection, function(result) {
 			
 			for (var i=0; i<result.length; i++) {
 
-				var dishProjection = '_id dishName dishPrice dishStatus';
-				var classification = result[i].classification;
+				var classification = {
+					_id: result[i]._id,
+					classification: result[i].classification
+				};
+				classifications.push( classification );
+				//menu.push( result[i].classification );
+			}
 
-				db.findMany (Dishes, { dishClassification : result[i]._id }, dishProjection, function(result2) {
+			var dishProjection = '_id dishName dishPrice dishStatus dishClassification';
 
-					for (var j=0; j<result2.length; i++) {
+				db.findMany (Dishes, {}, dishProjection, function(result2) {
+
+					var dishes = [];
+
+					for (var j =0; j<result2.length; j++) {
+
 						var dish = {
-							systemID: 1231,
+							_id: result2[j]._id,
 							dishName: result2[j].dishName,
 							dishPrice: result2[j].dishPrice,
 							dishStatus: result2[j].dishStatus,
-							dishClassification: classification
+							dishClassification: result2[j].dishClassification
 						};
-						menu.push(dish);
+
+						dishes.push( dish );
 					}
 
+					for (var i =0; i < classifications.length; i++){
 
+						var temp = {
+							classification: classifications[i].classification
+						};
+
+						menu.push ( temp );
+
+						for (var j =0; j < dishes.length; j++){
+
+							if( classifications[i]._id == dishes[j].dishClassification){
+								
+								dishes[j].dishClassification =  classifications[i].classification;
+								menu.push( dishes[j] );
+							}
+						}
+					}
+
+					res.render('menu', {menu});		
 				});
-			}
-		
-			res.render('menu', {menu});		
-			
 		});
-
-		/*db.findMany (DishClassification, {}, projection, function(result) {
-			
-			for (var i=0; i<result.length; i++) {
-
-				var classification = result[i].classification;
-				var dishProjection = '_id dishName dishPrice dishStatus';
-
-				db.findMany (Dishes, { _id : classification }, dishProjection, function(result2) {
-
-					for (var j=0; j<result2.length; i++) {
-
-						var dish = {
-							systemID: result2[j]._id,
-							dishName: result2[j].dishName,
-							dishPrice: result2[j].dishPrice,
-							dishStatus: result2[j].dishStatus,
-							dishClassification: classification
-						};
-
-						menu.push(dish);
-					}
-				});
-			}
-			
-		});*/
-
 	},
 
 };
