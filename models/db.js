@@ -20,6 +20,8 @@ const Purchases = require('../models/PurchasesModel.js');
 
 const Sales = require('../models/SalesModel.js');
 
+const SalesDishes = require('../models/SalesDishesModel.js');
+
 const url = 'mongodb+srv://admin:admin@itisdev.wqab7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
 // additional connection options

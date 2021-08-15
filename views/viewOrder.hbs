@@ -34,9 +34,9 @@
         <div class="content">
             <div>
                 <div style="display: flex;">
-                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-order-number">Order #1</h1></div>
+                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-order-number">View Order</h1></div>
                     <div class="div-btn-status">
-                        <h3 id="date-view-order" class= "margin-bottom-0">MM/DD/YYYY</h3>
+                        <h3 id="date-view-order" class= "margin-bottom-0">{{sale.date}}</h3>
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@
 
             <div class="label-container">
                 <div class="override-label">Processed By</div> 
-                <div class="label-content" id="content-view-order-processed-by">  </div>
+                <div class="label-content" id="content-view-order-processed-by">{{sale.employeeName}}</div>
             </div>
 
             <h3 class="bold" style="margin-top: 30px;">Order Details</h3> 
@@ -53,7 +53,6 @@
                 <table class="table" id="table-view-order">
                     <thead class="table-head table-sticky-header">
                         <tr>
-                            <th>ID</th>
                             <th>Name</th>
                             <th>Quantity</th>
                             <th>Unit Price</th>
@@ -61,74 +60,33 @@
                         </tr>
                     </thead>
                     <tbody> 
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>P 250.00</td>
-                            <td>P 500.00</td>
-                            <td>P 500.00</td>
-                        </tr>
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>P 250.00</td>
-                            <td>P 500.00</td>
-                            <td>P 500.00</td>
-                        </tr>
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>P 250.00</td>
-                            <td>P 500.00</td>
-                            <td>P 500.00</td>
-                        </tr>
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>P 250.00</td>
-                            <td>P 500.00</td>
-                            <td>P 500.00</td>
-                        </tr>
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>P 250.00</td>
-                            <td>P 500.00</td>
-                            <td>P 500.00</td>
-                        </tr>
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>P 250.00</td>
-                            <td>P 500.00</td>
-                            <td>P 500.00</td>
-                        </tr>
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>P 250.00</td>
-                            <td>P 500.00</td>
-                            <td>P 500.00</td>
-                        </tr>
+                        {{#each result2}}
+                            <tr>
+                                <td>{{dishID}}</td>
+                                <td>{{quantity}}</td>
+                                <td>Unit Price</td>
+                                <td>Amount</td>
+                            </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div>
 
             <div class="summary-container" style="margin-top: 20px;">
                 <div class="summary-text">Subtotal</div>
-                <div class="summary-info-container"><div id="view-order-subtotal" class="summary-info">P 200.00</div></div>
+                <div class="summary-info-container"><div id="view-order-subtotal" class="summary-info">₱ {{sale.subtotal}}</div></div>
             </div>
             <div class="summary-container">
                 <div class="summary-text">VAT</div>
-                <div class="summary-info-container"><div id="view-order-VAT" class="summary-info">P 200.00</div></div>
+                <div class="summary-info-container"><div id="view-order-VAT" class="summary-info">₱ {{sale.VAT}}</div></div>
             </div>
             <div class="summary-container">    
                 <div class="summary-text">Less: Discount</div>
-                <div class="summary-info-container"><div id="view-order-less-discount" class="summary-info">P 200.00</div></div>
+                <div class="summary-info-container"><div id="view-order-less-discount" class="summary-info">₱ {{sale.discount}}</div></div>
             </div>
             <div class="summary-container">
                 <div class="summary-text">Total Due</div>
-                <div class="summary-info-container"><div id="view-order-total-due"class="summary-info">P 200.00</div></div>
+                <div class="summary-info-container"><div id="view-order-total-due"class="summary-info">₱ {{sale.total}}</div></div>
             </div>
         </div>
     </body>

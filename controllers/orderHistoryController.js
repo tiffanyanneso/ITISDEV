@@ -4,6 +4,8 @@ const db = require('../models/db.js');
 
 const Sales = require('../models/SalesModel.js');
 
+const SalesDishes = require('../models/SalesDishesModel.js');
+
 const Employees = require('../models/EmployeesModel.js');
 
 //import models
@@ -11,19 +13,15 @@ const Employees = require('../models/EmployeesModel.js');
 const orderHistoryController = {
 
     getOrderHistory: function (req, res) {
-       /* var sales = {
-            employeeID: "610c0a7076be1fa0308b0ef8",
+        /*var salesOrder = {
+            salesID: "6118aaff851e8c5a035bbe5e",
         
-            date: "7/18/20211",
+            dishID: "611366fcac8ad60d0316266c",
         
-            total: 320,
-        
-            VAT: 20,
-        
-            discount: 0
+            quantity: 2
         };
 
-        db.insertOne (Sales, sales, function (flag) {
+        db.insertOne (SalesDishes, salesOrder, function (flag) {
 			if (flag) {
 
 			} 
@@ -116,7 +114,43 @@ const orderHistoryController = {
 	},
 
     getViewSpecificOrder: function (req, res) {
-        res.render('viewOrder');
+        var systemID = req.params.systemID;
+        var projection = '_id date employeeID VAT discount total';
+
+        db.findOne (Sales, {_id: systemID}, projection, function(result) {
+
+            var date = new Date(result.date);
+
+            var sale = {
+                systemID: result._id,
+                date: date.toLocaleString('en-US'),
+                employeeID: result.employeeID,
+                employeeName: "name",
+                subtotal: (parseFloat(result.total) + parseFloat(result.discount) - parseFloat(result.VAT)).toFixed(2),
+                VAT: parseFloat(result.VAT).toFixed(2),
+                discount: parseFloat(result.discount).toFixed(2), 
+                total: parseFloat(result.total).toFixed(2), 
+            };
+
+            db.findOne (Employees, {_id: sale.employeeID}, 'name', function(result2) {
+                
+                sale.employeeName = result2.name;
+
+                var projection2 = '_id salesID dishID quantity';
+
+                //console.log(sale);
+
+                // get all dishes ordered with the _id of sale
+                db.findMany(SalesDishes, {salesID: sale.systemID}, projection2, function(result2) {
+
+                    //get dish name and unit price
+
+                    res.render('viewOrder', {sale, result2});
+                });
+
+            
+            });
+        });
     }
 	
 };
