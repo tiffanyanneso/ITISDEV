@@ -8,6 +8,8 @@ const SalesDishes = require('../models/SalesDishesModel.js');
 
 const Employees = require('../models/EmployeesModel.js');
 
+const Dishes = require('../models/DishesModel.js');
+
 //import models
 
 const orderHistoryController = {
@@ -140,12 +142,42 @@ const orderHistoryController = {
 
                 //console.log(sale);
 
-                // get all dishes ordered with the _id of sale
-                db.findMany(SalesDishes, {salesID: sale.systemID}, projection2, function(result2) {
+                var salesDishes = [];
+
+                // get all dishes ordered with the ID of sale
+                db.findMany(SalesDishes, {salesID: sale.systemID}, projection2, function(result3) {
+
+                    for (var i = 0; i < result3.length; i++) {
+                        
+                        var dish = {
+                            salesID: result3[i].salesID,
+                            dishID: result3[i].dishID,
+                            dishName: "name",
+                            quantity: result3[i].quantity,
+                            unitPrice: 1,
+                            amount: 1
+                        };
+            
+                        salesDishes.push(dish);
+                    }
 
                     //get dish name and unit price
+                    var projection3 = '_id dishName dishPrice';
+                    db.findMany(Dishes, {}, projection3, function(result4) {
 
-                    res.render('viewOrder', {sale, result2});
+                        for (var j = 0; j < salesDishes.length; j++) {
+                            for (var k = 0; k < result4.length; k++) {
+                                if (salesDishes[j].dishID == result4[k]._id) {
+                                    salesDishes[j].dishName = result4[k].dishName;
+                                    salesDishes[j].unitPrice = parseFloat(result4[k].dishPrice).toFixed(2);
+                                    salesDishes[j].amount = (parseFloat(salesDishes[j].quantity) * parseFloat(result4[k].dishPrice)).toFixed(2);
+                                }
+                            }
+
+                        }
+                        
+                        res.render('viewOrder', {sale, salesDishes});
+                    });
                 });
 
             

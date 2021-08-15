@@ -40,11 +40,11 @@ const purchaseController = {
 				var formattedResult = {
 					label: result[i].stockName,
 					value: result[i].stockName
-				}
+				};
 				formattedResults.push(formattedResult);
 			}
 			res.send(formattedResults);
-		})
+		});
 	},
 
 	getStockInfo: function (req, res) {
