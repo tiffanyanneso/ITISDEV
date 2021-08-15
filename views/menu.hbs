@@ -36,96 +36,34 @@
             <hr>
 
             <!-- make rows clickable -->
-            <h3 class="bold">Appetizer</h3> 
-            <div class="div-table table-height-185">
-                <table class="table" id="table-menu-appetizer">
-                    <thead class="table-head table-sticky-header">
+
+            {{#each menu}}
+                {{#if classification}}
+                    </tbody>
+                </table>
+                <h3 class="bold">{{classification}}</h3>
+                    <table class="table" id="table-menu-appetizer">
+                        <thead class="table-head table-sticky-header">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                {{/if }}
+
+                {{#if dishName}}
+                    <tbody>                     
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody> 
-                        
-                        {{#each menu}}                        
-                        <tr>
-                            <td>{{systemID}}</td>
-                            <td>{{dishName}} | {{dishClassification}}</td>
-                            <td>P {{dishPrice}}</td>
+                            <td>{{_id}}</td>
+                            <td>{{dishName}}</td>
+                            <td>P{{dishPrice}}</td>
                             <td>{{dishStatus}}</td>
                         </tr>
-                        {{/each}}         
-                    </tbody>
-                </table>
-            </div>
+                {{/if }}
+            {{/each}}
 
-            <h3 class="bold">Main Course</h3> 
-            <div class="div-table table-height-185">
-                <table class="table" id="table-menu-main-course">
-                    <thead class="table-head table-sticky-header">
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody> 
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>P 350.00</td>
-                            <td>Available</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h3 class="bold">Dessert</h3> 
-            <div class="div-table table-height-185">
-                <table class="table" id="table-menu-dessert">
-                    <thead class="table-head table-sticky-header">
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody> 
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>P 350.00</td>
-                            <td>Available</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h3 class="bold">Drink</h3> 
-            <div class="div-table table-height-185">
-                <table class="table" id="table-menu-drink">
-                    <thead class="table-head table-sticky-header">
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody> 
-                        <tr>
-                            <td>FCHIK</td>
-                            <td>Fried Chicken</td>
-                            <td>P 350.00</td>
-                            <td>Available</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
     </body>
 </html>
