@@ -69,6 +69,10 @@ const MenuController = {
 		});
 	},
 
+	getViewDish: function (req, res) {
+		res.render('viewDish');
+	}
+
 };
 
 

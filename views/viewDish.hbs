@@ -4,7 +4,7 @@
         <title> View Dish </title>
         <meta name="description" content="View Dish">
         <meta name="keyword" content="View Dish">
-        <link rel="stylesheet" type="text/css" href="../public/css/general.css">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -55,7 +55,62 @@
                 </div>
             </div>
 
-            <div class="div-btn-right" id="div-view-dish-edit-details" style="margin-top: 90px;"><button class="btn-light-blue" id="btn-view-dish-edit-details" style="margin-bottom: 10px;" >Edit Details</button></div>
+            <div class="div-btn-right" id="div-view-dish-edit-details" style="margin-top: 90px;"><button class="btn-light-blue" id="btn-view-dish-change-status" style="margin-bottom: 10px;" data-toggle="modal" data-target="#modal-change-status">Change Status</button></div>
+            <div class="div-btn-right" id="div-view-dish-edit-details" style="margin-top: 10px;"><button class="btn-light-blue" id="btn-view-dish-edit-details" style="margin-bottom: 10px;" data-toggle="modal" data-target="#modal-edit-details">Edit Details</button></div>
+
+            <!-- Change Status Modal -->
+            <div class="modal fade" id="modal-change-status" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3 class="modal-title" id="modalTitle">Change Status</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="change-status">
+                        <label for="dropdown-status">Status</label>
+                        <select class="dropdown" id="dropdown-status">
+                            <option value="611369ebaf90cc0e419b25e0">Available</option>
+                            <option value="61136a0e6876670e697134a3">Unavailable</option>
+                        </select><br>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btn-save-new-status" disabled="=true">Save</button>
+                      </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Change Status Modal -->
+            <div class="modal fade" id="modal-edit-details" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3 class="modal-title" id="modalTitle">Edit Details</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="edit-details">
+                      <label for="stock-name">Name</label> <input id="stock-name" type="text"><br>
+                        <p class="error" id="error-new-stock-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
+                        <label for="stock-quantity">Quantity</label> <input id="stock-quantity" type="number"> <br>
+                        <p class="error" id="error-stock-quantity" style="margin-top: 3px; margin-bottom: 3px;"></p>
+                        <p class="error" id="error-new-stock-quantity" style="margin-top: 3px; margin-bottom: 3px;"></p>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btn-save-new-status" disabled="=true">Save</button>
+                      </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            </div>
 
             <h3 class="bold">Ingredients</h3> 
             <div class="div-table table-height-300">
@@ -120,7 +175,12 @@
                     </tbody>
                 </table>
             </div>
-            <div class="div-btn-right" id="div-view-dish-edit-ingredients" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-view-dish-edit-ingredients" style="margin-bottom: 10px;" >Edit Ingredients</button></div>
+            <div class="div-btn-right" id="div-view-dish-edit-ingredients" style="margin-top: 20px;" ><button class="btn-light-blue" id="btn-view-dish-edit-ingredients" style="margin-bottom: 10px;" >Edit Ingredients</button></div>
         </div>
+        <script>
+            $(document).ready(function() {
+
+            });
+        </script>
     </body>
 </html>
