@@ -171,7 +171,7 @@
                                         `  <tr class="link" data-href="/purchase/${resultSystemID}"> 
                                                 <td>${resultDate}</td>
                                                 <td>${resultEmpName}</td> 
-                                                <td>${resultTotal}</td>
+                                                <td>₱ ${resultTotal}</td>
                                             </tr>`
                                     );
 
@@ -179,7 +179,7 @@
                                         window.location = $(this).data("href");
                                     });
                                 }
-                                $("#view-purchases-total").text(total.toFixed(2));
+                                $("#view-purchases-total").text("₱ " + total.toFixed(2));
                             });
                         }
                     }

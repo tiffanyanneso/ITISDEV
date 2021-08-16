@@ -74,6 +74,8 @@ router.get('/getFilteredRows', purchaseController.getFilteredRows);
 
 router.get('/menu', menuController.getMenu);
 
+router.get('/menu/:systemID', menuController.getViewDish);
+
 router.get('/orderHistory', orderHistoryController.getOrderHistory);
 
 router.get('/order/:systemID', orderHistoryController.getViewSpecificOrder);
