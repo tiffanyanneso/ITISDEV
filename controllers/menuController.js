@@ -87,7 +87,34 @@ const MenuController = {
 	},
 
 	getViewDish: function (req, res) {
-		res.render('viewDish');
+		var systemID = req.params.systemID;
+
+		var projection = 'dishName dishPrice dishStatus dishClassification';
+
+		db.findOne (Dishes, {_id: systemID}, projection, function(result) {
+			var dish = {
+				systemID: result._id,
+				dishName: result.dishName,
+				dishPrice: parseFloat(result.dishPrice).toFixed(2),
+				dishStatusID: result.dishStatus,
+				dishStatus: "Status",
+				dishClassificationID: result.dishClassification,
+				dishClassification : "Classification"
+			};
+
+			db.findOne(DishStatus, {_id: dish.dishStatusID}, 'status', function(result2) {
+
+				dish.dishStatus = result2.status;
+
+				db.findOne(DishClassification, {_id: dish.dishClassificationID}, 'classification', function(result3) {
+
+					dish.dishClassification = result3.classification;
+
+					//console.log(dish);
+					res.render('viewDish', {dish});
+				});
+			});
+		});
 	}
 
 };

@@ -185,12 +185,22 @@
 
 /* STATUS BUTTON */
 .btn-status {
-    background-color: #30b357;
+    background-color: #B00000;
     width: 150px;
     border-radius: 5px;
     color: white;
-    border:  #30b357;
+    border:  #B00000;
     height: 30px;
+}
+
+.btn-Unavailable {
+    background-color: #969696;
+    border:  #969696;
+}
+
+.btn-Available {
+    background-color: #30b357;
+    border:  #30b357;
 }
 
 .div-btn-status {

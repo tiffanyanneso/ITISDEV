@@ -34,9 +34,9 @@
         <div class="content">
             <div>
                 <div style="display: flex;">
-                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-dish-name">Fried Chicken</h1></div>
+                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-dish-name">{{dish.dishName}}</h1></div>
                     <div class="div-btn-status">
-                        <div><button class="btn-status" id="status-view-dish">Status</button></div>
+                        <div><button class="btn-status btn-{{dish.dishStatus}}" id="status-view-dish">{{dish.dishStatus}}</button></div>
                     </div>
                 </div>
             </div>
@@ -46,12 +46,12 @@
             <div>
                 <div class="label-container" style="width: 50%; float: left; padding-right: 10px;">
                     <div class="override-label">Price</div> 
-                    <div class="label-content" id="view-dish-price">  </div>
+                    <div class="label-content" id="view-dish-price">₱ {{dish.dishPrice}}</div>
                 </div>
 
                 <div class="label-container" style="width: 50%; float: left; display: flex; justify-content: flex-end; padding-left: 10px;">
                     <div class="override-label">Classification</div> 
-                    <div class="label-content" id="view-dish-classification">  </div>
+                    <div class="label-content" id="view-dish-classification">{{dish.dishClassification}}</div>
                 </div>
             </div>
 
@@ -117,7 +117,6 @@
                 <table class="table" id="table-view-dish-ingredients">
                     <thead class="table-head table-sticky-header">
                         <tr>
-                            <th>ID</th>
                             <th>Name</th>
                             <th>Quantity</th>
                             <th>Unit</th>
@@ -125,49 +124,41 @@
                     </thead>
                     <tbody> 
                         <tr>
-                            <td>COIL</td>
                             <td>Canola Oil</td>
                             <td>1</td>
                             <td>Cup</td>
                         </tr>
                         <tr>
-                            <td>CHIK</td>
                             <td>Chicken</td>
                             <td>500</td>
                             <td>Grams</td>
                         </tr>
                         <tr>
-                            <td>AFLR</td>
                             <td>All Purpose Flour</td>
                             <td>1</td>
                             <td>Cup</td>
                         </tr>
                         <tr>
-                            <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
                         </tr>
                         <tr>
-                            <td>COIL</td>
                             <td>Canola Oil</td>
                             <td>1</td>
                             <td>Cup</td>
                         </tr>
                         <tr>
-                            <td>CHIK</td>
                             <td>Chicken</td>
                             <td>500</td>
                             <td>Grams</td>
                         </tr>
                         <tr>
-                            <td>AFLR</td>
                             <td>All Purpose Flour</td>
                             <td>1</td>
                             <td>Cup</td>
                         </tr>
                         <tr>
-                            <td>SLT</td>
                             <td>Salt</td>
                             <td>1</td>
                             <td>Tablespoon</td>
