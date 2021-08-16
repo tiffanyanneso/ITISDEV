@@ -57,7 +57,7 @@ const purchaseController = {
 	},
 
 	addPurchase: function(req, res) {
-		var datePurchased = req.body.datePurchased;
+		var datePurchased = new Date();
 		var stocks = JSON.parse(req.body.stockString);
 		var purchaseTotal = req.body.purchaseTotal;
 
@@ -86,9 +86,8 @@ const purchaseController = {
 						var purchasedQuantity = currentStock.count * result3.quantity
 
 						//look for ingredient to get currentAvailableQuantity
-						db.findOneExtraParam (Ingredients, {ingredientName:result3.ingredientName}, 'ingredientID quantityAvailable', purchasedQuantity, function (result4, purchasedQuantity) {
+						db.findOneExtraParam (Ingredients, {ingredientName:result3.ingredientName}, 'ingredientName quantityAvailable', purchasedQuantity, function (result4, purchasedQuantity) {
 							var currentQuantity = purchasedQuantity + result4.quantityAvailable;
-							console.log("totalQ " + currentQuantity);
 
 							//update quantityAvailable in ingredient
 							db.updateOne (Ingredients, {ingredientName: result4.ingredientName}, {quantityAvailable:currentQuantity}, function(flag) {
@@ -117,7 +116,7 @@ const purchaseController = {
                 var purchase = {
                     systemID: result[i]._id,
                    // purchaseID: result[i].purchaseID,
-                    dateBought: date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear(),
+                    dateBought: date.toLocaleString('en-US'),
                     total: parseFloat(result[i].total).toFixed(2),
                     employeeID: result[i].employeeID,
                     employeeName : "name"
@@ -151,54 +150,68 @@ const purchaseController = {
     },
 
     viewSpecificPurchase: function (req, res) {
+
+    	function getStocksPurchased(purchaseID){
+    		return new Promise ((resolve, reject) => {
+	    		var purchasedStocks = [];
+	    		var projection = 'stockName unitPrice count';
+	    		db.findMany (PurchasedStock, {purchaseID:purchaseID}, projection, function(result) {
+	    			for (var i=0; i<result.length; i++) {
+		    			var purchasedStock = {
+		    				stockName:result[i].stockName,
+							count: result[i].count,
+							unitPrice: result[i].unitPrice,
+							amount: result[i].unitPrice * result[i].count
+						};
+						purchasedStocks.push(purchasedStock);
+					}
+					if (purchasedStocks.length>0)
+		    			resolve(purchasedStocks);
+	    		
+    			});
+    		})
+    	}
+
+    	function getStockInfo (purchasedStock) {
+    		return new Promise ((resolve, reject) => {
+				var projection = 'stockName quantity stockUnit';
+				db.findOne(Stock, {stockName:purchasedStock.stockName}, projection, function(result) {
+					console.log(result);
+					if (result!="")
+						resolve(result);
+				})
+			})
+    	}
+
+    	async function getPurchasedStocks(purchaseID, purchase, employeeName) {
+			try {
+				var purchasedStocks = await getStocksPurchased(purchaseID);
+				var stockInfos = [];
+				for (var i=0; i<purchasedStocks.length; i++) {
+					var stockInfo = await getStockInfo (purchasedStocks[i]);
+					stockInfos.push(stockInfo);
+				}			
+				res.render ('viewSpecificPurchase', {purchase, employeeName, purchasedStocks, stockInfos});
+			} catch (err) {
+				console.log(err);
+			}
+		}
+
     	var projection = '_id dateBought total employeeID';
+    	var id = req.params.systemID;
 
     	//find specific purchase id
-    	db.findOne (Purchases, {_id:req.params.systemID}, projection, function(result) {
+    	db.findOne (Purchases, {_id:id}, projection, function(result) {
     		var purchase = result;
     		//find employee name
     		db.findOne (Employees, {_id:result.employeeID}, 'name', function (result2) {
     			var employeeName = result2.name;
     			var projection2 = 'stockName unitPrice count';
 
-    			//find all purchased stock
-    			
-    			db.findMany(PurchasedStock, {purchaseID:req.params.systemID}, projection2, function(result3) {
-    				var purchasedStocks = [];
-    				var stockInfos = [];
-
-    				for (var i=0; i<result3.length; i++) {
-    					var purchasedStock = {
-    						count: result3[i].count,
-    						unitPrice: result3[i].unitPrice,
-    						amount: result3[i].unitPrice * result3[i].count
-    					};
-						purchasedStocks.push(purchasedStock);
-
-						var projection3 = 'stockName quantity stockUnit';
-
-						db.findOne (Stock, {stockID:result3[i].stockName}, projection3, function(result4) {
+    			//find all purchased stock and their info
+    			getPurchasedStocks(id, purchase, employeeName)
 				
-							var stockInfo = {
-								stockName: result4.stockName,
-								quantity: result4.quantity,
-								unit: result4.stockUnit
-							};
-							stockInfos.push (stockInfo);
-							//everything displays here
-							/*console.log("**stockInfos");
-							console.log(stockInfos);
-							console.log("**stockInfo");
-							console.log(stockInfo);*/
-						});	
-    				} 
-    				//does not display here
-    				console.log(stockInfos);				
-    				res.render ('viewSpecificPurchase', {purchase, employeeName, purchasedStocks, stockInfos});
-    			});
-    			
     		});
-    		
     	});
 	},
 	

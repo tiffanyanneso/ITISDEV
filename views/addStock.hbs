@@ -35,7 +35,10 @@
 
         <div class="content">
             <h1 class="bold color-blue margin-bottom-0">New Purchase</h1> 
-            <h4 id="date" style="float:right;">${date}</h3>
+            <!--<div style="display: flex; flex-direction: row; float:right;">
+                <h4 id="date">${date} </h4>
+                <h4 id="time">${time}</h4>
+            </div>-->
             <hr style="margin-bottom: 5px;">
 
             <div style="margin-bottom: 10px;">
@@ -140,7 +143,7 @@
                 <div class="summary-info-container"><div id="add-stock-total" class="summary-info">0</div></div>
             </div>
 
-            <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-stock-save">Save</button></div>
+            <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-stock-save" disabled="true" style="background-color: #b3b3b3">Save</button></div>
         </div>
 
         <script>
@@ -162,13 +165,11 @@
                     }
                 });
 
-                var d = new Date();
+                var d = new Date(Date.now());
                 var date = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+                var time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds()
                 $('#date').html(date);
-
-                 function deleteRow(){
-                    $(this).closest('tr').remove;
-                };
+                $('#time').html(time);
 
                 function capitalize(string){
                     var words = string.toLowerCase().split(' ');
@@ -202,11 +203,12 @@
                                 $('#add-stock-name').val(''); 
                                 $('#add-stock-count').val('');    
                                 $('#add-stock-price').val('');  
+                                $('#btn-add-stock-save').prop('disabled', false);
+                                $("#btn-add-stock-save").css("background-color", "#0F84D9");
 
                                 var overallTotal = parseInt($('#add-stock-total').text()) + total;
                                 $('#add-stock-total').text(overallTotal);
 
-                                //insert code to delete rows 
                             }
 
                         //stockDB not found, ask to create new stock
@@ -244,20 +246,14 @@
                         var stock= {
                             purchaseID:0, 
                             stockName: $(this).children('.stockName').text(),
-                            //stockName: $(this).children('.stockName').text(),
                             count: $(this).children('.count').text(),
-                            //quantity: $(this).children('.quantity').text(),
-                            //stockUnit: $(this).children('.stockUnit').text(),
-
                             unitPrice: $(this).children('.price').text(),
-                            //amount: $(this).children('.total').text()
                         }
                         newStocks.push(stock);
                     });
-                   var datePurchased = $('#date').text();
                    var stockString = JSON.stringify(newStocks);
                    var purchaseTotal = $('#add-stock-total').text();
-                   $.post('/savePurchase', {datePurchased, stockString, purchaseTotal});
+                   $.post('/savePurchase', {stockString, purchaseTotal});
                    $("#table-add-stock-new-stock tbody tr").remove();
                    $('#add-stock-total').text('');
                 });

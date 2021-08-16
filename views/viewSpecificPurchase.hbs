@@ -34,7 +34,7 @@
         <div class="content">
             <div>
                 <div style="display: flex;">
-                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-specific-purchase-ID">{{purchase._id}}</h1></div>
+                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-specific-purchase-ID">{{purchase.dateBought}}</h1></div>
                     <div class="div-btn-status">
                 
                     </div>
@@ -44,10 +44,6 @@
             <hr>
 
             <div>
-                <div class="label-container">
-                    <div class="override-label">Date</div> 
-                    <div class="label-content" id="content-view-specific-purchase-date"> {{purchase.dateBought}}</div>
-                </div>
 
                 <div class="label-container">
                     <div class="override-label">Purchased By</div> 
@@ -60,11 +56,10 @@
                 <table class="table" id="table-view-specific-purchase">
                     <thead class="table-head table-sticky-header">
                         <tr>
-                            <th>ID</th>
                             <th>Name</th>
-                            <th>Count</th>
                             <th>Quantity</th>
                             <th>Unit</th>
+                            <th>Count</th>
                             <th>Unit Price</th>
                             <th>Amount</th>
                         </tr>
@@ -72,10 +67,9 @@
                     <tbody> 
                         {{#each stockInfos}}
                             <tr>
-                                <td>{{stockID}}</td>
                                 <td>{{stockName}}</td>
                                 <td>{{quantity}}</td>
-                                <td>{{unit}}</td>
+                                <td>{{stockUnit}}</td>
                         {{/each}}
                         {{#each purchasedStocks}}
                                 <td>{{count}}</td>
