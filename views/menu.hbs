@@ -35,17 +35,13 @@
             <h1 class="bold color-blue margin-bottom-0">Menu</h1> 
             <hr>
 
-            <!-- make rows clickable -->
-
             {{#each menu}}
                 {{#if classification}}
-                    </tbody>
                 </table>
                 <h3 class="bold">{{classification}}</h3>
-                    <table class="table" id="table-menu-appetizer">
+                    <table class="table" id="table-menu">
                         <thead class="table-head table-sticky-header">
                             <tr>
-                                <th>ID</th>
                                 <th>Name</th>
                                 <th>Price</th>
                                 <th>Status</th>
@@ -53,17 +49,26 @@
                         </thead>
                 {{/if }}
 
-                {{#if dishName}}
-                    <tbody>                     
-                        <tr>
-                            <td>{{_id}}</td>
+                <tbody>   
+                {{#if dishName}}                  
+                        <tr class="link" data-href="/menu/{{_id}}">
                             <td>{{dishName}}</td>
-                            <td>P{{dishPrice}}</td>
+                            <td>₱ {{dishPrice}}</td>
                             <td>{{dishStatus}}</td>
                         </tr>
                 {{/if }}
+                </tbody>
             {{/each}}
 
         </div>
+
+        <script> 
+            $(document).ready(function() {
+                $(".link").click(function() {
+                    window.location = $(this).data("href");
+                });
+            });
+        </script>
+
     </body>
 </html>

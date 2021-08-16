@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html class="login-html">
+    <head>
+        <title> Log In </title>
+        <meta name="description" content="Log In">
+        <meta name="keyword" content="Log In">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="login-container">
+            <h1 class="login-h1"> Welcome! </h1>
+            <div>
+                <form style="margin-left: 85px;"> 
+                    <label for="username"> Username </label>
+                    <br>
+                    <input type="text" class="login-input" id="username" name="username">
+                    <br>
+                    <label for="password"> Passsword </label>
+                    <br>
+                    <input type="password" class="login-input" id="password" name="password" >
+                    <br>
+                    <p class="error" id="error-new-order"> error message here</p>
+
+                     <button type="button" class="btn-light-blue" style="margin-left: 75px; margin-top: 10px;" id="btn-login">Log In</button>
+                </form>
+            </div>
+            
+        </div>
+            <script> 
+                $(document).ready(function() {
+
+                    $('#btn-login').click(function() {
+                       
+                        var username = document.getElementById("username").value;
+                        var password = document.getElementById("password").value;
+
+                     
+                        if( username == null || username == "" || password == null || password == "" ){
+                            alert("Username and password should not be null!");
+                        }
+                        else{
+                            alert(username);
+                            $.post('/checkLogIn', {username, password});
+                            alert(password);
+                        }
+                    });
+                });
+
+            </script>    
+    </body>
+</html>
