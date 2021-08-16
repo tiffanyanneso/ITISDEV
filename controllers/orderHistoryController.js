@@ -15,12 +15,12 @@ const Dishes = require('../models/DishesModel.js');
 const orderHistoryController = {
 
     getOrderHistory: function (req, res) {
-        /*var salesOrder = {
-            salesID: "6118aaff851e8c5a035bbe5e",
+       /* var salesOrder = {
+            salesID: "2",
         
-            dishID: "611366fcac8ad60d0316266c",
+            dishID: "2",
         
-            quantity: 2
+            quantity: 2.2
         };
 
         db.insertOne (SalesDishes, salesOrder, function (flag) {
