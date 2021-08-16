@@ -18,6 +18,8 @@ const db = require('./models/db.js');
 
 const dotenv = require(`dotenv`);
 
+const crypto_js = require(`crypto-js`);
+
 dotenv.config();
 
 const app = express();

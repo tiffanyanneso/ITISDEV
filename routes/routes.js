@@ -16,6 +16,12 @@ const menuController = require('../controllers/menuController.js');
 
 const orderHistoryController = require('../controllers/orderHistoryController.js');
 
+const logInController = require('../controllers/logInController.js');
+
+router.get('/login', logInController.login);
+
+router.post('/checkLogIn', logInController.checkLogIn);
+
 router.get('/favicon.ico', controller.getFavicon);
 
 router.get('/', controller.getIndex);
