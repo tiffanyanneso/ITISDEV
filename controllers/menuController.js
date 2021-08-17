@@ -137,7 +137,7 @@ const MenuController = {
 	},
 
 	updateDishStatus: function (req, res) {
-		db.updateOne(Dishes, {dishName: req.body.dishName}, {dishStatus: req.body.dropdownValID}, function(flag) {
+		db.updateOne(Dishes, {_id: req.body.dishID}, {dishStatus: req.body.dropdownValID}, function(flag) {
 			if (flag) {
 
 			}

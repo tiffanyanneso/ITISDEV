@@ -35,6 +35,7 @@
             <div>
                 <div style="display: flex;">
                     <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-dish-name">{{dish.dishName}}</h1></div>
+                    <div style="visibility: hidden;" id="view-dish-systemID">{{dish.systemID}}</div>
                     <div class="div-btn-status">
                         <div><button class="btn-status btn-{{dish.dishStatus}}" id="status-view-dish">{{dish.dishStatus}}</button></div>
                     </div>
@@ -182,7 +183,11 @@
 
                     if (dropdownValName != currentStatus) {
                         var dishName = $("#view-dish-name").text();
-                        $.post('/updateDishStatus', {dishName, dropdownValID});
+                        var dishID = $("#view-dish-systemID").text();
+                        //alert("NAME: " + dishName + " , ID: " + dishID);
+
+                        //get dish ID
+                        $.post('/updateDishStatus', {dishID, dropdownValID});
 
                         $("#status-view-dish").text(dropdownValName);
 
