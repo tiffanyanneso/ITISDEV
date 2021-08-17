@@ -88,32 +88,59 @@ const MenuController = {
 
 	getViewDish: function (req, res) {
 		var systemID = req.params.systemID;
+		var statuses = [];
 
-		var projection = 'dishName dishPrice dishStatus dishClassification';
+		// Get "Available" and "Unavailable" status options to populate dropdown
+		db.findMany(DishStatus, {}, '_id status', function(result) {
 
-		db.findOne (Dishes, {_id: systemID}, projection, function(result) {
-			var dish = {
-				systemID: result._id,
-				dishName: result.dishName,
-				dishPrice: parseFloat(result.dishPrice).toFixed(2),
-				dishStatusID: result.dishStatus,
-				dishStatus: "Status",
-				dishClassificationID: result.dishClassification,
-				dishClassification : "Classification"
-			};
+			for (var i = 0; i < result.length; i++) {
+				var status = {
+					_id: result[i]._id,
+					status: result[i].status
+				};
 
-			db.findOne(DishStatus, {_id: dish.dishStatusID}, 'status', function(result2) {
+				if (status.status == "Available" || status.status == "Unavailable")
+					statuses.push(status);
+			}
 
-				dish.dishStatus = result2.status;
+			var projection = 'dishName dishPrice dishStatus dishClassification';
 
-				db.findOne(DishClassification, {_id: dish.dishClassificationID}, 'classification', function(result3) {
+			// Get dish information based on the _id/systemID
+			db.findOne (Dishes, {_id: systemID}, projection, function(result2) {
+				var dish = {
+					systemID: result2._id,
+					dishName: result2.dishName,
+					dishPrice: parseFloat(result2.dishPrice).toFixed(2),
+					dishStatusID: result2.dishStatus,
+					dishStatus: "Status",
+					dishClassificationID: result2.dishClassification,
+					dishClassification : "Classification"
+				};
 
-					dish.dishClassification = result3.classification;
+				// Get status of dish based on its _id
+				db.findOne(DishStatus, {_id: dish.dishStatusID}, 'status', function(result3) {
 
-					//console.log(dish);
-					res.render('viewDish', {dish});
+					dish.dishStatus = result3.status;
+
+					// Get classification of dish based on its _id
+					db.findOne(DishClassification, {_id: dish.dishClassificationID}, 'classification', function(result4) {
+
+						dish.dishClassification = result4.classification;
+
+						//console.log(dish);
+						//console.log(statuses);
+						res.render('viewDish', {dish, statuses});
+					});
 				});
 			});
+		});
+	},
+
+	updateDishStatus: function (req, res) {
+		db.updateOne(Dishes, {dishName: req.body.dishName}, {dishStatus: req.body.dropdownValID}, function(flag) {
+			if (flag) {
+
+			}
 		});
 	}
 

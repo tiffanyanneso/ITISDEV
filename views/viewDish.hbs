@@ -72,13 +72,14 @@
                     <form id="change-status">
                         <label for="dropdown-status">Status</label>
                         <select class="dropdown" id="dropdown-status">
-                            <option value="611369ebaf90cc0e419b25e0">Available</option>
-                            <option value="61136a0e6876670e697134a3">Unavailable</option>
-                        </select><br>
+                            {{#each statuses}}
+                                <option value={{_id}}>{{status}}</option>
+                            {{/each}}
+                        </select>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="btn-save-new-status" disabled="=true">Save</button>
+                        <button type="button" class="btn btn-primary" id="btn-save-new-status">Save</button>
                       </div>
                   </form>
                 </div>
@@ -170,6 +171,33 @@
         </div>
         <script>
             $(document).ready(function() {
+
+                $("#btn-save-new-status").click(function() {
+                    var dropdownValID = $("#dropdown-status").val();
+                    var dropdownValName = $("#dropdown-status option:selected").text();
+                    //alert($("#dropdown-status option:selected").text());
+
+                    var currentStatus = $("#status-view-dish").text();
+                    //alert(currentStatus);
+
+                    if (dropdownValName != currentStatus) {
+                        var dishName = $("#view-dish-name").text();
+                        $.post('/updateDishStatus', {dishName, dropdownValID});
+
+                        $("#status-view-dish").text(dropdownValName);
+
+                        if (dropdownValName == "Available") {
+                            $("#status-view-dish").css("background-color", "#30b357");
+                            $("#status-view-dish").css("border", "#30b357");
+                        }
+                        else if (dropdownValName == "Unavailable") {
+                            $("#status-view-dish").css("background-color", "#969696");
+                            $("#status-view-dish").css("border", "#969696");
+                        }
+                    }
+
+                    $("#modal-change-status").modal('toggle');
+                });
 
             });
         </script>

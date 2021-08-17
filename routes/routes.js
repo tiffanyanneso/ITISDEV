@@ -76,6 +76,8 @@ router.get('/menu', menuController.getMenu);
 
 router.get('/menu/:systemID', menuController.getViewDish);
 
+router.post('/updateDishStatus', menuController.updateDishStatus);
+
 router.get('/orderHistory', orderHistoryController.getOrderHistory);
 
 router.get('/order/:systemID', orderHistoryController.getViewSpecificOrder);
