@@ -4,11 +4,6 @@ var mongoose = require('mongoose');
 // defines the schema for collection `users`
 var ConversionSchema = new mongoose.Schema({
 
-	conversionID: {
-		type: Number,
-		required: true
-	},
-
 	unitA: {
 		type: String,
 		required: true
@@ -19,13 +14,13 @@ var ConversionSchema = new mongoose.Schema({
 		required: true
 	},
 
-	ratioA: {
+	ratio: {
 		type: Number,
 		required: true
 	},
 
-	ratioB: {
-		type: Number,
+	operator: {
+		type: String,
 		required: true
 	}
 });

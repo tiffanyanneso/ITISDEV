@@ -94,9 +94,10 @@
                         <p class="error" id="error-new-stock-quantity" style="margin-top: 3px; margin-bottom: 3px;"></p>
                         <label for="dropdown-stock-unit">Unit of Measurement</label>
                         <select class="dropdown" id="dropdown-stock-unit">
-                            <option value="ml">ml</option>
-                            <option value="g">g</option>
-                            <option value="lbs">lbs</option>
+                             <option>--Select unit--</option>
+                            {{#each units}}
+                                <option value="{{unit}}">{{unit}}</option>
+                            {{/each}}
                         </select><br>
                       </div>
                       <div class="modal-footer">

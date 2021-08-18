@@ -6,6 +6,8 @@ const Ingredients = require('../models/IngredientsModel.js');
 
 const Stock = require('../models/StockModel.js');
 
+const Units = require('../models/UnitsModel.js');
+
 //import models
 
 const viewInventoryController = {
@@ -26,7 +28,18 @@ const viewInventoryController = {
 				};
 				ingredients.push(ingredient);
 			}
-			res.render('viewInventory', {ingredients});
+
+			db.findMany (Units, {}, 'unit', function (result2) {
+				var units = [];
+				for (var i=0; i<result2.length; i++) {
+					var unit = {
+						unit:result2[i].unit
+					};
+					units.push (unit);
+				}
+				res.render('viewInventory', {ingredients, units});
+			})
+			
 		});
 	},
 
@@ -64,10 +77,19 @@ const viewInventoryController = {
 					}
 					stocks.push(stock);
 				}
-				res.render('viewIngredient', {ingredientDetails, stocks});
-			})
+
+				db.findMany (Units, {}, 'unit', function (result2) {
+					var units = [];
+					for (var i=0; i<result2.length; i++) {
+						var unit = {
+							unit:result2[i].unit
+						};
+						units.push (unit);
+					}
+					res.render('viewIngredient', {ingredientDetails, stocks, units});
+				});
+			});
 		});
-		
 		
 	},
 

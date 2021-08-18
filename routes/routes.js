@@ -18,6 +18,8 @@ const orderHistoryController = require('../controllers/orderHistoryController.js
 
 const logInController = require('../controllers/logInController.js');
 
+const unitController = require('../controllers/unitController.js');
+
 router.get('/login', logInController.login);
 
 router.post('/checkLogIn', logInController.checkLogIn);
@@ -62,7 +64,7 @@ router.get('/getStockName?', purchaseController.getStockName);
 
 router.get('/getStockInfo', purchaseController.getStockInfo);
 
-router.post('/savePurchase', purchaseController.addPurchase);
+router.post('/savePurchase', purchaseController.savePurchase);
 
 router.get('/viewPurchases', purchaseController.getViewPurchases);
 
@@ -85,5 +87,9 @@ router.get('/orderHistory', orderHistoryController.getOrderHistory);
 router.get('/order/:systemID', orderHistoryController.getViewSpecificOrder);
 
 router.get('/getFilteredRowsOrderHistory', orderHistoryController.getFilteredRowsOrderHistory);
+
+router.get('/unitConverter', unitController.getUnitConverter);
+
+router.post('/saveUnit', unitController.saveUnit);
 
 module.exports = router;

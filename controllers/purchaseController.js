@@ -11,6 +11,10 @@ const Employees = require('../models/EmployeesModel.js');
 
 const Ingredients = require('../models/IngredientsModel.js');
 
+const Units = require('../models/UnitsModel.js');
+
+const Conversion = require('../models/ConversionModel.js');
+
 const { json } = require('express');
 
 const purchaseController = {
@@ -48,7 +52,6 @@ const purchaseController = {
 	},
 
 	getStockInfo: function (req, res) {
-
         var projection = 'quantity stockUnit';
 
         db.findOne(Stock, {stockName: req.query.stockName}, projection, function(result) {
@@ -56,7 +59,52 @@ const purchaseController = {
         });
 	},
 
-	addPurchase: function(req, res) {
+	savePurchase: function(req, res) {
+		function getRatioAndOperator (purchasedUnit, ingredientUnit) {
+			return new Promise((resolve, reject) => {
+				db.findOne (Conversion, {$and:[ {unitA:purchasedUnit}, {unitB:ingredientUnit} ]}, 'ratio operator', function(result){
+					if (result!="") 
+						resolve(result);
+				})
+			})
+		}
+
+		function getCurrentAvailable (ingredientName) {
+			return new Promise ((resolve, reject) => {
+				db.findOne (Ingredients, {ingredientName:ingredientName}, 'quantityAvailable', function(result) {
+					if (result!="")
+						resolve(result);
+				})
+			})
+		}
+
+
+		//info in ingredient is ingredientName, unit, quantityAvailable
+		async function computeNewQuantity(quantity, purchasedUnit, ingredient) {
+			var purchasedQuantity;
+			//same unit, no need for conversion
+			if (purchasedUnit == ingredient.unitMeasurement)
+				purchasedQuantity = quantity;
+
+			//needs conversion
+			else {
+				var ratioAndOperator = await getRatioAndOperator(purchasedUnit, ingredient.unitMeasurement);
+				var ratio = ratioAndOperator.ratio;
+				if (ratioAndOperator.operator == "*")
+					purchasedQuantity = quantity*ratio;
+				else
+					purchasedQuantity = quantity/ratio;
+			}
+
+			var currentQuantity = await getCurrentAvailable (ingredient.ingredientName);
+			var newQuantity = currentQuantity.quantityAvailable + purchasedQuantity;
+
+			//update quantityAvailable in ingredient
+			db.updateOne (Ingredients, {ingredientName: ingredient.ingredientName}, {quantityAvailable:newQuantity}, function(flag) {
+
+			});
+		}
+
 		var datePurchased = new Date();
 		var stocks = JSON.parse(req.body.stockString);
 		var purchaseTotal = req.body.purchaseTotal;
@@ -79,20 +127,18 @@ const purchaseController = {
 			//store individual purhcased stock
 			db.insertManyResult (PurchasedStock, stocks, function(result2) {
 				for (j=0; j<result2.length; j++) {
-					var currentStock = result2[j];
+					var currentStock = result2[j];		//date here is stockName, count, unitPrice
 
-					//compute total quantity purchased
-					db.findOneExtraParam (Stock, {stockName: result2[j].stockName}, 'ingredientName quantity', currentStock, function (result3, currentStock) {
-						var purchasedQuantity = currentStock.count * result3.quantity
+					//compute total quantity purchased - look for stock name to get the quantity of the stock
+					db.findOneExtraParam (Stock, {stockName: result2[j].stockName}, 'ingredientName quantity stockUnit', currentStock, function (result3, currentStock) {
+
+						var purchasedQuantity = currentStock.count * result3.quantity;
+						var purchasedUnit = result3.stockUnit;
 
 						//look for ingredient to get currentAvailableQuantity
-						db.findOneExtraParam (Ingredients, {ingredientName:result3.ingredientName}, 'ingredientName quantityAvailable', purchasedQuantity, function (result4, purchasedQuantity) {
-							var currentQuantity = purchasedQuantity + result4.quantityAvailable;
-
-							//update quantityAvailable in ingredient
-							db.updateOne (Ingredients, {ingredientName: result4.ingredientName}, {quantityAvailable:currentQuantity}, function(flag) {
-
-							});
+						db.findOneExtraParams (Ingredients, {ingredientName:result3.ingredientName}, 'ingredientName quantityAvailable unitMeasurement', purchasedQuantity, purchasedUnit, function (result4, purchasedQuantity, purchasedUnit) {
+							
+							computeNewQuantity(purchasedQuantity, purchasedUnit, result4);							
 						});
 					});
 				}

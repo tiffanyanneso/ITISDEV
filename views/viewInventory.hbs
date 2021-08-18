@@ -60,15 +60,17 @@
                         <p class="error" id="error-new-ingredient-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
                         <label for="dropdown-ingredient-type">Ingredient Type</label>
                         <select class="dropdown" id="dropdown-ingredient-type"> 
+                            <option>--Select ingredient type--</option>
                             <option value="all-type">All</option>
                             <option value="option2">Option 2</option>
                             <option value="option3">Option 3</option>
                         </select><br>
                         <label for="dropdown-ingredient-unit">Unit of Measurement</label>
                         <select class="dropdown" id="dropdown-ingredient-unit">
-                            <option value="ml">ml</option>
-                            <option value="g">g</option>
-                            <option value="lbs">lbs</option>
+                            <option>--Select unit--</option>
+                            {{#each units}}
+                                <option value="{{unit}}">{{unit}}</option>
+                            {{/each}}
                         </select><br>
                         <label> Reorder Point </label> <input type="text"><br>
                       </div>
@@ -127,6 +129,8 @@
         </div>
         <script> 
             $(document).ready(function() {
+
+                //needs validation for modal    
 
                 function capitalize(string){
                     var words = string.toLowerCase().split(' ');
