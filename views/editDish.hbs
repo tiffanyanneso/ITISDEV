@@ -9,6 +9,9 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         
     </head>
     <body>
@@ -34,7 +37,7 @@
         <div class="content">
             <div>
                 <div style="display: flex;">
-                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0" id="edit-dish-ingredients-name">Edit Dish</h1></div>
+                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0">Edit Dish</h1></div>
                     <div class="div-btn-status">
                         <div><button class="btn-status btn-{{dish.dishStatus}}" id="status-edit-dish-ingredients">{{dish.dishStatus}}</button></div>
                     </div>
@@ -44,23 +47,23 @@
             <hr>
             
             <div class="input-container">
-                <div class="input-label"><label for="new-dish-name">Name</label></div>
-                <div class="input-info-container"><input type="text" name="new-dish-name" id="new-dish-name" value="{{dish.dishName}}" style="width: 100%"></div>
+                <div class="input-label"><label for="edit-dish-name">Name</label></div>
+                <div class="input-info-container"><input type="text" name="edit-dish-name" id="edit-dish-name" value="{{dish.dishName}}" style="width: 100%"></div>
             </div>
 
-            <p class="error" id="error-new-dish-name" style="margin-left: 20%;"></p>
+            <p class="error" id="error-edit-dish-name" style="margin-left: 20%;"></p>
 
             <div class="input-container">    
-                <div class="input-label"><label for="new-dish-price">Price</label></div>
-                <div class="input-info-container"><input type="number" name="new-dish-price" id="new-dish-price" value="{{dish.dishPrice}}" style="width: 100%"></div>
+                <div class="input-label"><label for="edit-dish-price">Price</label></div>
+                <div class="input-info-container"><input type="number" name="edit-dish-price" id="edit-dish-price" value="{{dish.dishPrice}}" style="width: 100%"></div>
             </div>
 
-            <p class="error" id="error-new-dish-price" style="margin-left: 20%;"></p>
+            <p class="error" id="error-edit-dish-price" style="margin-left: 20%;"></p>
 
             <div class="input-container">
-                <div class="input-label"> <label for="dropdown-add-new-dish-classification">Classification</label></div>
+                <div class="input-label"> <label for="dropdown-edit-dish-classification">Classification</label></div>
                 <div class="input-info-container">
-                    <select class="dropdown" id="dropdown-add-new-dish-classification">
+                    <select class="dropdown" id="dropdown-edit-dish-classification">
                         <option value="{{dish.dishClassificationID}}" selected>{{dish.dishClassification}}</option>
                         {{#each classifications}}
                             <option value={{_id}}>{{name}}</option>
@@ -74,7 +77,7 @@
             <h3 class="bold">Ingredients</h3> 
 
             <div style="margin-top: 20px;"> 
-                <input type="text" name="edit-dish-ingredients-ID" id="edit-dish-ingredients-ID" placeholder="ID" style="margin-right: 5px">
+                <input type="text" name="edit-dish-ingredients-name" id="edit-dish-ingredients-name" placeholder="Name" style="margin-right: 5px">
                 <input type="number" name="edit-dish-ingredients-quantity" id="edit-dish-ingredients-quantity" placeholder="Quantity" style="margin-right: 10px">
                 <select class="dropdown" id="edit-dish-ingredients-unit" style="margin-right: 10px">
                     <option value="all" selected>Unit 1</option>
@@ -84,7 +87,7 @@
                 <input class="btn-add" type="button" id="btn-edit-dish-ingredients" name="btn-edit-dish-ingredients" value="+">
             </div>
 
-            <p class="error" id="error-edit-dish-ingredients"> error message here</p>
+            <p class="error" id="error-edit-dish-ingredients"></p>
 
             <div class="div-table" style="margin-top: 20px;">
                 <table class="table" id="table-edit-dish-ingredients">
@@ -99,7 +102,7 @@
                     <tbody> 
                         {{#each dishIngredients}}
                             <tr>
-                                <td>{{ingredientID}}</td>
+                                <td>{{ingredientName}}</td>
                                 <td>{{quantity}}</td>
                                 <td>{{measurementID}}</td>
                                 <!--<td><button class="edit-button btn-edit-dish-ingredient"><img src="../images/pencil.png" height="20px" width="15x" alt="Edit"></button></td>-->
@@ -112,6 +115,194 @@
 
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-edit-dish-save">Save</button></div>
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" style="background-color: #B00000" id="btn-edit-dish-cancel">Cancel</button></div>
+
+             <div style="visibility: hidden;" id="view-dish-statusID">{{dish.dishStatusID}}</div>
+                <div style="visibility: hidden;" id="view-dish-dishID">{{dish.dishID}}</div>
         </div>
+        <script>
+            $(document).ready(function() {
+
+                // Autocomplete for Ingredient Name- not working
+                $("#edit-dish-ingredients-name").autocomplete({
+                    source:function(request, response) {
+                    $.ajax({
+                            url: `/getAutoIngredientNameEdit?query=${request.term}`,
+                            dataType: "json",
+                            data: {
+                                //request.term refers to the value currently in the text input
+                                term: request.term,
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    }
+                });
+
+                // INPUT VALIDATION- DISH
+                function dishNameValidation(dishName) {
+                    if (dishName == null || dishName == "") {
+                        errorMessage("dishName");
+                        return 1;
+                    }
+                    else 
+                        return 0;
+                }
+
+                function dishPriceValidation(dishPrice) {
+                    if (dishPrice == null || dishPrice == "") {
+                        errorMessage("dishPrice");
+                        return 1;
+                    }
+                    else 
+                        return 0;
+                }
+
+                // INPUT VALIDATION- INGREDIENT
+                function ingredientNameValidation(ingredientName) { 
+                    if (ingredientName == null || ingredientName == "") {
+                        errorMessage("ingredientName");
+                        return 1;
+                    } 
+                    else 
+                        return 0;
+                }
+
+                function ingredientQuantityValidation(ingredientQty) { 
+                    if (ingredientQty == null || ingredientQty == "") {
+                        errorMessage("ingredientQty");
+                        return 1;
+                    } else if (parseFloat(ingredientQty) <= 0) {
+                        errorMessage("ingredientQtyInvalid");
+                        return 1;
+                    }
+                    else 
+                        return 0;
+                }
+
+                function errorMessage(type) {
+                    if (type == "dishName") {
+                        $("#edit-dish-name").css("border", "1px solid #B00000");
+                        $("#error-edit-dish-name").text("Please enter a Dish Name.");
+                    } else if (type == "dishPrice") {
+                        $("#edit-dish-price").css("border", "1px solid #B00000");
+                        $("#error-edit-dish-price").text("Please enter a Dish Price.");
+                    } else if (type == "ingredientQty") {
+                        $("#edit-dish-ingredients-quantity").css("border", "1px solid #B00000");
+                        $("#error-edit-dish-ingredients").text("Please enter the Ingredient Quantity.");
+                    } else if (type == "ingredientName") {
+                        $("#edit-dish-ingredients-name").css("border", "1px solid #B00000");
+                        $("#error-edit-dish-ingredients").text("Please enter an Ingredient Name.");
+                    } else if (type == "ingredientNameNotExist") {
+                        $("#edit-dish-ingredients-name").css("border", "1px solid #B00000");
+                        $("#error-edit-dish-ingredients").text("Ingredient does not exist.");
+                    } else if (type == "ingredientQtyInvalid") {
+                        $("#edit-dish-ingredients-quantity").css("border", "1px solid #B00000");
+                        $("#error-edit-dish-ingredients").text("Invalid quantity.");
+                    } 
+                }
+
+                function capitalize(string) {
+                    var words = string.toLowerCase().split(' ');
+                    for (var i = 0; i < words.length; i++)
+                        words[i] = words[i].charAt(0).toUpperCase() + words[i].substring(1);
+                    return words.join(' ');
+                };
+
+                // FIX - do not make keyup
+                $('#new-dish-name').keyup(function () { 
+                    // Get value 
+                     var dishName = capitalize($('#new-dish-name').val());
+
+                    // Check if dish name exists 
+                    $.get("/getCheckDishName", {dishName: dishName}, function (result) {
+                        if (result.dishName == dishName) {
+                            $("#edit-dish-name").css("border", "1px solid #B00000");
+                            $("#error-edit-dish-name").text("Dish Name already taken.");
+                            $("#btn-add-new-dish-save").prop("disabled", true);
+                            $("#btn-add-new-dish-save").css("background-color", "#b3b3b3");
+                        } else {
+                            $("#new-dish-name").css("border", "1px solid #DDDDDD");
+                            $("#error-new-dish-name").text("");
+                            $("#btn-add-new-dish-save").prop("disabled", false);
+                            $("#btn-add-new-dish-save").css("background-color", "#0F84D9");
+                        }
+                    });
+                });
+
+                // Reset ingredient fields
+                function resetIngredients() {
+                    $("#edit-dish-ingredients-name").val("");
+                    $("#edit-dish-ingredients-quantity").val("");
+                    $("#edit-dish-ingredients-unit")[0].selectedIndex = 0; 
+                }
+
+                $("#table-edit-dish-ingredients").on('click','.btn-delete-dish-ingredient',function() {
+                    $(this).closest('tr').remove();
+                });
+
+                $('#btn-edit-dish-ingredients').click(function() {
+                    var ingredientName = capitalize($('#edit-dish-ingredients-name').val());
+                    var ingredientQty = $('#edit-dish-ingredients-quantity').val();
+                    var ingredientUnit = $('#edit-dish-ingredients-unit').val();
+
+                    // Call validation functions
+                    if (!ingredientNameValidation(ingredientName) && !ingredientQuantityValidation(ingredientQty)) {
+                        $("#edit-dish-ingredients-quantity").css("border", "1px solid #DDDDDD");
+                        $("#edit-dish-ingredients-name").css("border", "1px solid #DDDDDD");
+                        $("#error-edit-dish-ingredients").text("");
+
+                        // Check if ingredient name is valid
+                        $.get("/getCheckIngredientName", {ingredientName: ingredientName}, function (result) {
+                            if (result.ingredientName != ingredientName) {
+                                errorMessage("ingredientNameNotExist");
+                            } else {
+                                // Clear error messages
+                                $("#edit-dish-ingredients-name").css("border", "1px solid #DDDDDD");
+                                $("#error-edit-dish-ingredients").text("");
+
+                                // Append row to table
+                                $('#table-edit-dish-ingredients').find('tbody').append(
+                                    `  <tr> 
+                                            <td>${ingredientName}</td> 
+                                            <td>${ingredientQty}</td> 
+                                            <td>${ingredientUnit}</td>
+                                            <td> <button class="delete-button btn-delete-dish-ingredient"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button> </td>
+                                        </tr>`
+                                    );
+
+                                resetIngredients();
+                            }
+                        });
+					}
+                });
+
+                $('#btn-edit-dish-save').click(function() {
+                    var dishID = $("#view-dish-dishID").text();
+                    var dishName = capitalize($('#edit-dish-name').val());
+                    var dishPrice = $('#edit-dish-price').val();
+                    var dishClassificationID = $('#dropdown-edit-dish-classification').val();
+                    var dishStatusID = $("#view-dish-statusID").text();
+
+                    alert(dishID + ", " + dishName + ", " + dishPrice + ", " + dishClassificationID + ", " + dishStatusID);
+                    
+                    // Validate inputs
+                    if (!dishNameValidation(dishName) && !dishPriceValidation(dishPrice)) {
+                        $("#edit-dish-name").css("border", "1px solid #DDDDDD");
+                        $("#edit-dish-price").css("border", "1px solid #DDDDDD");
+
+                        $("#error-edit-dish-name").text("");
+                        $("#error-edit-dish-price").text("");
+
+                        /*$.get('/postAddDish', {dishName: dishName, dishPrice: dishPrice, dishClassification: dishClassification, dishStatus: dishStatus}, function(result) {
+                            dishID = result._id;
+                            
+                            readTable(dishID);
+                        });*/
+					}
+                });
+
+            });
+        </script>
     </body>
 </html>

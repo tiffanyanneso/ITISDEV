@@ -9,6 +9,8 @@ const DishStatus = require('../models/DishStatusModel.js');
 
 const DishIngredients = require('../models/DishIngredientsModel.js');
 
+const Ingredients = require('../models/IngredientsModel.js');
+
 
 const MenuController = {
 
@@ -209,15 +211,41 @@ const MenuController = {
 								dishIngredients.push(dishIngredient);
 							}
 
-							console.log(dishIngredients);
-							res.render('editDish', {dish, classifications, dishIngredients});
+							db.findMany(Ingredients, {}, '_id ingredientName', function (result5) {
+
+								for (var k = 0; k < dishIngredients.length; k++) {
+									for (var l = 0; l < result5.length; l++) {
+										if (dishIngredients[k].ingredientID == result5[l]._id)
+											dishIngredients[k].ingredientName = result5[l].ingredientName;
+									}
+								}
+
+								console.log(dishIngredients);
+								res.render('editDish', {dish, classifications, dishIngredients});
+							});
 						});
 					});
 				});
 			});
 		});
-	}
+	},
 
+	getAutoIngredientNameEdit: function (req, res) {
+		console.log(req.query.query);
+		//$options:i denotes case insensitive searching
+		db.findMany (Ingredients, {ingredientName:{$regex:req.query.query, $options:'i'}}, 'ingredientName', function (result) {
+			var formattedResults = [];
+			//reason for the for loop: https://stackoverflow.com/questions/5077409/what-does-autocomplete-request-server-response-look-like
+			for (var i=0; i<result.length; i++) {
+				var formattedResult = {
+					label: result[i].ingredientName,
+					value: result[i].ingredientName
+				};
+				formattedResults.push(formattedResult);
+			}
+			res.send(formattedResults);
+		});
+	}
 };
 
 

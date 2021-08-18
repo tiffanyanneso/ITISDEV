@@ -82,6 +82,8 @@ router.post('/updateDishStatus', menuController.updateDishStatus);
 
 router.get('/editDish/:dishID', menuController.editDish);
 
+router.get('/getAutoIngredientNameEdit', menuController.getAutoIngredientNameEdit);
+
 router.get('/orderHistory', orderHistoryController.getOrderHistory);
 
 router.get('/order/:systemID', orderHistoryController.getViewSpecificOrder);
