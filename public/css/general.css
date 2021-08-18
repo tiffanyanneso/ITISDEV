@@ -175,6 +175,10 @@
     /*visibility: hidden;*/
 }
 
+.hidden {
+    visibility: hidden;
+}
+
 .btn-add {
     width: 34px; 
     background-color: #0F84D9; 

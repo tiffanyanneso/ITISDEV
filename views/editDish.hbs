@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Edit Dish Ingredients </title>
+        <meta name="description" content="Edit Dish Ingredient">
+        <meta name="keyword" content="Edit Dish Ingredient">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        
+    </head>
+    <body>
+
+        <!-- PARTIALS -->
+        <div id="navbar"> 
+            <div class="navbar-logout"> 
+                <a href= "#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="#">Home</a>
+            <a href="#">1</a>
+            <a href="#">2</a>
+        </div>
+
+        <div class="content">
+            <div>
+                <div style="display: flex;">
+                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0" id="edit-dish-ingredients-name">Edit Dish</h1></div>
+                    <div class="div-btn-status">
+                        <div><button class="btn-status btn-{{dish.dishStatus}}" id="status-edit-dish-ingredients">{{dish.dishStatus}}</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            
+            <div class="input-container">
+                <div class="input-label"><label for="new-dish-name">Name</label></div>
+                <div class="input-info-container"><input type="text" name="new-dish-name" id="new-dish-name" value="{{dish.dishName}}" style="width: 100%"></div>
+            </div>
+
+            <p class="error" id="error-new-dish-name" style="margin-left: 20%;"></p>
+
+            <div class="input-container">    
+                <div class="input-label"><label for="new-dish-price">Price</label></div>
+                <div class="input-info-container"><input type="number" name="new-dish-price" id="new-dish-price" value="{{dish.dishPrice}}" style="width: 100%"></div>
+            </div>
+
+            <p class="error" id="error-new-dish-price" style="margin-left: 20%;"></p>
+
+            <div class="input-container">
+                <div class="input-label"> <label for="dropdown-add-new-dish-classification">Classification</label></div>
+                <div class="input-info-container">
+                    <select class="dropdown" id="dropdown-add-new-dish-classification">
+                        <option value="{{dish.dishClassificationID}}" selected>{{dish.dishClassification}}</option>
+                        {{#each classifications}}
+                            <option value={{_id}}>{{name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+
+            <hr>
+
+            <h3 class="bold">Ingredients</h3> 
+
+            <div style="margin-top: 20px;"> 
+                <input type="text" name="edit-dish-ingredients-ID" id="edit-dish-ingredients-ID" placeholder="ID" style="margin-right: 5px">
+                <input type="number" name="edit-dish-ingredients-quantity" id="edit-dish-ingredients-quantity" placeholder="Quantity" style="margin-right: 10px">
+                <select class="dropdown" id="edit-dish-ingredients-unit" style="margin-right: 10px">
+                    <option value="all" selected>Unit 1</option>
+                    <option value="option2">Unit 2</option>
+                    <option value="option3">Unit 3</option>
+                </select>
+                <input class="btn-add" type="button" id="btn-edit-dish-ingredients" name="btn-edit-dish-ingredients" value="+">
+            </div>
+
+            <p class="error" id="error-edit-dish-ingredients"> error message here</p>
+
+            <div class="div-table" style="margin-top: 20px;">
+                <table class="table" id="table-edit-dish-ingredients">
+                    <thead class="table-head table-sticky-header">
+                        <tr>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                        {{#each dishIngredients}}
+                            <tr>
+                                <td>{{ingredientID}}</td>
+                                <td>{{quantity}}</td>
+                                <td>{{measurementID}}</td>
+                                <!--<td><button class="edit-button btn-edit-dish-ingredient"><img src="../images/pencil.png" height="20px" width="15x" alt="Edit"></button></td>-->
+                                <td><button class="delete-button btn-delete-dish-ingredient"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button></td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-edit-dish-save">Save</button></div>
+            <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" style="background-color: #B00000" id="btn-edit-dish-cancel">Cancel</button></div>
+        </div>
+    </body>
+</html>

@@ -7,6 +7,8 @@ const DishClassification = require('../models/DishClassificationModel.js');
 
 const DishStatus = require('../models/DishStatusModel.js');
 
+const DishIngredients = require('../models/DishIngredientsModel.js');
+
 
 const MenuController = {
 
@@ -141,6 +143,78 @@ const MenuController = {
 			if (flag) {
 
 			}
+		});
+	},
+
+	editDish: function (req, res) {
+		var dishID = req.params.dishID;
+		var projection = '_id dishName dishPrice dishStatus dishClassification';
+	
+		// search for dish in Dish
+		db.findOne (Dishes, {_id: dishID}, projection, function(result) {
+			var dish = {
+				dishID: result._id,
+				dishName: result.dishName,
+				dishPrice: parseFloat(result.dishPrice),
+				dishStatusID: result.dishStatus,
+				dishStatus: "status",
+				dishClassificationID: result.dishClassification,
+				dishClassification: "classification"
+			};
+
+			// Get status of dish based on its _id
+			db.findOne(DishStatus, {_id: dish.dishStatusID}, 'status', function(result2) {
+
+				dish.dishStatus = result2.status;
+
+				// Get classification of dish based on its _id
+				db.findOne(DishClassification, {_id: dish.dishClassificationID}, 'classification', function(result3) {
+
+					dish.dishClassification = result3.classification;
+
+					var projection2 = '_id classification';
+					var classifications = [];
+					// Get all classifications for the dropdown
+					db.findMany(DishClassification, {}, projection2, function (result4) {
+						//console.log(result);
+						for (var i = 0; i < result4.length; i++) {
+							var classification = {
+								_id: result4[i]._id,
+								name: result4[i].classification,
+							};
+
+							if(dish.dishClassificationID != classification._id)
+								classifications.push(classification);
+						}
+
+						//console.log(dish);
+						//console.log(statuses);
+
+						// get dish ingredients 
+
+						var projection3 = 'dishID ingredientID quantity unitMeasurement';
+						var dishIngredients = [];
+
+						db.findMany(DishIngredients, {dishID: dish.dishID}, projection3, function (result4) {
+							for (var j = 0; j < result4.length; j++) {
+								var dishIngredient = {
+									dishID: result4[j].dishID,
+									ingredientID: result4[j].ingredientID,
+									ingredientName: "ingredient",
+									quantity: result4[j].quantity,
+									measurementID: result4[j].unitMeasurement,
+									measurementName: "measurement"
+								};
+
+								dishIngredients.push(dishIngredient);
+							}
+
+							console.log(dishIngredients);
+							res.render('editDish', {dish, classifications, dishIngredients});
+						});
+					});
+				});
+			});
 		});
 	}
 
