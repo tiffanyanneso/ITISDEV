@@ -69,7 +69,7 @@
                         <select class="dropdown" id="dropdown-ingredient-unit">
                             <option value="no-selected">--Select unit--</option>
                             {{#each units}}
-                                <option value="{{unit}}">{{unit}}</option>
+                                <option value="{{id}}">{{unitName}}</option>
                             {{/each}}
                         </select><br>
                         <label> Reorder Point </label> <input type="text"><br>
@@ -198,13 +198,14 @@
                 $('#btn-add-new-ingredient').click(function() {
                     var ingredientName = capitalize($('#ingredient-name').val());
                     var ingredientType = $('#dropdown-ingredient-type').val();
-                    var ingredientUnit = $('#dropdown-ingredient-unit').val();
+                    var ingredientUnitVal = $('#dropdown-ingredient-unit').val();
+                    var ingredientUnitText = $('#dropdown-ingredient-unit :selected').text();
 
-                    $('#table-view-inventory').append ("<tr>" + "<td>" + ingredientName + "</td>" + "<td>" + ingredientType + "</td>" + "<td>0</td>" + "<td>" + ingredientUnit + "</td>" + "<td>Out of Stock</td>");
+                    $('#table-view-inventory').append ("<tr>" + "<td>" + ingredientName + "</td>" + "<td>" + ingredientType + "</td>" + "<td>0</td>" + "<td>" + ingredientUnitText + "</td>" + "<td>Out of Stock</td>");
 
                     $('#modal-add-ingredient').modal('toggle');
                     $('#add-new-ingredient').trigger('reset');
-                    $.post('/addIngredient', {ingredientName, ingredientType, ingredientUnit});
+                    $.post('/addIngredient', {ingredientName, ingredientType, ingredientUnitVal});
                 });
 
                 $(".link").click(function() {

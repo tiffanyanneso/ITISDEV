@@ -14,10 +14,38 @@ const viewInventoryController = {
 
 	//render existing inventory list
 	getInventory: function (req, res) {
+
+		function getUnitName(unitId) {
+			return new Promise ((resolve, reject) => {
+				db.findOne (Units, {_id:unitId}, 'unit', function(result){
+					if (result!="")
+						resolve(result.unit);
+				})
+			})
+		}
+
+		async function getUnit(ingredients) {
+			for (var i=0; i<ingredients.length; i++) {
+				var unitName = await getUnitName (ingredients[i].unitMeasurement);
+				ingredients[i].unitMeasurement = unitName;
+			}
+
+			db.findMany (Units, {}, '_id unit', function (result2) {
+				var units = [];
+				for (var i=0; i<result2.length; i++) {
+					var unit = {
+						id:result2[i]._id,
+						unitName:result2[i].unit
+					};
+					units.push (unit);
+				}
+				res.render('viewInventory', {ingredients, units});
+			})
+		}
+
 		var projection = '_id ingredientName ingredientType unitMeasurement'; 	
 		var ingredients = [];
 		db.findMany (Ingredients, {}, projection, function(result) {
-			console.log(result);
 			for (var i=0; i<result.length; i++) {
 				var ingredient = {
 					systemID: result[i]._id,
@@ -27,18 +55,9 @@ const viewInventoryController = {
 					unitMeasurement: result[i].unitMeasurement
 				};
 				ingredients.push(ingredient);
-			}
 
-			db.findMany (Units, {}, 'unit', function (result2) {
-				var units = [];
-				for (var i=0; i<result2.length; i++) {
-					var unit = {
-						unit:result2[i].unit
-					};
-					units.push (unit);
-				}
-				res.render('viewInventory', {ingredients, units});
-			})
+				getUnit(ingredients);
+			}
 			
 		});
 	},
@@ -48,7 +67,7 @@ const viewInventoryController = {
 			ingredientName: req.body.ingredientName,
 			ingredientType: req.body.ingredientType,
 			quantityAvailable: 0,
-			unitMeasurement: req.body.ingredientUnit,
+			unitMeasurement: req.body.ingredientUnitVal,
 			reorderLevel: 10
 		};
 
@@ -59,6 +78,36 @@ const viewInventoryController = {
 
 	//view individual ingredients and their stock
 	getIngredient: function(req, res) {
+
+		function getUnitName(unitId) {
+			return new Promise ((resolve, reject) => {
+				db.findOne (Units, {_id:unitId}, 'unit', function(result){
+					if (result!="")
+						resolve(result.unit);
+				})
+			})
+		}
+
+		async function getUnit(ingredientDetails, stocks) {
+			ingredientDetails.unitMeasurement = await getUnitName(ingredientDetails.unitMeasurement);
+			for (var i=0; i<stocks.length; i++) {
+				var unitName = await getUnitName (stocks[i].stockUnit);
+				stocks[i].stockUnit = unitName;
+			}
+
+			db.findMany (Units, {}, '_id unit', function (result2) {
+				var units = [];
+				for (var i=0; i<result2.length; i++) {
+					var unit = {
+						id:result2[i]._id,
+						unitName:result2[i].unit
+					};
+					units.push (unit);
+				}
+				res.render('viewIngredient', {ingredientDetails, stocks, units});
+			})
+		}
+
 		var projection = 'ingredientName ingredientType quantityAvailable unitMeasurement reorderLevel';
 
 		//look for the ingredient
@@ -78,16 +127,7 @@ const viewInventoryController = {
 					stocks.push(stock);
 				}
 
-				db.findMany (Units, {}, 'unit', function (result2) {
-					var units = [];
-					for (var i=0; i<result2.length; i++) {
-						var unit = {
-							unit:result2[i].unit
-						};
-						units.push (unit);
-					}
-					res.render('viewIngredient', {ingredientDetails, stocks, units});
-				});
+				getUnit(ingredientDetails, stocks);
 			});
 		});
 		
@@ -104,7 +144,7 @@ const viewInventoryController = {
 			stockName: req.body.stockName,
 			ingredientName: req.body.ingredientName,
 			quantity: req.body.quantity,
-			stockUnit: req.body.stockUnit
+			stockUnit: req.body.stockUnitVal
 		};
 
 		db.insertOne(Stock, stock, function(flag) {
