@@ -379,3 +379,8 @@ input {
     height: 34px;
     width: 150px;
 }
+
+button:disabled,
+button[disabled] {
+    background-color: #b3b3b3;
+}

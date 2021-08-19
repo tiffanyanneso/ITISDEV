@@ -60,14 +60,14 @@
                         <p class="error" id="error-new-ingredient-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
                         <label for="dropdown-ingredient-type">Ingredient Type</label>
                         <select class="dropdown" id="dropdown-ingredient-type"> 
-                            <option>--Select ingredient type--</option>
+                            <option value="no-selected">--Select ingredient type--</option>
                             <option value="all-type">All</option>
                             <option value="option2">Option 2</option>
                             <option value="option3">Option 3</option>
                         </select><br>
                         <label for="dropdown-ingredient-unit">Unit of Measurement</label>
                         <select class="dropdown" id="dropdown-ingredient-unit">
-                            <option>--Select unit--</option>
+                            <option value="no-selected">--Select unit--</option>
                             {{#each units}}
                                 <option value="{{unit}}">{{unit}}</option>
                             {{/each}}
@@ -76,7 +76,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="btn-add-new-ingredient">Add Ingredient</button>
+                        <button type="button" class="btn btn-primary" id="btn-add-new-ingredient" disabled="true">Add Ingredient</button>
                       </div>
                   </form>
                 </div>
@@ -130,8 +130,6 @@
         <script> 
             $(document).ready(function() {
 
-                //needs validation for modal    
-
                 function capitalize(string){
                     var words = string.toLowerCase().split(' ');
                     for (i=0; i<words.length; i++)
@@ -139,6 +137,36 @@
                     return words.join(' ');
                 };
 
+                function noSelected() {
+                    var ingredientType = $('#dropdown-ingredient-type').val();
+                    var ingredientUnit = $('#dropdown-ingredient-unit').val();
+                    if (ingredientType == "no-selected" || ingredientUnit == "no-selected")
+                        return true;
+                    else
+                        return false;
+                }
+
+                $('#dropdown-ingredient-type').change(function() {
+                    if (noSelected()) {
+                        $("#btn-add-new-ingredient").prop("disabled", true);
+                        $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                    }
+                    else {
+                        $("#btn-add-new-ingredient").prop("disabled", false);
+                        $("#btn-add-new-ingredient").css("background-color", "#0F84D9");
+                    }
+                });
+
+                $('#dropdown-ingredient-unit').change(function() {
+                    if (noSelected()) {
+                        $("#btn-add-new-ingredient").prop("disabled", true);
+                        $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                    }
+                    else {
+                        $("#btn-add-new-ingredient").prop("disabled", false);
+                        $("#btn-add-new-ingredient").css("background-color", "#0F84D9");
+                    }
+                })
 
                 $('#ingredient-name').keyup(function() {
                     var ingredientName = capitalize($('#ingredient-name').val());
@@ -149,6 +177,15 @@
                                 $("#btn-add-new-ingredient").prop("disabled", true);
                                 $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
                             }
+
+                            //result name is not equal but no selected yet
+                            else if (result.ingredientName != ingredientName && noSelected()) {
+                                $("#ingredient-name").css("border", "1px solid #DDDDDD");
+                                $("#error-new-ingredient-name").text("");
+                                $("#btn-add-new-ingredient").prop("disabled", true);
+                                $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                            }
+
                             else {
                                 $("#ingredient-name").css("border", "1px solid #DDDDDD");
                                 $("#error-new-ingredient-name").text("");
