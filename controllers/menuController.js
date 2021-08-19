@@ -245,7 +245,45 @@ const MenuController = {
 			}
 			res.send(formattedResults);
 		});
-	}
+	},
+
+	postEditDish: function(req, res) {
+		var oldDishID = req.query.oldDishID;
+
+		db.findOne(DishStatus, {status: "Deleted"}, '_id', function(result) {
+			var deleteStatusID = result._id;
+			
+			// change status to deleted
+			db.updateOne(Dishes, {_id: oldDishID}, {dishStatus: result._id}, function(result2) {
+			//res.send(result);
+
+				var dish = {
+					dishName: req.query.dishName,
+					dishPrice: parseFloat(req.query.dishPrice),
+					dishStatus: req.query.dishStatus,
+					dishClassification: req.query.dishClassification
+				};
+
+				console.log(dish);
+		
+				db.insertOne (Dishes, dish, function (flag) {
+					if (flag) {
+						db.findMany(Dishes, {dishName: dish.dishName}, '_id dishStatus', function(result3) {
+							//console.log("LENGTH: " + result3.length);
+							//console.log(result3);
+							for (var i = 0; i < result3.length; i++) {
+								if (deleteStatusID != result3[i].dishStatus) {
+									console.log(result3[i]);
+									res.send(result3[i]);
+								}
+							}
+						});
+					} 
+				});
+			});
+		});
+
+    }
 };
 
 

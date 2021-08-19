@@ -122,7 +122,7 @@
         <script>
             $(document).ready(function() {
 
-                // Autocomplete for Ingredient Name- not working
+                // Autocomplete for Ingredient Name
                 $("#edit-dish-ingredients-name").autocomplete({
                     source:function(request, response) {
                     $.ajax({
@@ -277,6 +277,50 @@
 					}
                 });
 
+                function readTable(dishID) { 
+                    var ingredients = [];
+
+                    //alert("READ TABLE " + dishID);
+
+                    var myTab = $("#table-edit-dish-ingredients")[0];
+
+                    alert(myTab.rows.length);
+
+                    // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
+                     for (var i = 1; i < myTab.rows.length; i++) {
+                         var ingredientID;
+
+                        // GET THE CELLS COLLECTION OF THE CURRENT ROW.
+                        var objCells = myTab.rows.item(i).cells;
+
+                        alert(objCells.item(0).innerHTML + " " + objCells.item(1).innerHTML + " " + objCells.item(2).innerHTML);
+
+                        var name = objCells.item(0).innerHTML; 
+                        var quantity = parseFloat(objCells.item(1).innerHTML);
+                        var unit = objCells.item(2).innerHTML;
+                        var id = "ID";
+
+                        //alert(dishID + " " + id + " " + parseFloat(quantity) + " " + unit);      
+
+                        //alert("DISH ID: " + dishID);
+
+                        // get ingredient id based on name
+
+                         $.get('/getIngredientID', {ingredientName: name}, function(result) {
+
+                            ingredientID = result._id;
+
+                            alert(dishID + " " + ingredientID + " " + quantity + " " + unit);
+
+                            $.post('/postAddOneIngredient', {dishID, ingredientID, quantity, unit});
+
+                        });
+                    }
+
+                    // Clear table
+                    $("#table-edit-dish-ingredients tbody tr").remove();            
+                }
+
                 $('#btn-edit-dish-save').click(function() {
                     var dishID = $("#view-dish-dishID").text();
                     var dishName = capitalize($('#edit-dish-name').val());
@@ -294,11 +338,13 @@
                         $("#error-edit-dish-name").text("");
                         $("#error-edit-dish-price").text("");
 
-                        /*$.get('/postAddDish', {dishName: dishName, dishPrice: dishPrice, dishClassification: dishClassification, dishStatus: dishStatus}, function(result) {
-                            dishID = result._id;
+                        $.get('/postEditDish', {oldDishID: dishID, dishName: dishName, dishPrice: dishPrice, dishClassification: dishClassificationID, dishStatus: dishStatusID}, function(result) {
+                            newDishID = result._id;
+
+                           alert("DISH ID: " + newDishID);
                             
-                            readTable(dishID);
-                        });*/
+                            readTable(newDishID);
+                        });
 					}
                 });
 
