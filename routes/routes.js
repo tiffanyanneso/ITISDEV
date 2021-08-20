@@ -88,6 +88,8 @@ router.get('/getAutoIngredientNameEdit', menuController.getAutoIngredientNameEdi
 
 router.get('/postEditDish', menuController.postEditDish);
 
+router.get('/getDishName', menuController.getDishName);
+
 router.get('/orderHistory', orderHistoryController.getOrderHistory);
 
 router.get('/order/:systemID', orderHistoryController.getViewSpecificOrder);

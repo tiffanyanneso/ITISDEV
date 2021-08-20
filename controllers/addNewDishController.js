@@ -51,7 +51,9 @@ const addNewDishController = {
                         _id: result2[j]._id,
                         status: result2[j].status,
                     };
-                    statuses.push(status);
+
+                    if (status.status == "Available" || status.status == "Unavailable")
+                        statuses.push(status);
                 }
                 res.render('addNewDish', {classifications, statuses});
             });
@@ -61,11 +63,27 @@ const addNewDishController = {
     getCheckDishName: function(req, res) {
         var dishName = req.query.dishName;
 
-        // Look for Dish Name
-        db.findOne(Dishes, {dishName: dishName}, 'dishName', function (result) {
-            //console.log(result);
-            res.send(result);
-        });
+        db.findOne(DishStatus, {status: "Deleted"}, '_id', function(result) {
+            var deleteStatusID = result._id;
+            
+            // Look for Dish Name
+            db.findMany(Dishes, {dishName: dishName}, 'dishName dishStatus', function (result2) {
+                //console.log(result2);
+                var dishDetails = [];
+
+                for (var i = 0; i < result2.length; i++) 
+                    if (result2[i].dishStatus != deleteStatusID)  {
+                        dishDetails = {
+                            dishName: result2[i].dishName,
+                        };
+                    }
+
+                //console.log("dishName " + dishDetails);
+                
+                res.send(dishDetails);
+            });
+		
+		});
     },
 
     getIngredientID: function(req, res) {
@@ -121,14 +139,28 @@ const addNewDishController = {
 			dishClassification: req.query.dishClassification
         };
 
-        db.insertOne (Dishes, dish, function (flag) {
-			if (flag) {
-                db.findOne(Dishes, {dishName: dish.dishName}, '_id', function(result) {
-                    res.send(result);
-                });
-			} 
-        });
 
+        db.findOne(DishStatus, {status: "Deleted"}, '_id', function(result) {
+            var deleteStatusID = result._id;
+
+            db.insertOne (Dishes, dish, function (flag) {
+                var dishInfo = [];
+
+                if (flag) {
+                    db.findMany(Dishes, {dishName: dish.dishName}, '_id dishStatus', function(result2) {
+                        for (var i = 0; i < result2.length; i++) {
+                            if (deleteStatusID != result2[i].dishStatus) {
+                                dishInfo = {
+                                    _id : result2[i]._id
+                                };
+                            }
+                        }
+                        
+                        res.send(dishInfo);
+                    });
+                } 
+            });
+        });
     },
 
     postAddOneIngredient: function(req, res) {

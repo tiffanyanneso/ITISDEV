@@ -116,8 +116,9 @@
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-edit-dish-save">Save</button></div>
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" style="background-color: #B00000" id="btn-edit-dish-cancel">Cancel</button></div>
 
-             <div style="visibility: hidden;" id="view-dish-statusID">{{dish.dishStatusID}}</div>
-                <div style="visibility: hidden;" id="view-dish-dishID">{{dish.dishID}}</div>
+            <div style="visibility: hidden;" id="view-dish-dishID">{{dish.dishID}}</div>
+            <div style="visibility: hidden;" id="view-dish-statusID">{{dish.dishStatusID}}</div>
+            <div style="visibility: hidden;" id="view-dish-orig-name">{{dish.dishName}}</div>
         </div>
         <script>
             $(document).ready(function() {
@@ -187,7 +188,10 @@
                     } else if (type == "dishPrice") {
                         $("#edit-dish-price").css("border", "1px solid #B00000");
                         $("#error-edit-dish-price").text("Please enter a Dish Price.");
-                    } else if (type == "ingredientQty") {
+                    } else if (type == "dishNameSame") {
+                        $("#edit-dish-name").css("border", "1px solid #B00000");
+                        $("#error-edit-dish-name").text("Dish Name already Taken.");
+                    }else if (type == "ingredientQty") {
                         $("#edit-dish-ingredients-quantity").css("border", "1px solid #B00000");
                         $("#error-edit-dish-ingredients").text("Please enter the Ingredient Quantity.");
                     } else if (type == "ingredientName") {
@@ -322,6 +326,7 @@
                 }
 
                 $('#btn-edit-dish-save').click(function() {
+                    var origDishName = $("#view-dish-orig-name").text();
                     var dishID = $("#view-dish-dishID").text();
                     var dishName = capitalize($('#edit-dish-name').val());
                     var dishPrice = $('#edit-dish-price').val();
@@ -335,15 +340,24 @@
                         $("#edit-dish-name").css("border", "1px solid #DDDDDD");
                         $("#edit-dish-price").css("border", "1px solid #DDDDDD");
 
-                        $("#error-edit-dish-name").text("");
-                        $("#error-edit-dish-price").text("");
+                         $.get("/getDishName", {dishName: dishName, origDishName: origDishName}, function (result) {
+                             alert("result: " + result + "orig: " + dishName);
+                              if (result == dishName) {
+                                  errorMessage("dishNameSame");
+                            } else {
+                                alert("SAVE");
+                                $("#error-edit-dish-name").text("");
+                                $("#error-edit-dish-price").text("");
 
-                        $.get('/postEditDish', {oldDishID: dishID, dishName: dishName, dishPrice: dishPrice, dishClassification: dishClassificationID, dishStatus: dishStatusID}, function(result) {
-                            newDishID = result._id;
 
-                           alert("DISH ID: " + newDishID);
-                            
-                            readTable(newDishID);
+                                $.get('/postEditDish', {oldDishID: dishID, dishName: dishName, dishPrice: dishPrice, dishClassification: dishClassificationID, dishStatus: dishStatusID}, function(result) {
+                                    newDishID = result._id;
+
+                                alert("DISH ID: " + newDishID);
+                                    
+                                    readTable(newDishID);
+                                });
+                            }
                         });
 					}
                 });

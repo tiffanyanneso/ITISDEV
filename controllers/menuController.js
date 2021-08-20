@@ -264,26 +264,66 @@ const MenuController = {
 					dishClassification: req.query.dishClassification
 				};
 
-				console.log(dish);
+				//console.log(dish);
 		
 				db.insertOne (Dishes, dish, function (flag) {
 					if (flag) {
 						db.findMany(Dishes, {dishName: dish.dishName}, '_id dishStatus', function(result3) {
 							//console.log("LENGTH: " + result3.length);
 							//console.log(result3);
+							var dishInfo = [];
+
 							for (var i = 0; i < result3.length; i++) {
 								if (deleteStatusID != result3[i].dishStatus) {
-									console.log(result3[i]);
-									res.send(result3[i]);
+									//console.log(result3[i]);
+
+									dishInfo = {
+										_id: result3[i]._id,
+										dishStatus: result3[i].dishStatus
+									};
 								}
 							}
+							res.send(dishInfo);
 						});
 					} 
 				});
 			});
 		});
 
-    }
+	},
+	
+	getDishName: function(req, res) {
+		var dishName = req.query.dishName;
+		var origDishName = req.query.origDishName;
+
+		db.findOne(DishStatus, {status: "Deleted"}, '_id', function(result) {
+			var deleteStatusID = result._id;
+		
+			// Look for Dish Name
+			db.findMany(Dishes, {dishName: dishName}, 'dishName dishStatus', function (result2) {
+				//console.log(result2);
+				var resultDishName;
+				for (var i = 0; i < result2.length; i++) {
+					if (deleteStatusID != result2[i].dishStatus && origDishName != result2[i].dishName) {
+						//console.log("dish name: " + dishName + " result name: " + result2[i].dishName);
+						resultDishName = result2[i].dishName;
+
+						console.log("Delete status ID: " + deleteStatusID, " Status: " + result2[i].dishStatus);
+
+						//console.log(result2[i]);
+
+						//console.log("ALL" + result2);
+						//console.log(dishName);
+						console.log(resultDishName);
+					}
+				}
+
+
+
+				res.send(resultDishName);
+			});
+		});
+	}
 };
 
 
