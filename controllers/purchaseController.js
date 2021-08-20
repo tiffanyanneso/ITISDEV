@@ -222,9 +222,11 @@ const purchaseController = {
     		return new Promise ((resolve, reject) => {
 				var projection = 'stockName quantity stockUnit';
 				db.findOne(Stock, {stockName:purchasedStock.stockName}, projection, function(result) {
-					console.log(result);
-					if (result!="")
-						resolve(result);
+					db.findOne(Units, {_id:result.stockUnit}, 'unit', function (result1) {
+						result.stockUnit  = result1.unit;
+						if (result!="")
+							resolve(result);
+					})
 				})
 			})
     	}
