@@ -108,7 +108,7 @@ const viewInventoryController = {
 			})
 		}
 
-		var projection = 'ingredientName ingredientType quantityAvailable unitMeasurement reorderLevel';
+		var projection = '_id ingredientName ingredientType quantityAvailable unitMeasurement reorderLevel';
 
 		//look for the ingredient
 		db.findOne(Ingredients, {_id:req.params.systemID}, projection, function(result) {
@@ -140,16 +140,19 @@ const viewInventoryController = {
 	},
 
 	addStock: function(req, res) {
-		var stock = {
-			stockName: req.body.stockName,
-			ingredientName: req.body.ingredientName,
-			quantity: req.body.quantity,
-			stockUnit: req.body.stockUnitVal
-		};
+		db.findOne(Ingredients, {ingredientName:req.body.ingredientName}, '_id', function(result) {
+			var stock = {
+				stockName: req.body.stockName,
+				ingredientID: result._id,
+				quantity: req.body.quantity,
+				stockUnit: req.body.stockUnitVal
+			};
 
-		db.insertOne(Stock, stock, function(flag) {
-			if (flag) { }
-		});	
+			db.insertOne(Stock, stock, function(flag) {
+				if (flag) { }
+			});	
+		})
+		
 		
 	}
 };

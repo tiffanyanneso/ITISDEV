@@ -20,6 +20,8 @@ const logInController = require('../controllers/logInController.js');
 
 const unitController = require('../controllers/unitController.js');
 
+const manualCountController = require('../controllers/manualCountController.js');
+
 router.get('/login', logInController.login);
 
 router.post('/checkLogIn', logInController.checkLogIn);
@@ -95,5 +97,9 @@ router.get('/getFilteredRowsOrderHistory', orderHistoryController.getFilteredRow
 router.get('/unitConverter', unitController.getUnitConverter);
 
 router.post('/saveUnit', unitController.saveUnit);
+
+router.get('/updateManualCount/:ingredientID', manualCountController.getUpdatePage);
+
+router.post('/saveManualCount', manualCountController.saveManualCount);
 
 module.exports = router;

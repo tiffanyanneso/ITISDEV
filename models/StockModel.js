@@ -10,7 +10,7 @@ var StockSchema = new mongoose.Schema({
 		required: true
 	},
 
-	ingredientName: {
+	ingredientID: {
 		type: String,
 		required: true
 	},

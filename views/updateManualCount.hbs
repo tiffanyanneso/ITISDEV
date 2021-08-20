@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Update Manual Count </title>
+        <meta name="description" content="Update Manual Count">
+        <meta name="keyword" content="Update Manual Count">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        
+    </head>
+    <body>
+
+        <!-- PARTIALS -->
+        <div id="navbar"> 
+            <div class="navbar-logout"> 
+                <a href= "#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="#">Home</a>
+            <a href="#">New Order</a>
+            <a href="#">View Menu</a>
+        </div>
+
+        <div class="content">
+            <h1 class="bold color-blue margin-bottom-0">Update Manual Count</h1> 
+            <p id="ingredient-id" style="display:none;">{{ingredientID}}</p> 
+            <hr>
+
+            <div class="div-table" style="height: 500px">
+                <table class="table" id="table-update-manual-count">
+                    <thead class="table-head table-sticky-header">
+                        <tr>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Manual Count</th>
+                            <th></th> 
+                        </tr>
+                    </thead>
+                    <tbody id="table-update-manual-count-body"> 
+                        {{#each stocks}}
+                            <tr>
+                                <td class="stock-name">{{stockName}}</td>
+                                <td>{{quantity}}</td>
+                                <td>{{stockUnit}}</td>
+                                <td><input type="number" placeholder="count" class="manual-count"></td>
+                                <td class="error-manual-count">hello</td>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-update-manual-count-save" disabled="true">Save</button></div>
+        </div>1
+
+        <script>
+            $(document).ready(function() {
+                function isAllPositive() {
+                    var inputs = $('.manual-count');
+                    for (var i=0; i<inputs.length; i++) {
+                        if ($(inputs[i]).val() < 0)
+                            return false;
+                    }
+                    return true;
+                }
+
+
+                $('.manual-count').keyup(function() {
+                    var manualCount = $(this).val();
+                    if (manualCount<0) {
+                        $(this).css("border", "2px solid #B00000");
+                        $(this).next('.error-manual-count').text("Stock count cannot be less than 0");
+                        $("#btn-update-manual-count-save").prop("disabled", true);
+                        $("#btn-update-manual-count-save").css("background-color", "#b3b3b3");
+                    }
+                    else if (manualCount>0 && !isAllPositive()) {
+                        $("#btn-update-manual-count-save").prop("disabled", true);
+                        $("#btn-update-manual-count-save").css("background-color", "#b3b3b3");
+                    }
+                    else {
+                        $(this).css("border", "1px solid #DDDDDD");
+                        $(this).closest('.error-manual-count').text("");
+                        $("#btn-update-manual-count-save").prop("disabled", false);
+                        $("#btn-update-manual-count-save").css("background-color", "#0F84D9");
+                    }
+                });
+
+                $('#btn-update-manual-count-save').click(function() {
+                    var stocks = [];
+
+                    $("#table-update-manual-count-body > tr").each(function () {
+                        var stock= {
+                            stockName: $(this).children('.stock-name').text(),
+                            manualCount: $(this).children('td').children('.manual-count').val(),
+                        }
+                        stocks.push(stock);
+                    });
+                    var ingredientID = $('#ingredient-id').text();
+                    var stockString = JSON.stringify(stocks);
+                    $.post('/saveManualCount', {ingredientID, stockString});
+                });
+            })
+            
+        </script>
+    </body>
+</html>
+

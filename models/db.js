@@ -102,6 +102,13 @@ const database = {
             return callback(result, param);
         });
     },
+
+    findOneExtraParams: function(model, query, projection, param1, param2, callback) {
+        model.findOne(query, projection, function(error, result) {
+            if(error) return callback(false);
+            return callback(result, param1, param2);
+        });
+    },
     /*
         searches for multiple documents based on the model `model`
         filtered through the object `query`

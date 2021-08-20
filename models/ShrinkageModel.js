@@ -4,21 +4,11 @@ var mongoose = require('mongoose');
 // defines the schema for collection `users`
 var ShrinkageSchema = new mongoose.Schema({
 
-	discrepancyID: {
-		type: String,
-		required: true
-	},
-
 	ingredientID: {
 		type: String,
 		required: true
 	},
-
-	stockID: {
-		type: String,
-		required: true
-	},
-
+	
 	date: {
 		type: Date,
 		required: true
@@ -36,7 +26,7 @@ var ShrinkageSchema = new mongoose.Schema({
 
 	reason: {
 		type: String, 
-		required:true
+		required:false
 	},
 
 	employeeID: {

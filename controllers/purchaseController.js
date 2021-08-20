@@ -127,7 +127,7 @@ const purchaseController = {
 			//store individual purhcased stock
 			db.insertManyResult (PurchasedStock, stocks, function(result2) {
 				for (j=0; j<result2.length; j++) {
-					var currentStock = result2[j];		//date here is stockName, count, unitPrice
+					var currentStock = result2[j];		//data here is stockName, count, unitPrice
 
 					//compute total quantity purchased - look for stock name to get the quantity of the stock
 					db.findOneExtraParam (Stock, {stockName: result2[j].stockName}, 'ingredientName quantity stockUnit', currentStock, function (result3, currentStock) {
