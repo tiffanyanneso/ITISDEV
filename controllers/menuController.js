@@ -21,10 +21,36 @@ const MenuController = {
 		var classifications = [];
 		var dishes = [];
 
+		var availableStatus = [];
+		var unavailableStatus = [];
+		var outOfStockStatus = [];
+
 		var statusProjection = '_id status'; 	
 		db.findMany (DishStatus, {}, statusProjection, function(result3) {
 
 			for (var i=0; i<result3.length; i++) {
+
+				if( result3[i].status == "Available"){
+					availableStatus = {
+						_id: result3[i]._id,
+						classification: result3[i].status
+					};
+				}
+
+				if( result3[i].status == "Unavailable"){
+
+					unavailableStatus = {
+						_id: result3[i]._id,
+						classification: result3[i].status
+					};
+				}
+
+				if( result3[i].status == "Out of Stock"){
+					outOfStockStatus = {
+						_id: result3[i]._id,
+						classification: result3[i].status
+					};
+				}
 
 				var status = {
 					_id: result3[i]._id,
@@ -44,6 +70,9 @@ const MenuController = {
 					};
 					classifications.push( classification );
 				}
+
+				classifications.push( unavailableStatus );
+				classifications.push( outOfStockStatus );
 
 				var dishProjection = '_id dishName dishPrice dishStatus dishClassification';
 				db.findMany (Dishes, {}, dishProjection, function(result2) {
@@ -78,6 +107,13 @@ const MenuController = {
 						for (var j =0; j < dishes.length; j++){
 
 							if( classifications[i]._id == dishes[j].dishClassification){
+								if( dishes[j].dishStatus ==  availableStatus.classification ){
+									dishes[j].dishClassification =  classifications[i].classification;
+									menu.push( dishes[j] );
+								}
+							}
+
+							if( classifications[i].classification == dishes[j].dishStatus){
 								dishes[j].dishClassification =  classifications[i].classification;
 								menu.push( dishes[j] );
 							}
