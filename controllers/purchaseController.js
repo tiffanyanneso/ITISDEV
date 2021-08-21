@@ -20,6 +20,46 @@ const { json } = require('express');
 const purchaseController = {
 
 	renderPurchase: function (req, res) {
+
+		db.findMany (Units, {}, '_id unit', function (result) {
+			var units = [];
+			for (var i=0; i<result.length; i++) {
+				var unit = {
+					id:result[i]._id,
+					unitName:result[i].unit
+				};
+				units.push (unit);
+			}
+			res.render('addStock', {units});
+		});
+
+		/*function getUnitName(unitId) {
+			return new Promise ((resolve, reject) => {
+				db.findOne (Units, {_id:unitId}, 'unit', function(result){
+					if (result!="")
+						resolve(result.unit);
+				})
+			})
+		}
+
+		async function getUnit (stocks) {
+			for (var i=0; i<stocks.length; i++) 
+				stocks[i].stockUnit  = await getUnitName (stocks[i].stockUnit	);
+			
+			db.findMany (Units, {}, '_id unit', function (result) {
+				var units = [];
+				for (var i=0; i<result.length; i++) {
+					var unit = {
+						id:result[i]._id,
+						unitName:result[i].unit
+					};
+					units.push (unit);
+				}
+				res.render('addStock', {stocks, units});
+			})
+			
+		}
+		
 		var projection = 'stockName quantity stockUnit';
 		var stocks = [];
 		db.findMany (Stock, {}, projection, function (result) {
@@ -28,11 +68,11 @@ const purchaseController = {
 					stockName: result[i].stockName,
 					quantity: result[i].quantity,
 					stockUnit: result[i].stockUnit
-				};
+				}
 				stocks.push(stock);
 			}
-			res.render('addStock', {stocks});
-		});
+			getUnit (stocks);
+		});*/
 	},
 
 	getStockName: function (req, res) {
@@ -55,11 +95,24 @@ const purchaseController = {
         var projection = 'quantity stockUnit';
 
         db.findOne(Stock, {stockName: req.query.stockName}, projection, function(result) {
-            res.send(result);
+        	db.findOneExtraParam (Units, {_id:result.stockUnit}, 'unit', result, function (result2, result) {
+        		result.stockUnit = result2.unit;
+        		res.send(result);
+        	})
         });
 	},
 
 	savePurchase: function(req, res) {
+
+		function getStockID (stockName) {
+			return new Promise((resolve, reject) => {
+				db.findOne (Stock, {stockName:stockName}, '_id', function (result) {
+					console.log(result);
+					if (result!="") 
+						resolve(result._id); 
+				})
+			})
+		}
 		function getRatioAndOperator (purchasedUnit, ingredientUnit) {
 			return new Promise((resolve, reject) => {
 				db.findOne (Conversion, {$and:[ {unitA:purchasedUnit}, {unitB:ingredientUnit} ]}, 'ratio operator', function(result){
@@ -69,15 +122,14 @@ const purchaseController = {
 			})
 		}
 
-		function getCurrentAvailable (ingredientName) {
+		function getCurrentAvailable (ingredientID) {
 			return new Promise ((resolve, reject) => {
-				db.findOne (Ingredients, {ingredientName:ingredientName}, 'quantityAvailable', function(result) {
+				db.findOne (Ingredients, {_id:ingredientID}, 'quantityAvailable', function(result) {
 					if (result!="")
 						resolve(result);
 				})
 			})
 		}
-
 
 		//info in ingredient is ingredientName, unit, quantityAvailable
 		async function computeNewQuantity(quantity, purchasedUnit, ingredient) {
@@ -96,12 +148,38 @@ const purchaseController = {
 					purchasedQuantity = quantity/ratio;
 			}
 
-			var currentQuantity = await getCurrentAvailable (ingredient.ingredientName);
+			var currentQuantity = await getCurrentAvailable (ingredient._id);
 			var newQuantity = currentQuantity.quantityAvailable + purchasedQuantity;
 
 			//update quantityAvailable in ingredient
-			db.updateOne (Ingredients, {ingredientName: ingredient.ingredientName}, {quantityAvailable:newQuantity}, function(flag) {
+			db.updateOne (Ingredients, {ingredientID: ingredient.ingredientID}, {quantityAvailable:newQuantity}, function(flag) {
 
+			});
+		}
+
+		async function stockID (stocks, purchaseID) {
+			for (var i=0; i<stocks.length; i++) {
+				stocks[i].purchaseID = purchaseID;
+				stocks[i].stockID = await getStockID(stocks[i].stockName);
+			}
+
+			//store individual purhcased stock
+			db.insertManyResult (PurchasedStock, stocks, function(result2) {
+				for (j=0; j<result2.length; j++) {
+					var currentStock = result2[j];		//data here is stockName, count, unitPrice
+
+					//compute total quantity purchased - look for stock name to get the quantity of the stock
+					db.findOneExtraParam (Stock, {_id: result2[j].stockID}, 'ingredientID quantity stockUnit', currentStock, function (result3, currentStock) {
+
+						var purchasedQuantity = currentStock.count * result3.quantity;
+						var purchasedUnit = result3.stockUnit;
+
+						//look for ingredient to get currentAvailableQuantity
+						db.findOneExtraParams (Ingredients, {_id:result3.ingredientID}, '_id quantityAvailable unitMeasurement', purchasedQuantity, purchasedUnit, function (result4, purchasedQuantity, purchasedUnit) {
+							computeNewQuantity(purchasedQuantity, purchasedUnit, result4);							
+						});
+					});
+				}
 			});
 		}
 
@@ -120,32 +198,7 @@ const purchaseController = {
 		//store to Purchases
 		db.insertOneResult(Purchases, purchaseDetails, function (result) {
 			purchaseID = result._id;
-
-			for (var i=0; i<stocks.length; i++)
-				stocks[i].purchaseID = purchaseID;
-
-			//store individual purhcased stock
-			db.insertManyResult (PurchasedStock, stocks, function(result2) {
-				for (j=0; j<result2.length; j++) {
-					var currentStock = result2[j];		//data here is stockName, count, unitPrice
-
-					//compute total quantity purchased - look for stock name to get the quantity of the stock
-					db.findOneExtraParam (Stock, {stockName: result2[j].stockName}, 'ingredientName quantity stockUnit', currentStock, function (result3, currentStock) {
-
-						var purchasedQuantity = currentStock.count * result3.quantity;
-						var purchasedUnit = result3.stockUnit;
-
-						//look for ingredient to get currentAvailableQuantity
-						db.findOneExtraParams (Ingredients, {ingredientName:result3.ingredientName}, 'ingredientName quantityAvailable unitMeasurement', purchasedQuantity, purchasedUnit, function (result4, purchasedQuantity, purchasedUnit) {
-							
-							computeNewQuantity(purchasedQuantity, purchasedUnit, result4);							
-						});
-					});
-				}
-			});
-
-
-			
+			stockID(stocks, purchaseID);
 		});
 	},
 
@@ -204,7 +257,7 @@ const purchaseController = {
 	    		db.findMany (PurchasedStock, {purchaseID:purchaseID}, projection, function(result) {
 	    			for (var i=0; i<result.length; i++) {
 		    			var purchasedStock = {
-		    				stockName:result[i].stockName,
+		    				stockID:result[i].stockID,
 							count: result[i].count,
 							unitPrice: result[i].unitPrice,
 							amount: result[i].unitPrice * result[i].count
@@ -221,7 +274,7 @@ const purchaseController = {
     	function getStockInfo (purchasedStock) {
     		return new Promise ((resolve, reject) => {
 				var projection = 'stockName quantity stockUnit';
-				db.findOne(Stock, {stockName:purchasedStock.stockName}, projection, function(result) {
+				db.findOne(Stock, {_id:purchasedStock.stockID}, projection, function(result) {
 					db.findOne(Units, {_id:result.stockUnit}, 'unit', function (result1) {
 						result.stockUnit  = result1.unit;
 						if (result!="")
@@ -254,7 +307,7 @@ const purchaseController = {
     		//find employee name
     		db.findOne (Employees, {_id:result.employeeID}, 'name', function (result2) {
     			var employeeName = result2.name;
-    			var projection2 = 'stockName unitPrice count';
+    			//var projection2 = 'stockName unitPrice count';
 
     			//find all purchased stock and their info
     			getPurchasedStocks(id, purchase, employeeName)

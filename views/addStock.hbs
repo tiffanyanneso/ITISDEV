@@ -39,7 +39,7 @@
                 <h4 id="date">${date} </h4>
                 <h4 id="time">${time}</h4>
             </div>-->
-            <hr style="margin-bottom: 5px;">
+            <!--<hr style="margin-bottom: 5px;">
 
             <div style="margin-bottom: 10px;">
                 <div style="display: flex;">
@@ -75,7 +75,7 @@
                         {{/each}}
                     </tbody>
                 </table>
-            </div>
+            </div>-->
 
             <hr style="margin-bottom: 5px;">
 
@@ -101,12 +101,12 @@
                             <label for="stock-name">Stock Name</label> <input id="stock-name" type="text"> <br>
                             <label for="stock-quantity">Quantity</label> <input id="stock-quantity" type="text"> <br>
                             <label for="dropdown-stock-unit">Unit of Measurement</label>
-                            <select class="dropdown" id="dropdown-stock-unit">
-                                <option value="ml">ml</option>
-                                <option value="g">g</option>
-                                <option value="lbs">lbs</option>
+                            <select class="dropdown" id="dropdown-ingredient-unit">
+                                <option value="no-selected">--Select unit--</option>
+                                {{#each units}}
+                                    <option value="{{id}}">{{unitName}}</option>
+                                {{/each}}
                             </select><br>
-                          </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary" id="btn-add-new-stock">Add Stock</button>
@@ -256,6 +256,7 @@
                    $.post('/savePurchase', {stockString, purchaseTotal});
                    $("#table-add-stock-new-stock tbody tr").remove();
                    $('#add-stock-total').text('');
+                   $('#btn-add-stock-save').prop('disabled', true);
                 });
 
 

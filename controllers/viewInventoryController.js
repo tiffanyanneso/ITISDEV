@@ -117,7 +117,7 @@ const viewInventoryController = {
 			var stockProjection = 'stockName quantity stockUnit';
 			var stocks = [];
 
-			db.findMany (Stock, {ingredientName:result.ingredientName}, stockProjection, function(result2) {
+			db.findMany (Stock, {ingredientID:result._id}, stockProjection, function(result2) {
 				for (var i=0; i<result2.length; i++) {
 					var stock = {
 						stockName: result2[i].stockName,
