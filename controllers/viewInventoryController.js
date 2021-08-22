@@ -20,8 +20,8 @@ const viewInventoryController = {
 				db.findOne (Units, {_id:unitId}, 'unit', function(result){
 					if (result!="")
 						resolve(result.unit);
-				})
-			})
+				});
+			});
 		}
 
 		async function getUnit(ingredients) {
@@ -40,7 +40,7 @@ const viewInventoryController = {
 					units.push (unit);
 				}
 				res.render('viewInventory', {ingredients, units});
-			})
+			});
 		}
 
 		var projection = '_id ingredientName ingredientType unitMeasurement'; 	
@@ -84,8 +84,8 @@ const viewInventoryController = {
 				db.findOne (Units, {_id:unitId}, 'unit', function(result){
 					if (result!="")
 						resolve(result.unit);
-				})
-			})
+				});
+			});
 		}
 
 		async function getUnit(ingredientDetails, stocks) {
@@ -105,7 +105,7 @@ const viewInventoryController = {
 					units.push (unit);
 				}
 				res.render('viewIngredient', {ingredientDetails, stocks, units});
-			})
+			});
 		}
 
 		var projection = '_id ingredientName ingredientType quantityAvailable unitMeasurement reorderLevel';
@@ -123,7 +123,7 @@ const viewInventoryController = {
 						stockName: result2[i].stockName,
 						quantity: result2[i].quantity,
 						stockUnit: result2[i].stockUnit
-					}
+					};
 					stocks.push(stock);
 				}
 
@@ -151,7 +151,7 @@ const viewInventoryController = {
 			db.insertOne(Stock, stock, function(flag) {
 				if (flag) { }
 			});	
-		})
+		});
 		
 		
 	}

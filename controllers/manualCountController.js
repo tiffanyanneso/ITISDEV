@@ -20,8 +20,8 @@ const manualCountController = {
 				db.findOne (Units, {_id:unitId}, 'unit', function(result){
 					if (result!="")
 						resolve(result.unit);
-				})
-			})
+				});
+			});
 		}
 
 		async function getUnit (stocks) {
@@ -36,7 +36,7 @@ const manualCountController = {
 		var projection = 'stockName quantity stockUnit'
 		db.findMany (Stocks, {ingredientID:req.params.ingredientID}, projection, function (result) {
 			getUnit (result);
-		})
+		});
 	},
 
 	saveManualCount: function (req, res) {
@@ -49,8 +49,8 @@ const manualCountController = {
 				db.findOne(Ingredients, {_id:ingredientID}, 'unitMeasurement', function (result) {
 					if (result!="")
 						resolve(result);
-				})
-			}) 
+				});
+			}); 
 		}
 
 		function getStockUnit (stockName) {
@@ -58,8 +58,8 @@ const manualCountController = {
 				db.findOne(Stocks, {stockName: stockName}, 'stockUnit', function (result) {
 					if (result!="")
 						resolve(result);
-				})
-			})
+				});
+			});
 		}
 
 		function computeQuantity (stock) {
@@ -69,8 +69,8 @@ const manualCountController = {
 						var manualCount = stock.manualCount * result.quantity;
 						resolve(manualCount);
 					}
-				})
-			})
+				});
+			});
 		}
 
 		function convertQuantity(quantity, stockUnit, ingredientUnit) {
@@ -85,8 +85,8 @@ const manualCountController = {
 						convertedQuantity = quantity/ratio;
 
 					resolve(convertedQuantity);
-				})
-			})
+				});
+			});
 		}
 
 		function getSystemCount (ingredientID) {
@@ -94,8 +94,8 @@ const manualCountController = {
 				db.findOne (Ingredients, {_id:ingredientID}, 'quantityAvailable', function (result) {
 					if (result!="")
 						resolve (result);
-				})
-			})
+				});
+			});
 		}
 		
 
@@ -125,17 +125,17 @@ const manualCountController = {
 					systemCount: systemCount.quantityAvailable,
 					manualCount: manualCount,
 					employeeID: '610c0a3a76be1fa0308b0ef5'
-				}
+				};
 				db.insertOne (Shrinkages, shrinkage, function (flag) {
 					if (flag) {
 						db.updateOne (Ingredients, {_id:ingredientID}, {quantityAvailable:manualCount}, function(flag) {
 							if (flag) {
 								console.log("insert redirect");
 							}
-						})
+						});
 					}
 
-				})
+				});
 			}
 			else {
 				console.log("redirect?");
@@ -147,6 +147,6 @@ const manualCountController = {
 	}
 
 
-}
+};
 
 module.exports = manualCountController;

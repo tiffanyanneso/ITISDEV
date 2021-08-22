@@ -12,7 +12,7 @@ const DishClassification = require('../models/DishClassificationModel.js');
 
 const DishStatus = require('../models/DishStatusModel.js');
 
-//import models
+const Units = require('../models/UnitsModel.js');
 
 const addNewDishController = {
 
@@ -55,7 +55,20 @@ const addNewDishController = {
                     if (status.status == "Available" || status.status == "Unavailable")
                         statuses.push(status);
                 }
-                res.render('addNewDish', {classifications, statuses});
+
+                db.findMany(Units, {}, '_id unit', function (result3) {
+                    var units = [];
+
+				    for (var k = 0; k < result3.length; k++) {
+                        var unit = {
+                            _id: result3[k]._id,
+                            unitName:result3[k].unit
+                        };
+					    units.push (unit);
+				    }
+
+                    res.render('addNewDish', {classifications, statuses, units});
+                });
             });
 		});
     },
@@ -91,7 +104,35 @@ const addNewDishController = {
 
         // Look for Ingredient ID
         db.findOne(Ingredients, {ingredientName: ingredientName}, '_id', function (result) {
+            //console.log(result);
+            res.send(result);
+        });
+    },
+
+    getUnitID: function(req, res) {
+        var unitName = req.query.unit;
+
+        // Look for Ingredient ID
+        db.findOne(Units, {unit: unitName}, '_id', function (result) {
             console.log(result);
+            res.send(result);
+        });
+    },
+
+    getIngredientData: function(req, res) {
+        var ingredientName = req.query.ingredientName;
+
+        // Look for Ingredient ID
+        db.findOne(Ingredients, {ingredientName: ingredientName}, '_id', function (result) {
+            //console.log(result);
+
+            var unitName = req.query.unit;
+
+            // Look for Ingredient ID
+            db.findOne(Units, {unit: unitName}, '_id', function (result) {
+                console.log(result);
+                res.send(result);
+            });
             res.send(result);
         });
     },
@@ -180,13 +221,43 @@ const addNewDishController = {
     },
     
     postAddIngredients: function(req, res) {
-        var parsed = JSON.parse(req.body.JSONIngredients);
+        var parsedIngredients = JSON.parse(req.body.JSONIngredients);
 
-        db.insertMany (DishIngredients, parsed, function(flag) {
-            if (flag) {
+        function getIngredientID (ingredientName) {
+            return new Promise ((resolve, reject) => {
+                db.findOne (Ingredients, {ingredientName:ingredientName}, '_id', function(result) {
+                    if (result!="")
+                        resolve(result._id);
+                });
+            });
+        }
 
-            } 
-        });
+        function getUnitID (unitName) {
+            return new Promise ((resolve, reject) => {
+                db.findOne (Units, {unit: unitName}, '_id', function(result) {
+                    if (result!="")
+                        resolve(result._id);
+                });
+            });
+        }
+
+        async function saveIngredients(ingredients) {
+            for (var i = 0; i < ingredients.length; i++) {
+                ingredients[i].ingredientID = await getIngredientID(ingredients[i].ingredientID);
+                ingredients[i].unitMeasurement = await getUnitID(ingredients[i].unitMeasurement);
+            }
+
+            console.log(ingredients);
+            // call unit and ingredient 
+            db.insertMany (DishIngredients, ingredients, function(flag) {
+                if (flag) {
+                } 
+            });
+
+        }
+
+        saveIngredients(parsedIngredients);
+
     }
 	
 };

@@ -82,9 +82,9 @@
                 <input type="text" name="new-dish-ingredients-name" id="new-dish-ingredients-name" placeholder="Name" style="margin-right: 5px">
                 <input type="number" name="new-dish-ingredients-quantity" id="new-dish-ingredients-quantity" placeholder="Quantity" style="margin-right: 10px">
                 <select class="dropdown" id="dropdown-add-new-dish-ingredients-unit" style="margin-right: 10px">
-                    <option value="all" selected>All</option>
-                    <option value="option2">Option 2</option>
-                    <option value="option3">Option 3</option>
+                    {{#each units}}
+                        <option value={{_id}}>{{unitName}}</option>
+                    {{/each}}
                 </select>
                 <input class="btn-add" type="button" id="btn-add-new-dish-ingredient" name="btn-add-new-dish-ingredient" value="+">
             </div>
@@ -237,7 +237,8 @@
                 $('#btn-add-new-dish-ingredient').click(function() {
                     var ingredientName = capitalize($('#new-dish-ingredients-name').val());
                     var ingredientQty = $('#new-dish-ingredients-quantity').val();
-                    var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit').val();
+                    var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit option:selected').text();
+                    var ingredientUnitID = $('#dropdown-add-new-dish-ingredients-unit option:selected').val();
 
                     // Call validation functions
                     if (!ingredientNameValidation(ingredientName) && !ingredientQuantityValidation(ingredientQty)) {
@@ -259,7 +260,7 @@
                                     `  <tr> 
                                             <td>${ingredientName}</td> 
                                             <td>${ingredientQty}</td> 
-                                            <td>${ingredientUnit}</td>
+                                            <td value="${ingredientUnitID}">${ingredientUnit}</td>
                                             <td> <button class="delete-button add-new-dish-delete-btn"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button> </td>
                                         </tr>`
                                     );
@@ -284,7 +285,7 @@
                     //alert(myTab.rows.length);
 
                     // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
-                     for (var i = 1; i < myTab.rows.length; i++) {
+                    for (var i = 1; i < myTab.rows.length; i++) {
                          var ingredientID;
 
                         // GET THE CELLS COLLECTION OF THE CURRENT ROW.
@@ -295,24 +296,23 @@
                         var name = objCells.item(0).innerHTML; 
                         var quantity = parseFloat(objCells.item(1).innerHTML);
                         var unit = objCells.item(2).innerHTML;
-                        var id = "ID";
 
-                        //alert(dishID + " " + id + " " + parseFloat(quantity) + " " + unit);      
+                        //alert(dishID + " " + name + " " + parseFloat(quantity) + " " + unit;   
+                        var ingredient = {
+                            dishID: dishID,
+                            ingredientID: objCells.item(0).innerHTML,
+                            quantity: parseFloat(objCells.item(1).innerHTML),
+                            unitMeasurement: objCells.item(2).innerHTML
+                        };
 
-                        alert("DISH ID: " + dishID);
+                        //console.log(ingredient);
 
-                        // get ingredient id based on name
-
-                         $.get('/getIngredientID', {ingredientName: name}, function(result) {
-
-                            ingredientID = result._id;
-
-                            //alert(dishID + " " + ingredientID + " " + quantity + " " + unit);
-
-                            $.post('/postAddOneIngredient', {dishID, ingredientID, quantity, unit});
-
-                        });
+                        ingredients.push(ingredient);  
                     }
+
+                    var JSONIngredients = JSON.stringify(ingredients);
+
+                    $.post('/postAddIngredients', {JSONIngredients});
 
                     // Clear table
                     $("#table-add-new-dish tbody tr").remove();            

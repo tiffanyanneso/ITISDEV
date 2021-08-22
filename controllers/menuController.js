@@ -11,6 +11,7 @@ const DishIngredients = require('../models/DishIngredientsModel.js');
 
 const Ingredients = require('../models/IngredientsModel.js');
 
+const Units = require('../models/UnitsModel.js');
 
 const MenuController = {
 
@@ -228,8 +229,6 @@ const MenuController = {
 						//console.log(dish);
 						//console.log(statuses);
 
-						// get dish ingredients 
-
 						var projection3 = 'dishID ingredientID quantity unitMeasurement';
 						var dishIngredients = [];
 
@@ -247,18 +246,49 @@ const MenuController = {
 								dishIngredients.push(dishIngredient);
 							}
 
-							db.findMany(Ingredients, {}, '_id ingredientName', function (result5) {
+							function getIngredientName (ingredientID) {
+								return new Promise ((resolve, reject) => {
+									db.findOne (Ingredients, {_id:ingredientID}, 'ingredientName', function(result) {
+										if (result!="")
+											resolve(result.ingredientName);
+									});
+								});
+							}
+					
+							function getUnitName (unitID) {
+								return new Promise ((resolve, reject) => {
+									db.findOne (Units, {_id: unitID}, 'unit', function(result) {
+										if (result!="")
+											resolve(result.unit);
+									});
+								});
+							}
 
-								for (var k = 0; k < dishIngredients.length; k++) {
-									for (var l = 0; l < result5.length; l++) {
-										if (dishIngredients[k].ingredientID == result5[l]._id)
-											dishIngredients[k].ingredientName = result5[l].ingredientName;
-									}
+							async function getNames(dishIngredients) {
+								for (var i = 0; i < dishIngredients.length; i++) {
+									dishIngredients[i].ingredientName = await getIngredientName(dishIngredients[i].ingredientID);
+									dishIngredients[i].measurementName = await getUnitName(dishIngredients[i].measurementID);
 								}
+					
+								//console.log(dishIngredients);
 
-								console.log(dishIngredients);
-								res.render('editDish', {dish, classifications, dishIngredients});
-							});
+								db.findMany(Units, {}, '_id unit', function (result3) {
+									var units = [];
+				
+									for (var k = 0; k < result3.length; k++) {
+										var unit = {
+											_id: result3[k]._id,
+											unitName:result3[k].unit
+										};
+										units.push (unit);
+									}
+				
+									//console.log(dishIngredients);
+									res.render('editDish', {dish, classifications, dishIngredients, units});
+								});
+							}
+
+							getNames(dishIngredients);
 						});
 					});
 				});

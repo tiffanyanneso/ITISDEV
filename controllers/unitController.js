@@ -23,14 +23,14 @@ const unitController = {
 		if (conversion.operator == "*")
 			operator1 = '/';
 		else
-			operator1 = '*'
+			operator1 = '*';
 
 		var conversion1 = {
 			unitA: req.body.unitB,
 			unitB: req.body.unitA,
 			ratio: req.body.ratio,
 			operator:operator1
-		}
+		};
 
 		db.findOne(Units, {unit:conversion.unitA}, 'unit', function(result) {
 			//unit does not exist in db
@@ -52,12 +52,12 @@ const unitController = {
 		//insert conversion from unitA to unitB
 		db.insertOne (Conversion, conversion, function (flag){
 			if (flag) { }
-		})
+		});
 
 		//insert conversion from unitB to unitA
 		db.insertOne (Conversion, conversion1, function (flag){
 			if (flag) { }
-		})
+		});
 	}
 
 };
