@@ -33,7 +33,13 @@
         </div>
 
         <div class="content">
-            <h1 class="bold color-blue">Order History</h1>
+
+            <div style="display: flex;">
+                <div style="width: 50%"><h1 class="bold color-blue">Order History</h1></div>
+                <div class="div-btn-status">
+                    <h4 class="bold">As of {{today}}</h4>
+                </div>
+            </div>
 
             <div style="justify-content: flex-start">
                 <label class="date-label" for="start-date-order-history">Start Date</label>
@@ -129,6 +135,9 @@
                                     });
                                 }
                                 $("#view-order-history-total").text("₱ " + total.toFixed(2));
+
+                                $("#start-date-order-history").val(null);
+                                $("#end-date-order-history").val(null);
                             });
                         }
                     }

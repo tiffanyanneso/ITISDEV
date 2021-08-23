@@ -205,7 +205,8 @@ const purchaseController = {
 	// render existing purchases
     getViewPurchases: function (req, res) {
         var projection = '_id dateBought total employeeID';
-        var purchases = [];
+		var purchases = [];
+		var today = new Date().toLocaleString('en-US');
 
         db.findMany (Purchases, {}, projection, function(result) {
 			
@@ -243,7 +244,7 @@ const purchaseController = {
 				purchases.reverse();
 
                 //console.log(purchases);
-                res.render('viewPurchases', {purchases, total});
+                res.render('viewPurchases', {purchases, total, today});
             });
         });
     },

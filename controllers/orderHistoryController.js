@@ -31,6 +31,7 @@ const orderHistoryController = {
 
         var projection = '_id date total employeeID';
         var orders = [];
+        var today = new Date().toLocaleString('en-US');
 
         db.findMany (Sales, {}, projection, function(result) {
 			
@@ -66,7 +67,7 @@ const orderHistoryController = {
 				orders.reverse();
 
                 //console.log(purchases);
-                res.render('viewOrderHistory', {orders, total});
+                res.render('viewOrderHistory', {orders, total, today});
             });
         });
     },

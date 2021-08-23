@@ -56,7 +56,7 @@
                 </div>
             </div>
 
-            <div class="div-btn-right" style="margin-top: 90px;"><button class="btn-light-blue" id="btn-view-dish-change-status" style="margin-bottom: 10px;" data-toggle="modal" data-target="#modal-change-status">Change Status</button></div>
+            <div class="div-btn-right" id="div-change-status" style="margin-top: 90px;"><button class="btn-light-blue" id="btn-view-dish-change-status" style="margin-bottom: 10px;" data-toggle="modal" data-target="#modal-change-status">Change Status</button></div>
 
             <!-- Change Status Modal -->
             <div class="modal fade" id="modal-change-status" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle" aria-hidden="true">
@@ -181,6 +181,12 @@
         </div>
         <script>
             $(document).ready(function() {
+
+                var currentStatus = $("#status-view-dish").text();
+
+                if (currentStatus == "Out of Stock") {
+                    $("#div-change-status").css("visibility", "hidden");
+                }
 
                 $("#btn-save-new-status").click(function() {
                     var dropdownValID = $("#dropdown-status").val();
