@@ -113,7 +113,7 @@
             </div>
 
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-edit-dish-save">Save</button></div>
-            <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" style="background-color: #B00000" id="btn-edit-dish-cancel">Cancel</button></div>
+            <div class="div-btn-right" style="margin-top: 20px;"><a href = "/menu/{{dish.dishID}}"><button class="btn-light-blue" style="background-color: #B00000" id="btn-edit-dish-cancel" >Cancel</button></a></div>
 
             <div style="visibility: hidden;" id="view-dish-dishID">{{dish.dishID}}</div>
             <div style="visibility: hidden;" id="view-dish-statusID">{{dish.dishStatusID}}</div>
@@ -121,6 +121,10 @@
         </div>
         <script>
             $(document).ready(function() {
+
+                $('#btn-edit-dish-cancel').click(function() {
+
+                });
 
                 // Autocomplete for Ingredient Name
                 $("#edit-dish-ingredients-name").autocomplete({
@@ -312,8 +316,10 @@
 
                     $.post('/postAddIngredients', {JSONIngredients});
 
+                    window.location.assign('/menu/' + dishID)
+
                     // Clear table
-                    $("#table-edit-dish-ingredients tbody tr").remove();            
+                    //$("#table-edit-dish-ingredients tbody tr").remove();            
                 }
 
                 $('#btn-edit-dish-save').click(function() {

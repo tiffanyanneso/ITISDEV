@@ -106,6 +106,7 @@
             </div> 
 
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-dish-save">Save</button></div>
+            <div class="div-btn-right" style="margin-top: 10px;"><a href = "#"><button class="btn-light-blue" style="background-color: #B00000" id="btn-edit-dish-cancel" >Cancel</button></a></div>
         </div>
 
         <script> 
@@ -314,8 +315,10 @@
 
                     $.post('/postAddIngredients', {JSONIngredients});
 
+                    window.location.assign('/menu');
+
                     // Clear table
-                    $("#table-add-new-dish tbody tr").remove();            
+                    //$("#table-add-new-dish tbody tr").remove();            
                 }
 
                 $('#btn-add-new-dish-save').click(function() {

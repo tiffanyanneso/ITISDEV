@@ -222,6 +222,8 @@ const addNewDishController = {
     
     postAddIngredients: function(req, res) {
         var parsedIngredients = JSON.parse(req.body.JSONIngredients);
+        var location = req.body.location;
+        var dishID = req.body.dishID;
 
         function getIngredientID (ingredientName) {
             return new Promise ((resolve, reject) => {
