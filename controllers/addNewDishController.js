@@ -253,6 +253,7 @@ const addNewDishController = {
             // call unit and ingredient 
             db.insertMany (DishIngredients, ingredients, function(flag) {
                 if (flag) {
+
                 } 
             });
 

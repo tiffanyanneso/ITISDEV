@@ -45,26 +45,18 @@ const MenuController = {
 			// get ingredients used per dish
 
 			var dishIngredients = await getDishIngredients(dishID);
-			var ingredients = [];
 
-			//console.log("DISH INGREDIENTS: " + dishIngredients);
-
+			// for each dishIngredient, look for corresponding ingredient info
 			for (k = 0; k < dishIngredients.length; k++) {
-				//console.log(dishIngredients[k].ingredientID);
-				ingredients.push(await getIngredient(dishIngredients[k].ingredientID));
+				console.log(dishIngredients[k].ingredientID);
+				//ingredients.push(await getIngredient(dishIngredients[k].ingredientID));
+
+				var ingredient = await getIngredient(dishIngredients[k].ingredientID);
+
+				// cannot access k from ctr to compare dishIngredients unit to ingredient unit
+
+				console.log(dishIngredients[k].ingredientID + " " + ingredient);
 			}
-
-			//console.log(" INGREDIENT: " + ingredients);
-
-			// does not have the same length, should have same??
-			console.log("DISH ING " + dishIngredients.length);
-			console.log("ING LENGTH " + ingredients.length);
-
-
-			/*for (k = 0; k < dishIngredients.length; k++) {
-				console.log(dishIngredients[k]);
-				console.log(ingredients[k]);
-			}*/
 		}
 		
 		db.findMany(DishStatus, {}, '_id status', function(r) {
