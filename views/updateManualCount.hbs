@@ -106,7 +106,9 @@
                     });
                     var ingredientID = $('#ingredient-id').text();
                     var stockString = JSON.stringify(stocks);
+                    $('.manual-count').val('');
                     $.post('/saveManualCount', {ingredientID, stockString});
+
                 });
             })
             

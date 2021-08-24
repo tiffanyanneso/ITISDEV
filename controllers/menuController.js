@@ -41,21 +41,32 @@ const MenuController = {
 			});
 		}
 
-		async function checkAvailability(dishID) {
+		async function checkAvailability(dish) {
 			// get ingredients used per dish
 
-			var dishIngredients = await getDishIngredients(dishID);
+			var dishIngredients = await getDishIngredients(dish._id);
+			var checkedDishes = [];
+			//console.log(dishIngredients[k]);
 
 			// for each dishIngredient, look for corresponding ingredient info
-			for (k = 0; k < dishIngredients.length; k++) {
-				console.log(dishIngredients[k].ingredientID);
-				//ingredients.push(await getIngredient(dishIngredients[k].ingredientID));
+			for (var t = 0; t < dishIngredients.length; t++) {
 
-				var ingredient = await getIngredient(dishIngredients[k].ingredientID);
+				var ingredient = await getIngredient(dishIngredients[t].ingredientID);
+				
+				//console.log(dishIngredients[t])
 
-				// cannot access k from ctr to compare dishIngredients unit to ingredient unit
+				//needs conversion
+				if (dishIngredients[t].unitMeasurement != ingredient.unitMeasurement) {
+					console.log("needs conversion");
+				}
+				
+				//not enough to make the dish, set status to out of stock
+				if (ingredient.quantityAvailable < dishIngredients[t].quantity) {
+					dish.status = "6119fac6f933ea6c2f6d014f";
+				}
 
-				console.log(dishIngredients[k].ingredientID + " " + ingredient);
+
+				
 			}
 		}
 		
@@ -88,7 +99,7 @@ const MenuController = {
 						var dishID = checkedDishes[k]._id;
 
 						// call async function
-						checkAvailability(dishID);
+						checkAvailability(checkedDishes[k]);
 					}
 				});
 			});
