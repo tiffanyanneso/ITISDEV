@@ -14,7 +14,7 @@
         <div class="login-container">
             <h1 class="login-h1"> Welcome! </h1>
             <div>
-                <form style="margin-left: 85px;"> 
+                <form style="margin-left: 85px;" method="post"> 
                     <label for="username"> Username </label>
                     <br>
                     <input type="text" class="login-input" id="username" name="username">
@@ -23,9 +23,8 @@
                     <br>
                     <input type="password" class="login-input" id="password" name="password" >
                     <br>
-                    <p class="error" id="error-new-order"> error message here</p>
-
-                     <button type="button" class="btn-light-blue" style="margin-left: 75px; margin-top: 10px;" id="btn-login">Log In</button>
+                    
+                    <button type="button" class="btn-light-blue" style="margin-left: 75px; margin-top: 10px;" id="btn-login">Log In</button>
                 </form>
             </div>
             
@@ -38,14 +37,28 @@
                         var username = document.getElementById("username").value;
                         var password = document.getElementById("password").value;
 
-                     
                         if( username == null || username == "" || password == null || password == "" ){
                             alert("Username and password should not be null!");
                         }
                         else{
-                            alert(username);
-                            $.post('/checkLogIn', {username, password});
-                            alert(password);
+
+                            $.ajax({
+                                url: "/checkLogIn",              
+                                type: "POST",
+                                data: {'username': username,'password': password},
+                                async:false,
+                                success: function(result){
+                                    if(result.redirect != null){
+
+                                        if(result.redirect == '/login'){
+                                            alert("Username and password do not match!");
+                                        }
+                                        window.location = result.redirect;
+                                    }
+                                    else{
+                                    }
+                                }
+                            });           
                         }
                     });
                 });

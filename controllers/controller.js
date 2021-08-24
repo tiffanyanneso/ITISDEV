@@ -21,7 +21,15 @@ const controller = {
     },
 
     getDashboard: function(req, res) {
-        res.render('dashboard');
+
+      
+        if(req.session.username != null){
+          res.render('dashboard', {name: req.session.name });
+        }
+        else{
+             res.render('dashboard', {name: "Name"});
+        }
+       
     }
 }
 

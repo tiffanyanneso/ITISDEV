@@ -20,11 +20,22 @@ const dotenv = require(`dotenv`);
 
 const crypto_js = require(`crypto-js`);
 
+const bcrypt = require(`bcrypt`);
+
+const session = require('express-session');
+
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(bodyParser.urlencoded({ extended: false }));
+
+//set session variables
+app.use(session( {
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+} ));
 
 // set `hbs` as view engine
 app.set('view engine', 'hbs');
@@ -42,6 +53,7 @@ app.use(express.static('public'));
 
 // define the paths contained in `./routes/routes.js`
 app.use('/', routes);
+
 
 
 // connects to the database
