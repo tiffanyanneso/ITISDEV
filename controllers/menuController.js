@@ -16,6 +16,94 @@ const Units = require('../models/UnitsModel.js');
 const MenuController = {
 
 	getMenu: function (req, res) {
+		var checkedStatuses = [];
+		var k;
+
+		// get dish ingredients
+		function getDishIngredients(dishID) {
+			return new Promise ((resolve, reject) => {
+				var projection = 'ingredientID quantity unitMeasurement';
+				db.findMany (DishIngredients, {dishID: dishID}, projection, function(result) {
+					if (result!="")
+						resolve(result);
+				});
+			});
+		}
+
+		// get ingredient
+		function getIngredient(ingredientID) {
+			return new Promise ((resolve, reject) => {
+				var projection = '_id ingredientName unitMeasurement quantityAvailable';
+				db.findOne (Ingredients, {_id: ingredientID}, projection, function(result) {
+					if (result!="")
+						resolve(result);
+				});
+			});
+		}
+
+		async function checkAvailability(dishID) {
+			// get ingredients used per dish
+
+			var dishIngredients = await getDishIngredients(dishID);
+			var ingredients = [];
+
+			//console.log("DISH INGREDIENTS: " + dishIngredients);
+
+			for (k = 0; k < dishIngredients.length; k++) {
+				//console.log(dishIngredients[k].ingredientID);
+				ingredients.push(await getIngredient(dishIngredients[k].ingredientID));
+			}
+
+			//console.log(" INGREDIENT: " + ingredients);
+
+			// does not have the same length, should have same??
+			console.log("DISH ING " + dishIngredients.length);
+			console.log("ING LENGTH " + ingredients.length);
+
+
+			/*for (k = 0; k < dishIngredients.length; k++) {
+				console.log(dishIngredients[k]);
+				console.log(ingredients[k]);
+			}*/
+		}
+		
+		db.findMany(DishStatus, {}, '_id status', function(r) {
+			for (k = 0; k < r.length; k++) {
+				if (r[k].status == "Available" || r[k].status == "Out of Stock") {
+					var checkStatus = {
+						statusID: r[k]._id,
+						statusName: r[k].status,
+					};
+					checkedStatuses.push(checkStatus);
+				}
+			}
+			
+			var dishProj = '_id dishName dishStatus';
+			var checkedDishes = [];
+
+			// get all dishes that are available or out of stock
+			db.findMany (Dishes, {dishStatus: checkedStatuses[0].statusID}, dishProj, function(r2) {
+				for (k = 0; k < r2.length; k++) 
+					checkedDishes.push(r2[k]);
+				
+
+				db.findMany (Dishes, {dishStatus: checkedStatuses[1].statusID}, dishProj, function(r3) {
+					for (k = 0; k < r3.length; k++) 
+						checkedDishes.push(r3[k]);
+
+					// iterate through all dishes to get their ingredients
+					for (k = 0; k < checkedDishes.length; k++) {
+						var dishID = checkedDishes[k]._id;
+
+						// call async function
+						checkAvailability(dishID);
+					}
+				});
+			});
+		});
+		
+
+
 
 		var menu = [];
 		var statuses = [];
