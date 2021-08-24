@@ -54,10 +54,9 @@ const viewInventoryController = {
 					quantityAvailable: 10,
 					unitMeasurement: result[i].unitMeasurement
 				};
-				ingredients.push(ingredient);
-
-				getUnit(ingredients);
+				ingredients.push(ingredient);				
 			}
+			getUnit(ingredients);
 			
 		});
 	},
