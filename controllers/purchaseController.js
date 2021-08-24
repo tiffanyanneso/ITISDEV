@@ -254,7 +254,7 @@ const purchaseController = {
     	function getStocksPurchased(purchaseID){
     		return new Promise ((resolve, reject) => {
 	    		var purchasedStocks = [];
-	    		var projection = 'stockName unitPrice count';
+	    		var projection = 'stockID unitPrice count';
 	    		db.findMany (PurchasedStock, {purchaseID:purchaseID}, projection, function(result) {
 	    			for (var i=0; i<result.length; i++) {
 		    			var purchasedStock = {
@@ -291,9 +291,12 @@ const purchaseController = {
 				var stockInfos = [];
 				for (var i=0; i<purchasedStocks.length; i++) {
 					var stockInfo = await getStockInfo (purchasedStocks[i]);
-					stockInfos.push(stockInfo);
-				}			
-				res.render ('viewSpecificPurchase', {purchase, employeeName, purchasedStocks, stockInfos});
+					console.log(stockInfo);
+					purchasedStocks[i].stockName = stockInfo.stockName;
+					purchasedStocks[i].quantity  = stockInfo.quantity;
+					purchasedStocks[i].stockUnit = stockInfo.stockUnit;
+				}		
+				res.render ('viewSpecificPurchase', {purchase, employeeName, purchasedStocks});
 			} catch (err) {
 				console.log(err);
 			}
@@ -305,6 +308,7 @@ const purchaseController = {
     	//find specific purchase id
     	db.findOne (Purchases, {_id:id}, projection, function(result) {
     		var purchase = result;
+
     		//find employee name
     		db.findOne (Employees, {_id:result.employeeID}, 'name', function (result2) {
     			var employeeName = result2.name;

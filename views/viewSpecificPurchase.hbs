@@ -34,7 +34,7 @@
         <div class="content">
             <div>
                 <div style="display: flex;">
-                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-specific-purchase-ID">{{purchase.dateBought}}</h1></div>
+                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-specific-purchase-ID">Purchased on {{purchase.dateBought}}</h1></div>
                     <div class="div-btn-status">
                 
                     </div>
@@ -65,13 +65,12 @@
                         </tr>
                     </thead>
                     <tbody> 
-                        {{#each stockInfos}}
+                        {{#each purchasedStocks}}
                             <tr>
                                 <td>{{stockName}}</td>
                                 <td>{{quantity}}</td>
                                 <td>{{stockUnit}}</td>
-                        {{/each}}
-                        {{#each purchasedStocks}}
+                        
                                 <td>{{count}}</td>
                                 <td>{{unitPrice}}</td>
                                 <td>{{amount}}</td>
@@ -83,7 +82,7 @@
 
             <div class="summary-total-container" style="margin-top: 20px;">
                 <div class="summary-total-text">Total</div>
-                <div class="summary-info-container"><div id="view-specific-purchase-total"class="summary-total-info">{{purchase.total}}</div></div>
+                <div class="summary-info-container"><div id="view-specific-purchase-total"class="summary-total-info">Php {{purchase.total}}</div></div>
             </div>
         </div>
     </body>
