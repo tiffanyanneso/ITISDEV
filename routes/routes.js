@@ -22,6 +22,8 @@ const unitController = require('../controllers/unitController.js');
 
 const manualCountController = require('../controllers/manualCountController.js');
 
+const newOrderController = require('../controllers/newOrderController.js');
+
 router.get('/login', logInController.login);
 
 router.post('/checkLogIn', logInController.checkLogIn);
@@ -63,6 +65,8 @@ router.get('/postAddDish', addNewDishController.postAddDish);
 router.post('/postAddIngredients', addNewDishController.postAddIngredients);
 
 router.post('/postAddOneIngredient', addNewDishController.postAddOneIngredient); 
+
+router.get('/newOrder', newOrderController.getNewOrder);
 
 router.get('/newPurchase', purchaseController.renderPurchase);
 
@@ -107,5 +111,7 @@ router.post('/saveUnit', unitController.saveUnit);
 router.get('/updateManualCount/:ingredientID', manualCountController.getUpdatePage);
 
 router.post('/saveManualCount', manualCountController.saveManualCount);
+
+
 
 module.exports = router;
