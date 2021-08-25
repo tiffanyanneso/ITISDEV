@@ -259,9 +259,55 @@ const MenuController = {
 
 						dish.dishClassification = result4.classification;
 
-						//console.log(dish);
-						//console.log(statuses);
-						res.render('viewDish', {dish, statuses});
+						var projection2 = 'dishID ingredientID quantity unitMeasurement';
+						var dishIngredients = [];
+
+						db.findMany(DishIngredients, {dishID: systemID}, projection2, function(result5) {
+
+							for (var j = 0; j < result5.length; j++) {
+								var dishIngredient = {
+									dishID: result5[j].dishID,
+									ingredientID: result5[j].ingredientID,
+									ingredientName: "ingredient",
+									quantity: result5[j].quantity,
+									measurementID: result5[j].unitMeasurement,
+									measurementName: "measurement"
+								};
+
+								dishIngredients.push(dishIngredient);
+							}
+							
+							function getIngredientName (ingredientID) {
+								return new Promise ((resolve, reject) => {
+									db.findOne (Ingredients, {_id:ingredientID}, 'ingredientName', function(result) {
+										if (result!="")
+											resolve(result.ingredientName);
+									});
+								});
+							}
+					
+							function getUnitName (unitID) {
+								return new Promise ((resolve, reject) => {
+									db.findOne (Units, {_id: unitID}, 'unit', function(result) {
+										if (result!="")
+											resolve(result.unit);
+									});
+								});
+							}
+
+							async function getNames(dishIngredients) {
+								for (var i = 0; i < dishIngredients.length; i++) {
+									dishIngredients[i].ingredientName = await getIngredientName(dishIngredients[i].ingredientID);
+									dishIngredients[i].measurementName = await getUnitName(dishIngredients[i].measurementID);
+								}
+							
+								//console.log(dish);
+								//console.log(statuses);
+								res.render('viewDish', {dish, statuses, dishIngredients});
+							}
+
+							getNames(dishIngredients);
+						});
 					});
 				});
 			});
