@@ -42,9 +42,9 @@
                     <table class="table" id="table-menu">
                         <thead class="table-head table-sticky-header">
                             <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Status</th>
+                                <th style="width: 30%">Name</th>
+                                <th style="text-align:right; width: 20%">Price</th>
+                                <th style="text-align:center; width: 50%">Status</th>
                             </tr>
                         </thead>
                 {{/if }}
@@ -53,8 +53,8 @@
                 {{#if dishName}}                  
                         <tr class="link" data-href="/menu/{{_id}}">
                             <td>{{dishName}}</td>
-                            <td>₱ {{dishPrice}}</td>
-                            <td>{{dishStatus}}</td>
+                            <td style="text-align:right;">₱ {{dishPrice}}</td>
+                            <td style="text-align:center;">{{dishStatus}}</td>
                         </tr>
                 {{/if }}
                 </tbody>

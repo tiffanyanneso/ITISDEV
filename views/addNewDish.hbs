@@ -313,12 +313,17 @@
 
                     var JSONIngredients = JSON.stringify(ingredients);
 
-                    $.post('/postAddIngredients', {JSONIngredients});
+                    var location = "addNewDish";
 
-                    window.location.assign('/menu');
-
-                    // Clear table
-                    //$("#table-add-new-dish tbody tr").remove();            
+                    $.ajax({
+                            url: "/postAddIngredients",              
+                            type: "POST",
+                            data: {JSONIngredients, location, dishID},
+                            async: false,
+                            success: function(result){
+                                window.location.assign('/menu');
+                            }
+                    });      
                 }
 
                 $('#btn-add-new-dish-save').click(function() {

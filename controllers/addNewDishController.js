@@ -20,17 +20,6 @@ const addNewDishController = {
         var projection1 = '_id classification';
         var classifications = [];
 
-        /*
-        var dishClass = {
-			classification: "Drink",
-        };
-
-        db.insertOne (DishClassification, dishClass, function (flag) {
-			if (flag) {
-
-			} 
-        });*/
-
         db.findMany(DishClassification, {}, projection1, function (result) {
             //console.log(result);
 			for (var i = 0; i < result.length; i++) {
@@ -249,11 +238,15 @@ const addNewDishController = {
                 ingredients[i].unitMeasurement = await getUnitID(ingredients[i].unitMeasurement);
             }
 
-            console.log(ingredients);
+            //console.log(ingredients);
             // call unit and ingredient 
             db.insertMany (DishIngredients, ingredients, function(flag) {
                 if (flag) {
-
+                    if (location == "editDish") {
+                        res.send({redirect: '/menu/' + dishID});
+                    } else if (location == "addNewDish") {
+                        res.send({redirect: '/menu/'});
+                    }
                 } 
             });
 
