@@ -112,6 +112,8 @@ router.get('/updateManualCount/:ingredientID', manualCountController.getUpdatePa
 
 router.post('/saveManualCount', manualCountController.saveManualCount);
 
+router.get('/viewShrinkages', manualCountController.getViewShrinkages);
+
 
 
 module.exports = router;
