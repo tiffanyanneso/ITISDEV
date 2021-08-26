@@ -42,7 +42,7 @@
 
             <div class="div-search">
                 <input type="search" placeholder="Search" name="search" class="search-field" id="view-shrinkages-search-field">
-                <button type="submit" style="height: 34px" id="view-shrinkages-search-button"><i class="fa fa-search"></i></button>
+                <!--<button type="submit" style="height: 34px" id="view-shrinkages-search-button"><i class="fa fa-search"></i></button>-->
             </div>
 
             <div class= "div-dates">
@@ -149,6 +149,17 @@
                         }
                     }
                 });
+
+                $('#view-shrinkages-search-field').keyup(function() {
+                    $('#table-view-shrinkages tr').show();
+                    var searchItem = $(this).val().toLowerCase();
+                 
+                    $('#table-view-shrinkages > tbody > tr').each(function(index) {
+                        var ingredientName = $(this).children('td:nth-child(2)').text().toLowerCase();
+                        if (!ingredientName.includes(searchItem))
+                            $(this).toggle();
+                    })
+                })
             });
         </script>
     </body>
