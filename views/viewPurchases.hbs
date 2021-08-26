@@ -36,7 +36,7 @@
             <div style="display: flex;">
                 <div style="width: 50%"><h1 class="bold color-blue">Purchases</h1></div>
                 <div class="div-btn-status">
-                    <h4 class="bold">As of {{today}}</h4>
+                    <h4 class="bold" id="dateToday">As of {{today}}</h4>
                 </div>
             </div>
 
@@ -150,12 +150,12 @@
                         var convertedEndDate = new Date(endDate);
 
                         if(convertedStartDate > convertedEndDate) {
-                            alert("endDate is before startDate");
+                            //alert("endDate is before startDate");
                             $("#start-date-purchases").css("border", "1px solid #B00000");
                             $("#end-date-purchases").css("border", "1px solid #B00000");
                         }
                         else {
-                            alert("Valid dates");
+                            //alert("Valid dates");
                             $("#start-date-purchases").css("border", "1px solid #DDDDDD");
                             $("#end-date-purchases").css("border", "1px solid #DDDDDD");
 
@@ -185,6 +185,10 @@
                                     });
                                 }
                                 $("#view-purchases-total").text("₱ " + total.toFixed(2));
+
+                                $.get("/getDateToday", {}, function (result2) {
+                                    $("#dateToday").text(result2);
+                                });
 
                                 $("#start-date-purchases").val(null);
                                 $("#end-date-purchases").val(null);
