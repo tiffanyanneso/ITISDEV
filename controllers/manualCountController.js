@@ -215,6 +215,88 @@ const manualCountController = {
 
 			getNames(shrinkages, today);
 		});	
+	},
+
+	getFilteredRowsViewShrinkages: function(req, res) {
+		var startDate = new Date(req.query.startDate);
+		var endDate = new Date(req.query.endDate);
+		startDate.setHours(0,0,0,0);
+		endDate.setHours(0,0,0,0);
+		var today = new Date().toLocaleString('en-US');
+
+		var projection = '_id ingredientID date systemCount manualCount employeeID reason';
+		var shrinkages = [];
+		
+		db.findMany(Shrinkages, {}, projection, function(result) {
+			for (var i = 0; i < result.length; i++) {
+				var date = new Date(result[i].date);
+				var date2 = new Date(result[i].date);
+				date.setHours(0,0,0,0);
+				
+				if (!(startDate > date || date > endDate)) {
+					var shrinkage = {
+						ingredientID: result[i].ingredientID,
+						ingredientName: "Ingredient Name",
+						ingredientUnit: "Unit",
+						date: date2.toLocaleString('en-US'),
+						systemCount: result[i].systemCount,
+						manualCount: result[i].manualCount,
+						employee: result[i].employeeID,
+						reason: result[i].reason
+					};
+		
+					shrinkages.push(shrinkage);
+				}
+			}
+
+			function getIngredientInfo (ingredientID) {
+				return new Promise ((resolve, reject) => {
+					db.findOne (Ingredients, {_id:ingredientID}, 'ingredientName unitMeasurement', function(result) {
+
+						var info = {
+							ingredientName: result.ingredientName,
+							unitMeasurement: result.unitMeasurement,
+							unitName: "Unit Name"
+						};
+
+						db.findOne (Units, {_id: info.unitMeasurement}, 'unit', function(result2) {
+							info.unitName = result2.unit;
+
+							if (result!="" && result2!="")
+								resolve(info);
+						});
+					});
+				});
+			}
+
+			function getEmployeeName (employeeID) {
+				return new Promise ((resolve, reject) => {
+					db.findOne (Employees, {_id: employeeID}, 'name', function(result) {
+						if (result!="")
+							resolve(result.name);
+					});
+				});
+			}
+
+			async function getNames(shrinkages, today) {
+				for (var i = 0; i < shrinkages.length; i++) {
+					var ingredient = await getIngredientInfo(shrinkages[i].ingredientID);
+					shrinkages[i].ingredientName = ingredient.ingredientName;
+					shrinkages[i].ingredientUnit = ingredient.unitName;
+
+					shrinkages[i].employee = await getEmployeeName(shrinkages[i].employee);
+				}
+				res.send(shrinkages);
+			}
+
+			getNames(shrinkages, today);	
+		});
+	},
+
+	getDateToday: function(req, res) {
+		var today = new Date().toLocaleString('en-US');
+
+		res.send(today);
 	}
 };
 

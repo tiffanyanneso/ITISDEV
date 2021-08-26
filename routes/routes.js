@@ -114,6 +114,9 @@ router.post('/saveManualCount', manualCountController.saveManualCount);
 
 router.get('/viewShrinkages', manualCountController.getViewShrinkages);
 
+router.get('/getFilteredRowsViewShrinkages', manualCountController.getFilteredRowsViewShrinkages); 
+
+router.get('/getDateToday', manualCountController.getDateToday); 
 
 
 module.exports = router;

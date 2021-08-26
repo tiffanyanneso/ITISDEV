@@ -36,7 +36,7 @@
             <div style="display: flex;">
                 <div style="width: 50%"><h1 class="bold color-blue">Shrinkages</h1></div>
                 <div class="div-btn-status">
-                    <h4 class="bold">As of {{today}}</h4>
+                    <h4 class="bold" id="dateToday">As of {{today}}</h4>
                 </div>
             </div>
 
@@ -46,7 +46,7 @@
             </div>
 
             <div class= "div-dates">
-                <label for="start-date-shrinkages;" class= "date-label">Start Date</label>
+                <label for="start-date-shrinkages" class= "date-label">Start Date</label>
                 <input style="height: 34px" type="date" id="start-date-shrinkages" name="start-date-shrinkages">
                 <label class= "date-label" style="margin-left: 10px;" for="end-date-shrinkages">End Date</label>
                 <input style="height: 34px" type="date" id="end-date-shrinkages" name="end-date-shrinkages">
@@ -87,8 +87,67 @@
 
         <script> 
             $(document).ready(function() {
-                $(".link").click(function() {
-                    window.location = $(this).data("href");
+                $("#view-shrinkages-date-button").click(function() {
+                    var startDate = $("#start-date-shrinkages").val();
+                    var endDate = $("#end-date-shrinkages").val();
+
+                    if (startDate == null || startDate == "" || endDate == null || endDate == "") {
+                        if (startDate == null || startDate == "")
+                            $("#start-date-shrinkages").css("border", "1px solid #B00000")
+
+                        if (endDate == null || endDate == "")
+                            $("#end-date-shrinkages").css("border", "1px solid #B00000")
+                    } 
+                    else {
+                        var convertedStartDate = new Date(startDate);
+                        var convertedEndDate = new Date(endDate);
+
+                        if(convertedStartDate > convertedEndDate) {
+                            //alert("endDate is before startDate");
+                            $("#start-date-shrinkages").css("border", "1px solid #B00000");
+                            $("#end-date-shrinkages").css("border", "1px solid #B00000");
+                        }
+                        else {
+                            //alert("Valid dates");
+                            $("#start-date-shrinkages").css("border", "1px solid #DDDDDD");
+                            $("#end-date-shrinkages").css("border", "1px solid #DDDDDD");
+
+                            $.get("/getFilteredRowsViewShrinkages", {startDate: convertedStartDate, endDate: convertedEndDate}, function (result, result2) {
+                                var total = 0;
+
+                                $("#table-view-shrinkages tbody tr").remove();
+
+                                for (var i = 0; i < result.length; i++) {
+                                    var date = result[i].date;
+                                    var ingredientName = result[i].ingredientName;
+                                    var systemCount = result[i].systemCount;
+                                    var manualCount = result[i].manualCount;
+                                    var ingredientUnit = result[i].ingredientUnit;
+                                    var reason = result[i].reason;
+                                    var employee = result[i].employee;
+                                    
+                                    $("#table-view-shrinkages").find("tbody").append(
+                                        `  <tr> 
+                                                <td>${date}</td>
+                                                <td>${ingredientName}</td>
+                                                <td>${systemCount}</td> 
+                                                <td>${manualCount}</td>
+                                                <td>${ingredientUnit}</td>
+                                                <td>${reason}</td>
+                                                <td>${employee}</td>
+                                            </tr>`
+                                    );
+                                }
+
+                                $.get("/getDateToday", {}, function (result2) {
+                                    $("#dateToday").text(result2);
+                                });
+
+                                $("#start-date-shrinkages").val(null);
+                                $("#end-date-shrinkages").val(null);
+                            });
+                        }
+                    }
                 });
             });
         </script>

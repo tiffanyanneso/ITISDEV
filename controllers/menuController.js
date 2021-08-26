@@ -520,9 +520,6 @@ const MenuController = {
 						console.log(resultDishName);
 					}
 				}
-
-
-
 				res.send(resultDishName);
 			});
 		});

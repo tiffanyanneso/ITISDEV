@@ -269,7 +269,7 @@ const purchaseController = {
 		    			resolve(purchasedStocks);
 	    		
     			});
-    		})
+    		});
     	}
 
     	function getStockInfo (purchasedStock) {
@@ -280,9 +280,9 @@ const purchaseController = {
 						result.stockUnit  = result1.unit;
 						if (result!="")
 							resolve(result);
-					})
-				})
-			})
+					});
+				});
+			});
     	}
 
     	async function getPurchasedStocks(purchaseID, purchase, employeeName) {
@@ -307,7 +307,7 @@ const purchaseController = {
 
     	//find specific purchase id
     	db.findOne (Purchases, {_id:id}, projection, function(result) {
-    		var purchase = result;
+			var purchase = result;
 
     		//find employee name
     		db.findOne (Employees, {_id:result.employeeID}, 'name', function (result2) {
@@ -315,7 +315,7 @@ const purchaseController = {
     			//var projection2 = 'stockName unitPrice count';
 
     			//find all purchased stock and their info
-    			getPurchasedStocks(id, purchase, employeeName)
+    			getPurchasedStocks(id, purchase, employeeName);
 				
     		});
     	});
