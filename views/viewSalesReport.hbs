@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> View Sales Report </title>
+        <meta name="description" content="View Sales Report">
+        <meta name="keyword" content="View Sales Report">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        
+    </head>
+    <body>
+
+        <!-- PARTIALS -->
+        <div id="navbar"> 
+            <div class="navbar-logout"> 
+                <a href= "#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="#">Home</a>
+            <a href="#">Option 1</a>
+            <a href="#">Option 2</a>
+            <a href="#">Option 3</a>
+        </div>
+
+        <div class="content">
+
+            <div style="display: flex;">
+                <div style="width: 50%"><h1 class="bold color-blue">Sales Report</h1></div>
+                <div class="div-btn-status">
+                    <h4 class="bold" id="dateToday">As of {{today}}</h4>
+                </div>
+            </div>
+
+            <div class="div-search">
+                <input type="search" placeholder="Search" name="search" class="search-field" id="view-sales-report-search-field">
+            </div>
+
+            <div class="div-dates">
+                <label class="date-label" for="start-date-view-sales-report">Start Date</label>
+                <input style="height: 34px" type="date" id="start-date-view-sales-report" name="start-date-view-sales-report">
+                <label class= "date-label" style="margin-left: 10px;" for="end-date-view-sales-report">End Date</label>
+                <input style="height: 34px" type="date" id="end-date-view-sales-report" name="end-date-view-sales-report">
+                <button type="submit" style="height: 34px; margin-left: 10px" id="view-sales-report-date-button"><i class="fa fa-search"></i></button>
+            </div>
+
+            <br>
+
+            <!-- make rows clickable -->
+            <div class="div-table" style= "margin-top: 30px; height: 450px">
+                <table class="table" id="table-view-sales-report">
+                    <thead class="table-head table-sticky-header">
+                        <tr>
+                            <th>Name</th>
+                            <th>Count</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                        {{#each dishes}}
+                            <tr>
+                                <td>{{dishName}}</td>
+                                <td>{{count}}</td>
+                                <td>₱ {{price}}</td>
+                                <td>₱ {{total}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+
+             <div class="summary-total-container">    
+                <div class="summary-total-text">Discount</div>
+                <div class="summary-info-container"><div id="view-sales-report-discount" class="summary-total-info">₱ {{discount}}</div></div>
+            </div>
+
+            <div class="summary-total-container">    
+                <div class="summary-total-text">Total</div>
+                <div class="summary-info-container"><div id="view-sales-report-total" class="summary-total-info">₱ {{total}}</div></div>
+            </div>
+            
+        </div>
+        <script> 
+            $(document).ready(function() {
+                $('#view-sales-report-search-field').keyup(function() {
+                    $('#table-view-sales-report tr').show();
+                    var searchItem = $(this).val().toLowerCase();
+                 
+                    $('#table-view-sales-report > tbody > tr').each(function(index) {
+                        var dishName = $(this).children('td:first').text().toLowerCase();
+                        if (!dishName.includes(searchItem))
+                            $(this).toggle();
+                    })
+                })
+
+                $("#view-sales-report-date-button").click(function() {
+                    var startDate = $("#start-date-view-sales-report").val();
+                    var endDate = $("#end-date-view-sales-report").val();
+
+                    if (startDate == null || startDate == "" || endDate == null || endDate == "") {
+                        if (startDate == null || startDate == "")
+                            $("#start-date-view-sales-report").css("border", "1px solid #B00000")
+
+                        if (endDate == null || endDate == "")
+                            $("#end-date-view-sales-report").css("border", "1px solid #B00000")
+                    }
+                    else {
+                        var convertedStartDate = new Date(startDate);
+                        var convertedEndDate = new Date(endDate);
+
+                        if(convertedStartDate > convertedEndDate) {
+                            //alert("endDate is before startDate");
+                            $("#start-date-view-sales-report").css("border", "1px solid #B00000");
+                            $("#end-date-view-sales-report").css("border", "1px solid #B00000");
+                        }
+                        else {
+                            //alert("Valid dates");
+                            $("#start-date-view-sales-report").css("border", "1px solid #DDDDDD");
+                            $("#end-date-view-sales-report").css("border", "1px solid #DDDDDD");
+
+                            // get filtered rows
+
+                                $.get("/getDateToday", {}, function (result2) {
+                                    $("#dateToday").text(result2);
+                                });
+
+                                //$("#start-date-view-sales-report").val(null);
+                                //$("#end-date-view-sales-report").val(null);
+
+                        }
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

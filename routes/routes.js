@@ -24,6 +24,8 @@ const manualCountController = require('../controllers/manualCountController.js')
 
 const newOrderController = require('../controllers/newOrderController.js');
 
+const reportController = require('../controllers/reportController.js');
+
 router.get('/login', logInController.login);
 
 router.post('/checkLogIn', logInController.checkLogIn);
@@ -117,6 +119,10 @@ router.get('/viewShrinkages', manualCountController.getViewShrinkages);
 router.get('/getFilteredRowsViewShrinkages', manualCountController.getFilteredRowsViewShrinkages); 
 
 router.get('/getDateToday', manualCountController.getDateToday); 
+
+router.get('/viewInventoryReport', reportController.getInventoryReport); 
+
+router.get('/viewSalesReport', reportController.getSalesReport); 
 
 
 module.exports = router;
