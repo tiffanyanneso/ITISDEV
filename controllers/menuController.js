@@ -13,6 +13,8 @@ const Ingredients = require('../models/IngredientsModel.js');
 
 const Units = require('../models/UnitsModel.js');
 
+const Conversion = require('../models/ConversionModel.js');
+
 const MenuController = {
 
 	getMenu: function (req, res) {
@@ -41,28 +43,121 @@ const MenuController = {
 			});
 		}
 
+		//unitA will be ingredient unit, unitB will be dishUnit
+		function getConversion (ingredientUnit, dishUnit){
+			return new Promise((resolve, reject) => {
+				var conversion = []
+				db.findOne (Conversion, {$and:[ {unitA:ingredientUnit}, {unitB:dishUnit} ]}, 'ratio operator', function(result){
+					//console.log("direct " + result);
+					if (result!="") {
+						conversion.push (result)
+						resolve(conversion);
+					}
+				})
+			})
+		}
+
+		function getIndirectConversion(unitA, unitB) {
+			return new Promise ((resolve, reject) => {
+				var conversions = [];
+				//get all conversions with ingredientUnit
+				db.findMany (Conversion, {unitA:unitA}, 'unitB ratio operator', function (result) {	
+					//get all conversions with dishUnit as unit to be converted to
+					db.findMany (Conversion, {unitB:unitB}, 'unitA ratio operator', function (result1) {
+						var found = false;
+						for (var i=0; i<result.length && !found; i++) {
+							for (var j=0; j<result1.length && !found; j++) {
+								if (result[i].unitB == result1[j].unitA) {
+									conversions.push (result[i]);
+									conversions.push (result1[j]);
+									found = true;
+								}
+							}
+						}
+						//console.log("indirect " + conversions);
+						resolve(conversions);
+					})
+				}) 
+			})
+		}
+
+		//converting from ingredientUnit to dishUnit
+		function computeQuantityAvailable(quantityAvailable, conversion) {
+			return new Promise((resolve, reject) => {
+				var computedQuantity = quantityAvailable;
+
+				//console.log("compute quantity " + conversion);
+				for (var i=0; i<conversion.length; i++) {
+					var ratio = conversion[i].ratio
+					var operator = conversion[i].operator
+
+					if (operator == "*")
+						computedQuantity = computedQuantity * ratio
+					else 
+						computedQuantity = computedQuantity / ratio
+				}
+				//console.log(computedQuantity);
+				resolve (computedQuantity);
+			}) 
+		}
+
 		async function checkAvailability(dish) {
 			// get ingredients used per dish
 
 			var dishIngredients = await getDishIngredients(dish._id);
 			var checkedDishes = [];
+			var outOfStock = false;
 			//console.log(dishIngredients[k]);
 
 			// for each dishIngredient, look for corresponding ingredient info
-			for (var t = 0; t < dishIngredients.length; t++) {
+			for (var t = 0; t < dishIngredients.length && !outOfStock; t++) {
 
 				var ingredient = await getIngredient(dishIngredients[t].ingredientID);
-				
-				//console.log(dishIngredients[t])
 
-				//needs conversion
-				if (dishIngredients[t].unitMeasurement != ingredient.unitMeasurement) {
-					console.log("needs conversion");
+				
+
+				var availableIngredient = ingredient.quantityAvailable;
+
+				//console.log("ingredient " + ingredient.unitMeasurement + "       dish unit " + dishIngredients[t].unitMeasurement + "\n")
+				//needs conversion, convert from ingredientUnit to dishUnit
+				if (ingredient.unitMeasurement != dishIngredients[t].unitMeasurement) {
+					var conversion;
+
+
+					//checks if there is direct converion
+					conversion = await getConversion (ingredient.unitMeasurement, dishIngredients[t].unitMeasurement);
+					
+					//no direct conversion, check for indirect conversions
+					if (conversion == null || conversion == "") 
+						conversion = await getIndirectConversion(ingredient.unitMeasurement, dishIngredients[t].unitMeasurement);
+
+					//console.log("IN IF " + conversion);
+
+
+					//console.log("DISH NAME " + dish.dishName + "     INGREDIENT " + ingredient.ingredientName);
+					availableIngredient = await computeQuantityAvailable(ingredient.quantityAvailable, conversion);
 				}
+
+				//console.log("DISH NAME " + dish.dishName + "     INGREDIENT " + ingredient.ingredientName);
+				//console.log("AVAILABLE: " + availableIngredient + " DISH NEED: " + dishIngredients[t].quantity);
 				
 				//not enough to make the dish, set status to out of stock
-				if (ingredient.quantityAvailable < dishIngredients[t].quantity) {
-					dish.status = "6119fac6f933ea6c2f6d014f";
+				if (availableIngredient < dishIngredients[t].quantity) {
+					if (dish.status!="6119fac6f933ea6c2f6d014f") {
+						db.updateOne(Dishes, {_id:dish._id}, {dishStatus:"6119fac6f933ea6c2f6d014f"}, function(flag) {
+							if (flag) { }
+						})
+					}
+					outOfStock = true;
+					//console.log("out of stock");
+				}
+				else {
+					if (dish.dishStatus!="611369ebaf90cc0e419b25e0") {
+						db.updateOne(Dishes, {_id:dish._id}, {dishStatus:"611369ebaf90cc0e419b25e0"}, function(flag) {
+							if (flag) { }
+						})
+					}
+					//console.log("in stock");
 				}
 
 
@@ -84,19 +179,19 @@ const MenuController = {
 			var dishProj = '_id dishName dishStatus';
 			var checkedDishes = [];
 
-			// get all dishes that are available or out of stock
+			// get all dishes that are available
 			db.findMany (Dishes, {dishStatus: checkedStatuses[0].statusID}, dishProj, function(r2) {
 				for (k = 0; k < r2.length; k++) 
 					checkedDishes.push(r2[k]);
 				
-
+				//get all dishes that are out of stock
 				db.findMany (Dishes, {dishStatus: checkedStatuses[1].statusID}, dishProj, function(r3) {
 					for (k = 0; k < r3.length; k++) 
 						checkedDishes.push(r3[k]);
 
 					// iterate through all dishes to get their ingredients
 					for (k = 0; k < checkedDishes.length; k++) {
-						var dishID = checkedDishes[k]._id;
+						//var dishID = checkedDishes[k]._id;
 
 						// call async function
 						checkAvailability(checkedDishes[k]);

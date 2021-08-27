@@ -43,18 +43,24 @@ const viewInventoryController = {
 			});
 		}
 
-		var projection = '_id ingredientName ingredientType unitMeasurement'; 	
+		var projection = '_id ingredientName ingredientType quantityAvailable unitMeasurement'; 	
 		var ingredients = [];
 		db.findMany (Ingredients, {}, projection, function(result) {
 			for (var i=0; i<result.length; i++) {
+				var status;
+				if (result[i].quantityAvailable > 0)
+					status = "In-Stock";
+				else
+					status = "Out of Stock";
 				var ingredient = {
 					systemID: result[i]._id,
 					ingredientName: result[i].ingredientName,
 					ingredientType: result[i].ingredientType,
-					quantityAvailable: 10,
-					unitMeasurement: result[i].unitMeasurement
+					quantityAvailable: result[i].quantityAvailable,
+					unitMeasurement: result[i].unitMeasurement,
+					status: status
 				};
-				ingredients.push(ingredient);				
+				ingredients.push(ingredient);		
 			}
 			getUnit(ingredients);
 			
