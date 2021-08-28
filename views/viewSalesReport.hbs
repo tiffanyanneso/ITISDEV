@@ -56,7 +56,7 @@
             <br>
 
             <!-- make rows clickable -->
-            <div class="div-table" style= "margin-top: 30px; height: 450px">
+            <div class="div-table" style= "margin-top: 30px; height: 440px">
                 <table class="table" id="table-view-sales-report">
                     <thead class="table-head table-sticky-header">
                         <tr>
@@ -77,6 +77,11 @@
                         {{/each}}
                     </tbody>
                 </table>
+            </div>
+
+            <div class="summary-total-container">    
+                <div class="summary-total-text">VAT</div>
+                <div class="summary-info-container"><div id="view-sales-report-vat" class="summary-total-info">₱ {{VAT}}</div></div>
             </div>
 
              <div class="summary-total-container">    
