@@ -62,7 +62,7 @@
                         <tr>
                             <th>Date</th>
                             <th>Purchased By</th>
-                            <th>Amount</th>
+                            <th style="text-align:end">Amount</th>
                         </tr>
                     </thead>
                     <tbody> 
@@ -70,7 +70,7 @@
                             <tr class="link" data-href="/purchase/{{systemID}}">
                                 <td>{{dateBought}}</td>
                                 <td>{{employeeName}}</td>
-                                <td>₱ {{total}}</td>
+                                <td style="text-align: right;">₱ {{total}}</td>
                             </tr>
                         {{/each}}
                     </tbody>
