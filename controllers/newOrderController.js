@@ -2,7 +2,7 @@ const db = require('../models/db.js');
 
 const Dishes = require('../models/DishesModel.js');
 
-const DishClassification = require('../models/DishClassificationModel');
+const DishClassification = require('../models/DishClassificationModel.js');
 
 const DishStatus = require('../models/DishStatusModel.js');
 
@@ -12,15 +12,14 @@ const DishStatus = require('../models/DishStatusModel.js');
 
 //const Ingredients = require('../models/IngredientsModel.js');
 
-//const SalesModel  = require('../models/SalesModel');
+const Sales  = require('../models/SalesModel.js');
 
-//const SalesDishesModel = require('../model/SalesDishesModel');
+const SalesDishes = require('../models/SalesDishesModel.js');
 
 const newOrderController = {
 
     //Render Template
-    getNewOrder: function(req, res)
-    { 
+    getNewOrder: function(req, res) { 
             
         //DISHES
         var projection = '_id dishName dishPrice dishStatus';
@@ -64,104 +63,77 @@ const newOrderController = {
         res.render('newOrder', {dishes, currentStatus});
 
     },
-    /*
-    getDishID: function(req, res) {
-        
-        var dishName = req.query.ingredientName;
-        db.findOne(Dishes, {dishName: dishName}, '_id', function (result) {
-            console.log(result);
-            res.send(result);
-        });
-    },
 
-    getDishName: function(req, res) { 
-        var dishID = req.query.dishID;
-
-        var projection = 'dishID dishName';
-
-        db.findOne(Dishes, {dishID: dishID}, projection, function(result) {
-            res.send(result);
-        });
-    },
-
-    */
-
-    getAutoDishName: function (req, res) {
-		console.log(req.query.query);
+    getDishName: function (req, res) {
 		//$options:i denotes case insensitive searching
-		db.findMany (Dishes, /*{$and: [ {dishStatus: "611369ebaf90cc0e419b25e0"},*/ {dishName:{$regex:req.query.query, $options:'i'}}, 'dishName', function (result) {
-			console.log(result);
+        db.findMany (Dishes, {$and: [ {dishName:{$regex:req.query.query, $options:'i'}}, {dishStatus:"611369ebaf90cc0e419b25e0"} ]}, 'dishName', function (result) {
             var formattedResults = [];
-			//reason for the for loop: https://stackoverflow.com/questions/5077409/what-does-autocomplete-request-server-response-look-like
-			for (var i=0; i<result.length; i++) {
-				var formattedResult = {
-					label: result[i].dishName,
-					value: result[i].dishName
-				};
-				formattedResults.push(formattedResult);
-			}
-			res.send(formattedResults);
-		});
-
-
-	},
-
-    
-////////////////////////////////////////////////////////  
-/** 
-    postAddOrder: function(req, res) {
-		var dish = {
-			dishName: req.query.dishName,
-			dishPrice: parseFloat(req.query.dishPrice),
-			dishStatus: req.query.dishStatus,
-			dishClassification: req.query.dishClassification
-        };
-
-
-        db.findOne(DishStatus, {status: "Deleted"}, '_id', function(result) {
-            var deleteStatusID = result._id;
-
-            db.insertOne (Dishes, dish, function (flag) {
-                var dishInfo = [];
-
-                if (flag) {
-                    db.findMany(Dishes, {dishName: dish.dishName}, '_id dishStatus', function(result2) {
-                        for (var i = 0; i < result2.length; i++) {
-                            if (deleteStatusID != result2[i].dishStatus) {
-                                dishInfo = {
-                                    _id : result2[i]._id
-                                };
-                            }
-                        }
-                        
-                        res.send(dishInfo);
-                    });
-                } 
-            });
+            //reason for the for loop: https://stackoverflow.com/questions/5077409/what-does-autocomplete-request-server-response-look-like
+            for (var i=0; i<result.length; i++) {
+                var formattedResult = {
+                    label: result[i].dishName,
+                    value: result[i].dishName
+                };
+                formattedResults.push(formattedResult);
+            }
+            res.send(formattedResults);
         });
     },
 
+    getDishPrice: function (req, res) {
+        db.findOne (Dishes, {dishName: req.query.dishName}, 'dishPrice',  function (result) {
+            res.send(result);
+        })
+    },
 
-    postAddSpecificDish: function(req, res) {
-		var dishIngredient = {
-			dishID: req.body.dishID,
-			ingredientID: req.body.ingredientID,
-			quantity: req.body.quantity,
-			unitMeasurement: req.body.unit
+    saveSale: function (req, res) {
+
+        function getDishID (dishName) {
+            return new Promise ((resolve, reject) => {
+                db.findOne (Dishes, {dishName:dishName}, '_id', function (result) {
+                    if (result!="")
+                        resolve(result._id);
+                })
+            })
+        }
+
+        async function dishID (dishes, salesID) {
+            var dishesSave = []
+            for (var i=0; i<dishes.length; i++) {
+                var dishID = await getDishID(dishes[i].dishName);
+                var dishFormatted = {
+                    salesID: salesID,
+                    dishID: dishID,
+                    quantity: dishes[i].quantity
+                } 
+                dishesSave.push(dishFormatted);
+            }
+            db.insertMany (SalesDishes, dishesSave, function (flag) {
+                if (flag) {}
+            })
+        }
+
+        var dishes = JSON.parse(req.body.dishString);
+        var orderTotal = req.body.orderTotal;
+        var dateOrdered = new Date();
+
+        var sale = {
+            employeeID: "610c0a7076be1fa0308b0ef8",
+            date: dateOrdered, 
+            total: orderTotal,
+            VAT: 0,
+            discount: 0
         };
+        
 
-        db.insertOne (DishIngredients, dishIngredient, function (flag) {
-			if (flag) {
-
-			} 
-        });
-
-    };
-
-    */
-    
+        db.insertOneResult (Sales, sale, function (result) {
+            salesID = result._id;
+            dishID (dishes, salesID);
+        })
+    }
 
 };
+
     
 module.exports = newOrderController;
 
@@ -169,19 +141,9 @@ module.exports = newOrderController;
 /*
 Tasks: 
 
--Search Auto-Complete available dishes only
-
--Add Dishes and Quantity
-
--Show Dishes and Quantity in Table
-
 -Validate Quantity of Order
 
--Calculate Quantity and Amount based on Dish Input
-
 -Discount User Input as Percentage
-
--Auto Calculate fees
 
 -Save Button 
     -saves sales and sales dishes data to table 

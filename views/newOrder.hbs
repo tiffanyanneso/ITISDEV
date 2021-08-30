@@ -56,9 +56,7 @@
 
             <div style="margin-top: 10px;"> 
                 <input type="text" name="dish-name" id="dish-name" placeholder="Dish Name" style="margin-right: 5px">
-
                 <input type="number" name="dish-quantity" id="dish-quantity" placeholder="Quantity" min="0" style="margin-right: 10px">
-
                 <input class="btn-add" type="button" id="btn-add-dish" name="btn-add" value="+">
             </div>
 
@@ -66,23 +64,19 @@
            
 
             <div class="div-table" style="margin-top: 10px;">
-
                 <table class="table" id="table-view-dish">
-
                     <thead class="table-head table-sticky-header">
 
                         <tr> 
                             <th>Name</th>
                             <th>Quantity</th>
-                            
-                            <!--
                             <th>Unit Price</th>
                             <th>Amount</th>
-                            -->
+                            <th></th>
                         </tr>
                     </thead>
                     
-                    <tbody> 
+                    <tbody id="table-view-dish-body"> 
                         <!--
                        {{#each salesDishes}}
                             <tr>
@@ -94,7 +88,6 @@
                         {{/each}}
                         -->
                     </tbody>
-
                 </table>
             </div>
 
@@ -109,19 +102,19 @@
 
             <div class="summary-container">
                 <div class="summary-text">Subtotal</div>
-                <div class="summary-info-container"><div id="new-order-subtotal" class="summary-info">₱ {{sale.subtotal}}</div></div>
+                <div class="summary-info-container"><div id="new-order-subtotal" class="summary-info">₱ 0</div></div>
             </div>
             <div class="summary-container">
                 <div class="summary-text">VAT</div>
-                <div class="summary-info-container"><div id="new-order-VAT" class="summary-info">₱ {{sale.VAT}}</div></div>
+                <div class="summary-info-container"><div id="new-order-VAT" class="summary-info">₱ 0</div></div>
             </div>
             <div class="summary-container">    
                 <div class="summary-text">Less: Discount</div>
-                <div class="summary-info-container"><div id="new-order-less-discount" class="summary-info">₱ {{sale.discount}}</div></div>
+                <div class="summary-info-container"><div id="new-order-less-discount" class="summary-info">₱ 0</div></div>
             </div>
             <div class="summary-container">
                 <div class="summary-text">Total Due</div>
-                <div class="summary-info-container"><div id="new-order-total-due"class="summary-info">₱ {{sale.total}}</div></div>
+                <div class="summary-info-container"><div id="new-order-total-due"class="summary-info">₱ 0</div></div>
             </div>
 
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-new-order-save">Save</button></div>
@@ -131,50 +124,23 @@
 
             $(document).ready(function() {
 
-                /*
-                $("#dish-name").autocomplete({
-                    source:function(request, response) {
-                        alert(request.term);
-                    $.ajax({
-
-                            url: `/getAutoDishName?query=${request.term}`,
-                            dataType: "json",
-                            data: 
-                            {
-                                //request.term refers to the value currently in the text input
-                                term: request.term,
-                            },
-                            success: function (data) 
-                            {
-                                response(data);
-                            }
-
-                        });
-                    }
-                });
-                */
-
-                 $( "#dish-name" ).autocomplete({
+                 $("#dish-name").autocomplete({
                     source:function(request, response) {
                     $.ajax({
-                            url: `/getAutoDishName?query=${request.term}`,
-                            dataType: "json",
-                            data: {
-                                //request.term refers to the value currently in the text input
-                                term: request.term,
-                            },
-                            success: function (data) {
-                                response(data);
-                            }
-                        });
+                                url: `/getDishName?query=${request.term}`,
+                                dataType: "json",
+                                data: {
+                                    //request.term refers to the value currently in the text input
+                                    term: request.term,
+                                },
+                                success: function (data) {
+                                    response(data);
+                                }
+                         });
                     }
                 });
 
-
-            }
-
-/*
-                function dishQuantityValidation(dishQty) { 
+                /*function dishQuantityValidation(dishQty) { 
                     if (dishQty == null || dishQty == "") {
                         errorMessage("dishQty");
                         return 1;
@@ -194,35 +160,82 @@
 
                 
                 function errorMessage(type) {
-
                     if (type == "dishName") {
                         $("#new-dish-name").css("border", "1px solid #B00000");
                         $("#error-new-dish-name").text("Please enter a Dish Name.");
-
                     } 
 
                     else if (type == "dishQty") {
                         $("#new-dish-ingredients-quantity").css("border", "1px solid #B00000");
                         $("#error-ingredients").text("Please enter the Dish Quantity.");
                     }
-                }
-*/
+                }*/
 
-/*
+                function capitalize(string){
+                    var words = string.toLowerCase().split(' ');
+                    for (i=0; i<words.length; i++)
+                        words[i] = words[i].charAt(0).toUpperCase() + words[i].substring(1);
+                    return words.join(' ');
+                };
+
 
                 $('#btn-add-dish').click(function() {
-                    var dishName = capitalize($('#ingredient-name').val());
-                    var dishType = $('#dropdown-ingredient-type').val();
-                    var ingredientUnitVal = $('#dropdown-ingredient-unit').val();
-                    var ingredientUnitText = $('#dropdown-ingredient-unit :selected').text();
+                    var dishName = capitalize($('#dish-name').val());
+                    var quantity = $('#dish-quantity').val();
 
-                    $('#table-view-inventory').append ("<tr>" + "<td>" + ingredientName + "</td>" + "<td>" + ingredientType + "</td>" + "<td>0</td>" + "<td>" + ingredientUnitText + "</td>" + "<td>Out of Stock</td>");
+                    $.get('/getDishPrice', {dishName:dishName}, function (result) {
+                        //stockID was found in DB
+                        if (result!="") {
+                                var unitPrice = result.dishPrice
+                                var total = quantity*result.dishPrice;
 
-                    $('#modal-add-ingredient').modal('toggle');
-                    $('#add-new-ingredient').trigger('reset');
-                    $.post('/addIngredient', {ingredientName, ingredientType, ingredientUnitVal});
+                                $('#table-view-dish').append (
+                                `<tr>
+                                    <td class="dishName">${dishName}</td>
+                                    <td class="quantity">${quantity}</td>
+                                    <td class-"unitPrice">${unitPrice}</td>
+                                    <td class="total">${total}</td>
+                                    <td><button class="delete-button add-stock-delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button></td>
+                                </tr>`);
+
+                                $('#dish-name').val(''); 
+                                $('#dish-quantity').val('');    
+                                $('#btn-new-order-save').prop('disabled', false);
+                                $("#btn-new-order-save").css("background-color", "#0F84D9");
+
+                                var overallTotal = parseInt($('#new-order-total-due').text().slice(1)) + total;
+
+                                $('#new-order-total-due').text("₱ " + overallTotal);
+
+                            }
+
+                        //dish db not found, ask to change input
+                        else{                          
+                            alert("not found")
+                        }
+                    });
                 });
-*/
+
+                $('#btn-new-order-save').click(function() {
+                    var orderedDishes = [];
+                   
+                   $("#table-view-dish-body > tr").each(function () {
+                        var dish= {
+                            dishName: $(this).children('.dishName').text(),
+                            quantity: $(this).children('.quantity').text(),
+                            salesID: 0
+                        }
+                        orderedDishes.push(dish);
+                    });
+
+                   var dishString = JSON.stringify(orderedDishes);
+                   var orderTotal = $('#new-order-total-due').text().slice(1);
+                   $.post('/saveSale', {dishString, orderTotal});
+                   $("#table-view-dish-body tr").remove();
+                   $('#new-order-total-due').text('');
+                   $('#btn-new-order-save').prop('disabled', true);
+                })                  
+           })
             
         </script>
     </body>
