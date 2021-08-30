@@ -64,7 +64,7 @@ const newOrderController = {
         res.render('newOrder', {dishes, currentStatus});
 
     },
-    
+    /*
     getDishID: function(req, res) {
         
         var dishName = req.query.ingredientName;
@@ -84,12 +84,14 @@ const newOrderController = {
         });
     },
 
+    */
 
     getAutoDishName: function (req, res) {
 		console.log(req.query.query);
 		//$options:i denotes case insensitive searching
-		db.findMany (Dishes, {dishName:{$regex:req.query.query, $options:'i'}}, 'dishName', function (result) {
-			var formattedResults = [];
+		db.findMany (Dishes, /*{$and: [ {dishStatus: "611369ebaf90cc0e419b25e0"},*/ {dishName:{$regex:req.query.query, $options:'i'}}, 'dishName', function (result) {
+			console.log(result);
+            var formattedResults = [];
 			//reason for the for loop: https://stackoverflow.com/questions/5077409/what-does-autocomplete-request-server-response-look-like
 			for (var i=0; i<result.length; i++) {
 				var formattedResult = {
@@ -100,8 +102,64 @@ const newOrderController = {
 			}
 			res.send(formattedResults);
 		});
+
+
 	},
 
+    
+////////////////////////////////////////////////////////  
+/** 
+    postAddOrder: function(req, res) {
+		var dish = {
+			dishName: req.query.dishName,
+			dishPrice: parseFloat(req.query.dishPrice),
+			dishStatus: req.query.dishStatus,
+			dishClassification: req.query.dishClassification
+        };
+
+
+        db.findOne(DishStatus, {status: "Deleted"}, '_id', function(result) {
+            var deleteStatusID = result._id;
+
+            db.insertOne (Dishes, dish, function (flag) {
+                var dishInfo = [];
+
+                if (flag) {
+                    db.findMany(Dishes, {dishName: dish.dishName}, '_id dishStatus', function(result2) {
+                        for (var i = 0; i < result2.length; i++) {
+                            if (deleteStatusID != result2[i].dishStatus) {
+                                dishInfo = {
+                                    _id : result2[i]._id
+                                };
+                            }
+                        }
+                        
+                        res.send(dishInfo);
+                    });
+                } 
+            });
+        });
+    },
+
+
+    postAddSpecificDish: function(req, res) {
+		var dishIngredient = {
+			dishID: req.body.dishID,
+			ingredientID: req.body.ingredientID,
+			quantity: req.body.quantity,
+			unitMeasurement: req.body.unit
+        };
+
+        db.insertOne (DishIngredients, dishIngredient, function (flag) {
+			if (flag) {
+
+			} 
+        });
+
+    };
+
+    */
+    
 
 };
     

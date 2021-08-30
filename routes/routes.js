@@ -70,6 +70,8 @@ router.post('/postAddOneIngredient', addNewDishController.postAddOneIngredient);
 
 router.get('/newOrder', newOrderController.getNewOrder);
 
+router.get('/getAutoDishName', newOrderController.getAutoDishName);
+
 router.get('/newPurchase', purchaseController.renderPurchase);
 
 router.get('/getStockName?', purchaseController.getStockName);

@@ -12,6 +12,7 @@
         <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         
     </head>
     <body>
@@ -129,7 +130,31 @@
         <script> 
 
             $(document).ready(function() {
+
+                /*
                 $("#dish-name").autocomplete({
+                    source:function(request, response) {
+                        alert(request.term);
+                    $.ajax({
+
+                            url: `/getAutoDishName?query=${request.term}`,
+                            dataType: "json",
+                            data: 
+                            {
+                                //request.term refers to the value currently in the text input
+                                term: request.term,
+                            },
+                            success: function (data) 
+                            {
+                                response(data);
+                            }
+
+                        });
+                    }
+                });
+                */
+
+                 $( "#dish-name" ).autocomplete({
                     source:function(request, response) {
                     $.ajax({
                             url: `/getAutoDishName?query=${request.term}`,
@@ -146,6 +171,9 @@
                 });
 
 
+            }
+
+/*
                 function dishQuantityValidation(dishQty) { 
                     if (dishQty == null || dishQty == "") {
                         errorMessage("dishQty");
@@ -160,7 +188,7 @@
                         errorMessage("dishName");
                         return 1;
                     }
-                    else 
+                    else    
                         return 0;
                 }
 
@@ -178,125 +206,24 @@
                         $("#error-ingredients").text("Please enter the Dish Quantity.");
                     }
                 }
-
-                
-                $('btn-add').click(function() {
-                    
-                    var dishName = $('input[name="dish-name"]').val();
-                    var dishQty = $('input[name="dish-quantity"]').val();
-
-                    var tr_ = '<tr><td>' + dishName + '</td> <td>'  + dishQty + '</td></tr>';
-
-                    $('tbody').append(tr_);
-                
-                });
+*/
 
 /*
 
-                 $("#table-add-new-dish").on('click','.add-new-dish-delete-btn', function() {
-                    $(this).closest('tr').remove();
+                $('#btn-add-dish').click(function() {
+                    var dishName = capitalize($('#ingredient-name').val());
+                    var dishType = $('#dropdown-ingredient-type').val();
+                    var ingredientUnitVal = $('#dropdown-ingredient-unit').val();
+                    var ingredientUnitText = $('#dropdown-ingredient-unit :selected').text();
+
+                    $('#table-view-inventory').append ("<tr>" + "<td>" + ingredientName + "</td>" + "<td>" + ingredientType + "</td>" + "<td>0</td>" + "<td>" + ingredientUnitText + "</td>" + "<td>Out of Stock</td>");
+
+                    $('#modal-add-ingredient').modal('toggle');
+                    $('#add-new-ingredient').trigger('reset');
+                    $.post('/addIngredient', {ingredientName, ingredientType, ingredientUnitVal});
                 });
-
-
-                // Reset dish fields
-                function resetDish() {
-                    $("#new-dish-name").val("");
-                    $("#new-dish-price").val("");
-                    $("#dropdown-add-new-dish-classification")[0].selectedIndex = 0; 
-                    $("#dropdown-add-new-dish-status")[0].selectedIndex = 0; 
-                }
-                
-                // Reset ingredient fields
-                function resetIngredients() {
-                    $("#new-dish-ingredients-name").val("");
-                    $("#new-dish-ingredients-quantity").val("");
-                    $("#dropdown-add-new-dish-ingredients-unit")[0].selectedIndex = 0; 
-                }
-
-
-
-               
-                function readTable(dishID) { 
-                    var ingredients = [];
-
-                    //alert("READ TABLE " + dishID);
-
-                    var myTab = $("#table-add-new-dish")[0];
-
-                    //alert(myTab.rows.length);
-
-                    // LOOP THROUGH EACH ROW OF THE TABLE AFTER HEADER.
-                     for (var i = 1; i < myTab.rows.length; i++) {
-                         var ingredientID;
-
-                        // GET THE CELLS COLLECTION OF THE CURRENT ROW.
-                        var objCells = myTab.rows.item(i).cells;
-
-                        //alert(objCells.item(0).innerHTML + " " + objCells.item(1).innerHTML + " " + objCells.item(2).innerHTML);
-
-                        var name = objCells.item(0).innerHTML; 
-                        var quantity = parseFloat(objCells.item(1).innerHTML);
-                        var unit = objCells.item(2).innerHTML;
-                        var id = "ID";
-
-                        //alert(dishID + " " + id + " " + parseFloat(quantity) + " " + unit);      
-
-                        alert("DISH ID: " + dishID);
-
-                        // get ingredient id based on name
-
-                         $.get('/getIngredientID', {ingredientName: name}, function(result) {
-
-                            ingredientID = result._id;
-
-                            //alert(dishID + " " + ingredientID + " " + quantity + " " + unit);
-
-                            $.post('/postAddOneIngredient', {dishID, ingredientID, quantity, unit});
-
-                        });
-                    }
-
-                    // Clear table
-                    $("#table-add-new-dish tbody tr").remove();            
-                }
-
-
-                function computeFees(){
-
-                    //use as reference: https://www.youtube.com/watch?v=1UAORTlaqLg&ab_channel=EnrichingLife
-
-                }
-
-                $('#btn-add-new-order-save').click(function() {
-                    var dishName = capitalize($('#new-dish-name').val());
-                    var dishPrice = $('#new-dish-price').val();
-                    var dishClassification = $('#dropdown-add-new-dish-classification').val();
-                    var dishStatus = $('#dropdown-add-new-dish-status').val();
-                    var dishID;
-
-                    //alert(dishName + ", " + dishPrice + ", " + dishClassification + ", " + dishStatus);
-                    
-                    // Validate inputs
-                    if (!dishNameValidation(dishName) && !dishPriceValidation(dishPrice)) {
-                        $("#new-dish-name").css("border", "1px solid #DDDDDD");
-                        $("#new-dish-price").css("border", "1px solid #DDDDDD");
-
-                        $("#error-new-dish-name").text("");
-                        $("#error-new-dish-price").text("");
-
-                        resetDish();
-
-                        $.get('/postAddOrder', {dishName: dishName, dishPrice: dishPrice, dishClassification: dishClassification, dishStatus: dishStatus}, function(result) {
-                            dishID = result._id;
-                            
-                            readTable(dishID);
-                        });
-					}
-                });
-        });
-
-
-**/
+*/
+            
         </script>
     </body>
 </html>
