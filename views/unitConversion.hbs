@@ -13,7 +13,8 @@
 
     <body>
         <h2>Add unit</h2>
-            <label for="unit"><input type="text">
+            <label for="unit">Unit</label><input type="text">
+            <button id="save-unit">Save unit</button>
                 
 
         <br><br><br>
@@ -43,7 +44,7 @@
             <option value="*">*</option>
             <option value="/">/</option>
         </select> <br> <br>
-        <button id="save-unit" class="btn-light-blue" disabled="true">Save</button>
+        <button id="save-conversion" class="btn-light-blue" disabled="true">Save</button>
 
         <table>
             <tr>
@@ -89,14 +90,14 @@
                     if (checkSameUnit()) {
                         $("#unitA").css("border", "1px solid #B00000");
                         $('#error-unit').text('Cannot convert between same unit');
-                        $("#save-unit").prop("disabled", true);
-                        $("#save-unit").css("background-color", "#b3b3b3");
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
                     }   
                     else {
                         $("#unitA").css("border", "1px solid #DDDDDD");
                         $("#error-unit").text("");
-                        $("#save-unit").prop("disabled", false);
-                        $("#save-unit").css("background-color", "#0F84D9");
+                        $("#save-conversion").prop("disabled", false);
+                        $("#save-conversion").css("background-color", "#0F84D9");
                     }
                 })
 
@@ -105,14 +106,14 @@
                     if (checkSameUnit()) {
                         $("#unitB").css("border", "1px solid #B00000");
                         $('#error-unit').text('Cannot convert between same unit');
-                        $("#save-unit").prop("disabled", true);
-                        $("#save-unit").css("background-color", "#b3b3b3");
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
                     }
                     else {
                         $("#unitB").css("border", "1px solid #DDDDDD");
                         $("#error-unit").text("");
-                        $("#save-unit").prop("disabled", false);
-                        $("#save-unit").css("background-color", "#0F84D9");
+                        $("#save-conversion").prop("disabled", false);
+                        $("#save-conversion").css("background-color", "#0F84D9");
                     }       
                 })
 
@@ -121,18 +122,18 @@
                     if (!isPositive()) {
                         $("#ratio").css("border", "1px solid #B00000");
                         $('#error-ratio').text('Ratio cannot be less than 1');
-                        $("#save-unit").prop("disabled", true);
-                        $("#save-unit").css("background-color", "#b3b3b3");
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
                     }
                     else {
                         $("#ratio").css("border", "1px solid #DDDDDD");
                         $("#error-ratio").text("");
-                        $("#save-unit").prop("disabled", false);
-                        $("#save-unit").css("background-color", "#0F84D9");
+                        $("#save-conversion").prop("disabled", false);
+                        $("#save-conversion").css("background-color", "#0F84D9");
                     }       
                 })
 
-                $('#save-unit').click(function(){
+                $('#save-conversion').click(function(){
                     var unitA = $('#unitA').val();
                     var unitB = $('#unitB').val();
                     var ratio = $('#ratio').val();
