@@ -130,5 +130,8 @@ router.get('/viewInventoryReport', reportController.getInventoryReport);
 
 router.get('/viewSalesReport', reportController.getSalesReport); 
 
+router.get('/getFilteredRowsSalesReport', reportController.getFilteredRowsSalesReport); 
+
+router.get('/getSalesInfo', reportController.getSalesInfo); 
 
 module.exports = router;

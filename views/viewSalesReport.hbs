@@ -135,13 +135,42 @@
 
                             // get filtered rows
 
-                                $.get("/getDateToday", {}, function (result2) {
-                                    $("#dateToday").text(result2);
-                                });
+                                $.get("/getFilteredRowsSalesReport", {startDate: convertedStartDate, endDate: convertedEndDate}, function (result) {
+                                    var total = 0;
 
-                                //$("#start-date-view-sales-report").val(null);
-                                //$("#end-date-view-sales-report").val(null);
+                                    $("#table-view-sales-report tbody tr").remove();
 
+                                    for (var i = 0; i < result.length; i++) {
+                                        var resultDishName = result[i].dishName;
+                                        var resultCount = result[i].count;
+                                        var resultPrice = result[i].price;
+                                        var resultTotal = result[i].total;
+                                        
+                                        $("#table-view-sales-report").find("tbody").append(
+                                            `  <tr> 
+                                                    <td>${resultDishName}</td>
+                                                    <td>${resultCount}</td> 
+                                                    <td style="text-align: right;">₱ ${resultPrice}</td>
+                                                    <td style="text-align: right;">₱ ${resultTotal}</td>
+                                                </tr>`
+                                        );
+                                    }
+
+                                    $.get("/getDateToday", {}, function (result2) {
+                                        $("#dateToday").text(result2);
+                                    });
+
+                                     $.get("/getSalesInfo", {startDate: convertedStartDate, endDate: convertedEndDate}, function (result3) {
+                                         //console.log(result3);
+
+                                         $("#view-sales-report-vat").text("₱ " + result3.VAT);
+                                         $("#view-sales-report-discount").text("₱ " + result3.discount);
+                                         $("#view-sales-report-total").text("₱ " + result3.total);
+                                    });
+
+                                    $("#start-date-view-sales-report").val(null);
+                                    $("#end-date-view-sales-report").val(null);
+                            });
                         }
                     }
                 });

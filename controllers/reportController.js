@@ -87,6 +87,8 @@ const reportController = {
                 dishes.push(dish);
             }
 
+            //console.log(dishes);
+
             // look through sales 
             var projection2 = '_id date total VAT discount';
             db.findMany(Sales, {}, projection2, function(result2) {
@@ -109,7 +111,104 @@ const reportController = {
                 function getSalesDish (saleID) {
                     return new Promise ((resolve, reject) => {
                         db.findMany (SalesDishes, {salesID: saleID}, 'salesID dishID quantity', function(result) {
-                            if (result!="")
+                            //if (result!="")
+                                resolve(result);
+                        });
+                    });
+                }
+
+                async function getCount(today, dishes, total, discount, VAT, salesIDs) {
+                    for (var k = 0; k < salesIDs.length; k++) {
+                        //console.log(salesIDs[k]);
+
+                        // get salesID dishID quantity
+                        var salesDish = await getSalesDish(salesIDs[k]);
+
+                        for (var l = 0; l < salesDish.length; l++) {
+                            var dishID = salesDish[l].dishID;
+                            var quantity = salesDish[l].quantity;
+                            console.log(salesDish[l]);
+
+                            for (var m = 0; m < dishes.length; m++) {
+                                if (dishID == dishes[m]._id) {
+                                    dishes[m].count += quantity;
+                                }
+                            }
+                        }
+                    }
+
+                    for (var n = 0; n < dishes.length; n++) 
+                        dishes[n].total = parseFloat(dishes[n].count * dishes[n].price).toFixed(2);
+
+                    res.render('viewSalesReport', {today, dishes, total, discount, VAT});
+                }
+
+                getCount(today, dishes, total, discount, VAT, salesIDs);
+                
+            });
+        });
+    },
+
+    getFilteredRowsSalesReport: function(req, res) {
+		var startDate = new Date(req.query.startDate);
+		var endDate = new Date(req.query.endDate);
+		startDate.setHours(0,0,0,0);
+        endDate.setHours(0,0,0,0);
+        
+        var today = new Date().toLocaleString('en-US');
+        var dishes = [];
+        var total = 0;
+        var discount = 0;
+        var VAT = 0;
+
+        var projection = '_id dishName dishPrice dishClassification';
+
+        db.findMany(Dishes, {}, projection, function(result) {
+
+            for (var i = 0; i < result.length; i++) {
+                var dish = {
+                    _id: result[i]._id,
+                    dishName: result[i].dishName,
+                    count: 0,
+                    price: parseFloat(result[i].dishPrice).toFixed(2),
+                    total: 0
+                };
+
+                //dish.total = parseFloat(dish.count * dish.price).toFixed(2);
+                //total += dish.total;
+                dishes.push(dish);
+            }
+
+            //console.log(dishes);
+
+            // look through sales 
+            var projection2 = '_id date total VAT discount';
+            db.findMany(Sales, {}, projection2, function(result2) {
+                var salesIDs = [];
+
+                for (var j = 0; j < result2.length; j++) {
+                    var date = new Date(result2[j].date);
+                    date.setHours(0,0,0,0);
+
+                    if (!(startDate > date || date > endDate)) {
+                        VAT += result2[j].VAT;
+                        discount += result2[j].discount;
+                        total += result2[j].total;
+    
+                        salesIDs.push(result2[j]._id);
+                    }
+                }
+
+                //console.log(salesIDs);
+                //console.log(result2);
+                VAT = parseFloat(VAT).toFixed(2);
+                discount = parseFloat(discount).toFixed(2);
+                total = parseFloat(total).toFixed(2);
+
+                function getSalesDish (saleID) {
+                    return new Promise ((resolve, reject) => {
+                        db.findMany (SalesDishes, {salesID: saleID}, 'salesID dishID quantity', function(result) {
+                            //if (result!="")
                                 resolve(result);
                         });
                     });
@@ -138,12 +237,50 @@ const reportController = {
                     for (var n = 0; n < dishes.length; n++) 
                         dishes[n].total = parseFloat(dishes[n].count * dishes[n].price).toFixed(2);
 
-                    res.render('viewSalesReport', {today, dishes, total, discount, VAT});
+                    res.send(dishes);
                 }
 
                 getCount(today, dishes, total, discount, VAT, salesIDs);
                 
             });
+        });
+
+
+    },
+    
+    getSalesInfo: function(req, res) {
+		var startDate = new Date(req.query.startDate);
+		var endDate = new Date(req.query.endDate);
+		startDate.setHours(0,0,0,0);
+        endDate.setHours(0,0,0,0);
+
+        var salesInfo = [];
+
+        salesInfo = {
+            total: 0,
+            discount: 0,
+            VAT: 0
+        };
+
+        var projection = '_id date total VAT discount';
+        db.findMany(Sales, {}, projection, function(result) {
+
+            for (var j = 0; j < result.length; j++) {
+                var date = new Date(result[j].date);
+                date.setHours(0,0,0,0);
+
+                if (!(startDate > date || date > endDate)) {
+                    salesInfo.VAT += result[j].VAT;
+                    salesInfo.discount += result[j].discount;
+                    salesInfo.total += result[j].total;
+                }
+            }
+
+            salesInfo.VAT = parseFloat(salesInfo.VAT).toFixed(2);
+            salesInfo.discount = parseFloat(salesInfo.discount).toFixed(2);
+            salesInfo.total = parseFloat(salesInfo.total).toFixed(2);
+
+            res.send(salesInfo);
         });
     }
 };
