@@ -36,6 +36,8 @@ router.get('/', controller.getIndex);
 
 router.get('/dashboard', controller.getDashboard);
 
+router.get('/cashierDashboard', controller.getCashierDashboard);
+
 router.get('/inventory', viewInventoryController.getInventory);
 
 router.post('/addIngredient', viewInventoryController.addIngredient);

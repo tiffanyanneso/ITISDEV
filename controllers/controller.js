@@ -30,6 +30,15 @@ const controller = {
              res.render('dashboard', {name: "Name"});
         }
        
+    },
+
+    getCashierDashboard: function(req, res){
+        if(req.session.username != null){
+            res.render('cashierDashboard', {name: req.session.name});
+        }
+        else{
+            res.render('cashierDashboard', {name: "Name"});
+        }
     }
 }
 
