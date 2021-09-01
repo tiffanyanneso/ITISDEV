@@ -6,11 +6,13 @@ const DishClassification = require('../models/DishClassificationModel.js');
 
 const DishStatus = require('../models/DishStatusModel.js');
 
-//const DishIngredients = require('../models/DishIngredientsModel.js');
+const DishIngredients = require('../models/DishIngredientsModel.js');
+
+const Conversion = require('../models/ConversionModel.js');
 
 //const DishStatusModel = require('../models/DishStatusModel');
 
-//const Ingredients = require('../models/IngredientsModel.js');
+const Ingredients = require('../models/IngredientsModel.js');
 
 const Sales  = require('../models/SalesModel.js');
 
@@ -90,12 +92,89 @@ const newOrderController = {
 
         function getDishID (dishName) {
             return new Promise ((resolve, reject) => {
-                db.findOne (Dishes, {dishName:dishName}, '_id', function (result) {
+                db.findOne (Dishes, {$and: [ {dishName:dishName}, {dishStatus: {$ne:"611b5e68f41bfa1c9b0b6cec"}}]}, '_id', function (result) {
                     if (result!="")
                         resolve(result._id);
                 })
             })
         }
+
+        function getDishIngredients (dishID) {
+            return new Promise ((resolve, reject) => {
+                db.findMany(DishIngredients, {dishID:dishID}, 'ingredientID quantity unitMeasurement', function(result) {
+                    if (result!="")
+                        resolve(result);
+                })
+            })
+        }
+
+        function getIngredientInfo (ingredientID) {
+            return new Promise ((resolve, reject) => {
+                db.findOne (Ingredients, {_id:ingredientID}, '_id quantityAvailable unitMeasurement', function (result) {
+                    if (result!="")
+                        resolve(result);
+                })
+            })
+        }
+
+        //unitA will be ingredient unit, unitB will be dishUnit
+        function getConversion (dishUnit, ingredientUnit){
+            return new Promise((resolve, reject) => {
+                var conversion = []
+                db.findOne (Conversion, {$and:[ {unitA:dishUnit}, {unitB:ingredientUnit} ]}, 'ratio operator', function(result){
+                    //console.log("direct " + result);
+                    if (result!="") {
+                        conversion.push (result)
+                        resolve(conversion);
+                    }
+                })
+            })
+        }
+
+        function getIndirectConversion(unitA, unitB) {
+            return new Promise ((resolve, reject) => {
+                var conversions = [];
+                //get all conversions with unitA
+                db.findMany (Conversion, {unitA:unitA}, 'unitB ratio operator', function (result) { 
+                    //get all conversions with unitB as unit to be converted to
+                    db.findMany (Conversion, {unitB:unitB}, 'unitA ratio operator', function (result1) {
+                        var found = false;
+                        for (var i=0; i<result.length && !found; i++) {
+                            for (var j=0; j<result1.length && !found; j++) {
+                                if (result[i].unitB == result1[j].unitA) {
+                                    conversions.push (result[i]);
+                                    conversions.push (result1[j]);
+                                    found = true;
+                                }
+                            }
+                        }
+                        //console.log("indirect " + conversions);
+                        resolve(conversions);
+                    })
+                }) 
+            })
+        }
+
+        //converting from dishUnit to ingredientUnit
+        function computeUsedQuantity(quantityUsed, conversion) {
+            return new Promise((resolve, reject) => {
+                var computedQuantity = quantityUsed;
+
+                //console.log("compute quantity " + conversion);
+                for (var i=0; i<conversion.length; i++) {
+                    var ratio = conversion[i].ratio
+                    var operator = conversion[i].operator
+
+                    if (operator == "*")
+                        computedQuantity = computedQuantity * ratio
+                    else 
+                        computedQuantity = computedQuantity / ratio
+                }
+                //console.log("COMPUTED QUANTITY: " + computedQuantity);
+                resolve (computedQuantity);
+            }) 
+        }
+
 
         async function dishID (dishes, salesID) {
             var dishesSave = []
@@ -107,11 +186,47 @@ const newOrderController = {
                     quantity: dishes[i].quantity
                 } 
                 dishesSave.push(dishFormatted);
+
+                var dishIngredients = await getDishIngredients (dishID);
+
+                for (var i=0; i<dishIngredients.length; i++) {
+
+                    var quantityUsed = dishIngredients[i].quantity;
+                    //console.log("QUANTITY USED: " + quantityUsed);
+
+                    var ingredient = await getIngredientInfo (dishIngredients[i].ingredientID);
+
+                    //need conversion
+                    if (dishIngredients[i].unitMeasurement != ingredient.unitMeasurement) {
+                        var conversion;
+
+                        //checks if there is direct converion from dishUnit to ingredientUnit
+                        conversion = await getConversion (dishIngredients[i].unitMeasurement, ingredient.unitMeasurement);
+                        
+                        //no direct conversion, check for indirect conversions
+                        if (conversion == null || conversion == "") 
+                            conversion = await getIndirectConversion(dishIngredients[i].unitMeasurement, ingredient.unitMeasurement);
+
+                        quantityUsed = await computeUsedQuantity (dishIngredients[i].quantity, conversion);
+                        //console.log("QUANTITY USED WITH CONVERSION: " + quantityUsed);
+                    }
+
+                    var deductedQuantity = ingredient.quantityAvailable - quantityUsed;
+                    //console.log ("DEDUCTED QUANTITY " + deductedQuantity);
+                    db.updateOne (Ingredients, {_id:dishIngredients[i].ingredientID}, {quantityAvailable:deductedQuantity}, function (flag) {
+                        if (flag) { }
+                    })
+                }
             }
             db.insertMany (SalesDishes, dishesSave, function (flag) {
                 if (flag) {}
             })
+
+            res.redirect('/order/' + salesID);
         }
+
+
+
 
         var dishes = JSON.parse(req.body.dishString);
         var orderTotal = req.body.orderTotal;
@@ -144,10 +259,6 @@ Tasks:
 -Validate Quantity of Order
 
 -Discount User Input as Percentage
-
--Save Button 
-    -saves sales and sales dishes data to table 
-    -subtract from dish ingredients
 
 -Show System Date on New Order screen
 

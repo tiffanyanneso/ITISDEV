@@ -77,16 +77,7 @@
                     </thead>
                     
                     <tbody id="table-view-dish-body"> 
-                        <!--
-                       {{#each salesDishes}}
-                            <tr>
-                                <td>{{dishName}}</td>
-                                <td>{{quantity}}</td>
-                                <td>₱ {{unitPrice}}</td>
-                                <td>₱ {{amount}}</td>
-                            </tr>
-                        {{/each}}
-                        -->
+
                     </tbody>
                 </table>
             </div>
@@ -204,7 +195,11 @@
                                 $("#btn-new-order-save").css("background-color", "#0F84D9");
 
                                 var overallTotal = parseInt($('#new-order-total-due').text().slice(1)) + total;
+                                var vat = overallTotal*.12;
+                                var subTotal = overallTotal - vat;
 
+                                $('#new-order-subtotal').text("₱ " + subTotal);
+                                $('#new-order-VAT').text("₱ " + vat);
                                 $('#new-order-total-due').text("₱ " + overallTotal);
 
                             }
@@ -232,7 +227,7 @@
                    var orderTotal = $('#new-order-total-due').text().slice(1);
                    $.post('/saveSale', {dishString, orderTotal});
                    $("#table-view-dish-body tr").remove();
-                   $('#new-order-total-due').text('');
+                   $('#new-order-total-due').text('₱ 0');
                    $('#btn-new-order-save').prop('disabled', true);
                 })                  
            })
