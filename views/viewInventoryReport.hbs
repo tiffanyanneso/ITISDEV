@@ -81,7 +81,7 @@
                                 <td>{{ingredientName}}</td>
                                 <td>{{add}}</td>
                                 <td>{{used}}</td>
-                                <td>{{unit}}</td>
+                                <td>{{unitName}}</td>
                             </tr>
                         {{/each}}
                     </tbody>
@@ -91,7 +91,22 @@
         <script> 
             $(document).ready(function() {
                 $(".link").click(function() {
+                    var startDate = $("#start-date-inventory-report").val();
+                    var endDate = $("#end-date-inventory-report").val();
+
+                    //console.log(startDate + " " + endDate);
+
+                    //if ((startDate == null || startDate == "") || (startDate == null || startDate == ""))
+                        //window.location = $(this).data("href")+ '/' + startDate + '/' + endDate;
+
                     window.location = $(this).data("href");
+
+                   // var link = $(this).data("href");
+                    //console.log(link);
+
+                    //$.get(link, {startDate: startDate, endDate: endDate}, function () {
+                        //console.log(result);
+                    //});
                 });
 
                 $('#view-inventory-report-search-field').keyup(function() {

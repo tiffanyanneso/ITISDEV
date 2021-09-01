@@ -40,7 +40,7 @@ const controller = {
             res.render('cashierDashboard', {name: "Name"});
         }
     }
-}
+};
 
 /*exports.getIndex = function (req, res) {
     res.render('index');

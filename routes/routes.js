@@ -136,4 +136,6 @@ router.get('/getFilteredRowsSalesReport', reportController.getFilteredRowsSalesR
 
 router.get('/getSalesInfo', reportController.getSalesInfo); 
 
+router.get('/inventoryReport/:ingredientID', reportController.getViewSpecificInventoryReport); 
+
 module.exports = router;
