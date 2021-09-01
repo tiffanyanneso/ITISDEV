@@ -12,14 +12,70 @@
     </head>
 
     <body>
-        <h2>Add unit</h2>
-            <label for="unit">Unit</label><input type="text">
-            <button id="save-unit">Save unit</button>
+
+        <div id="navbar"> 
+            <div class="navbar-logout"> 
+                <a href= "#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    
+        <div class="sidebar">
+            <a href="#">Home</a>
+            <a href="#">1</a>
+            <a href="#">2</a>
+        </div>
+        
+         <div class="content">
+         
+         <div>
+                <div style="display: flex;">
+                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0">Unit Convertion</h1></div>
+                
+                </div>
+            </div>
+
+            <hr>
+        
+        <h3 class="bold">Add Unit</h3>
+        <br>
+            <label for="unit">Unit: </label><input type="text">
+            <br> <br>
+            <button id="save-id" class="btn-light-blue" disabled="true">Save Unit</button>
                 
 
-        <br><br><br>
+        <br><br>
 
-        <h2>Add Conversion</h2>
+        <hr>
+         
+         <h3 class="bold">Add Conversion</h3>
+         <div style="margin-top: 20px;">  
+            <select class="dropdown" id="unitA" style="margin-right: 5px"> 
+            <option value="no-selected">--Select unit--</option>
+            {{#each unitNames}}
+                <option value="{{id}}">{{unitName}}</option>
+            {{/each}}
+                </select>
+                <select class="dropdown" id="unitB" style="margin-right: 10px">
+            <option value="no-selected">--Select unit--</option>
+            {{#each unitNames}}
+                <option value="{{id}}">{{unitName}}</option>
+            {{/each}}
+        </select>
+            <input type="number" name="ratio" id="ratio" placeholder="Ratio" style="margin-right: 10px">
+            <select class="dropdown" style="margin-right: 10px" id="operator">
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+                <input class="btn-add" type="button" id="btn-unitConverter" name="btn-unitConverter" value="+">
+                
+            </div>
+       
+        <!--
         <label for="unitA">Unit A</label> 
         <select class="dropdown" id="unitA">
             <option value="no-selected">--Select unit--</option>
@@ -45,8 +101,10 @@
             <option value="/">/</option>
         </select> <br> <br>
         <button id="save-conversion" class="btn-light-blue" disabled="true">Save</button>
-
-        <table>
+-->
+        <div class="div-table" style="margin-top: 20px;">
+                <table class="table" id="table-edit-dish-ingredients">
+                    <thead class="table-head table-sticky-header">
             <tr>
                 <th>Unit A</th>
                 <th>Unit B</th>
@@ -64,6 +122,9 @@
                 {{/each}}
             </tbody>
         </table>
+        </div>
+
+        </div>
 
         <script>
             $(document).ready(function() {
