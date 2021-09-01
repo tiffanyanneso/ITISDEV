@@ -24,10 +24,17 @@ const controller = {
 
       
         if(req.session.username != null){
-          res.render('dashboard', {name: req.session.name });
+
+             if(req.session.position == 'Inventory'){
+                res.render('dashboard', {name: req.session.name });
+            }
+            else{
+                console.log("You are a " + req.session.position + "! You do not have access to this Inventory page!");
+            }
+
         }
         else{
-             res.render('dashboard', {name: "Name"});
+             res.render('login');
         }
        
     }

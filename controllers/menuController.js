@@ -177,7 +177,7 @@ const MenuController = {
 						var dish = {
 							_id: result2[j]._id,
 							dishName: result2[j].dishName,
-							dishPrice: result2[j].dishPrice,
+							dishPrice: result2[j].dishPrice.toFixed(2),
 							dishStatus: status,
 							dishClassification: result2[j].dishClassification
 						};

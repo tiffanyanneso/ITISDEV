@@ -24,6 +24,8 @@ const manualCountController = require('../controllers/manualCountController.js')
 
 router.get('/login', logInController.login);
 
+router.get('/logout', logInController.logout);
+
 router.post('/checkLogIn', logInController.checkLogIn);
 
 router.get('/favicon.ico', controller.getFavicon);
