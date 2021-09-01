@@ -94,9 +94,9 @@
                 <table class="table" id="table-add-new-dish">
                     <thead class="table-head table-sticky-header">
                         <tr>
-                            <th>Name</th>
-                            <th>Quantity</th>
-                            <th>Unit</th>
+                            <th style="left">Name</th>
+                            <th style="text-align: justify;">Quantity</th>
+                            <th style="text-align:justify;">Unit</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -260,8 +260,8 @@
                                 $('#table-add-new-dish').find('tbody').append(
                                     `  <tr> 
                                             <td>${ingredientName}</td> 
-                                            <td>${ingredientQty}</td> 
-                                            <td value="${ingredientUnitID}">${ingredientUnit}</td>
+                                            <td style="text-align:justify;">${ingredientQty}</td> 
+                                            <td value="${ingredientUnitID}" style="text-align:justify;">${ingredientUnit}</td>
                                             <td> <button class="delete-button add-new-dish-delete-btn"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button> </td>
                                         </tr>`
                                     );
@@ -313,12 +313,17 @@
 
                     var JSONIngredients = JSON.stringify(ingredients);
 
-                    $.post('/postAddIngredients', {JSONIngredients});
+                    var location = "addNewDish";
 
-                    window.location.assign('/menu');
-
-                    // Clear table
-                    //$("#table-add-new-dish tbody tr").remove();            
+                    $.ajax({
+                            url: "/postAddIngredients",              
+                            type: "POST",
+                            data: {JSONIngredients, location, dishID},
+                            async: false,
+                            success: function(result){
+                                window.location.assign('/menu');
+                            }
+                    });      
                 }
 
                 $('#btn-add-new-dish-save').click(function() {

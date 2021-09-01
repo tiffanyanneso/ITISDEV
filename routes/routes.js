@@ -22,6 +22,10 @@ const unitController = require('../controllers/unitController.js');
 
 const manualCountController = require('../controllers/manualCountController.js');
 
+const newOrderController = require('../controllers/newOrderController.js');
+
+const reportController = require('../controllers/reportController.js');
+
 router.get('/login', logInController.login);
 
 router.get('/logout', logInController.logout);
@@ -33,6 +37,8 @@ router.get('/favicon.ico', controller.getFavicon);
 router.get('/', controller.getIndex);
 
 router.get('/dashboard', controller.getDashboard);
+
+router.get('/cashierDashboard', controller.getCashierDashboard);
 
 router.get('/inventory', viewInventoryController.getInventory);
 
@@ -65,6 +71,14 @@ router.get('/postAddDish', addNewDishController.postAddDish);
 router.post('/postAddIngredients', addNewDishController.postAddIngredients);
 
 router.post('/postAddOneIngredient', addNewDishController.postAddOneIngredient); 
+
+router.get('/newOrder', newOrderController.getNewOrder);
+
+router.get('/getDishName', newOrderController.getDishName);
+
+router.get('/getDishPrice', newOrderController.getDishPrice);
+
+router.post('/saveSale', newOrderController.saveSale);
 
 router.get('/newPurchase', purchaseController.renderPurchase);
 
@@ -109,5 +123,21 @@ router.post('/saveUnit', unitController.saveUnit);
 router.get('/updateManualCount/:ingredientID', manualCountController.getUpdatePage);
 
 router.post('/saveManualCount', manualCountController.saveManualCount);
+
+router.get('/viewShrinkages', manualCountController.getViewShrinkages);
+
+router.get('/getFilteredRowsViewShrinkages', manualCountController.getFilteredRowsViewShrinkages); 
+
+router.get('/getDateToday', manualCountController.getDateToday); 
+
+router.get('/viewInventoryReport', reportController.getInventoryReport); 
+
+router.get('/viewSalesReport', reportController.getSalesReport); 
+
+router.get('/getFilteredRowsSalesReport', reportController.getFilteredRowsSalesReport); 
+
+router.get('/getSalesInfo', reportController.getSalesInfo); 
+
+router.get('/inventoryReport/:ingredientID', reportController.getViewSpecificInventoryReport); 
 
 module.exports = router;

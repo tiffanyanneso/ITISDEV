@@ -34,7 +34,7 @@
         <div class="content">
             <div>
                 <div style="display: flex;">
-                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="view-specific-purchase-ID">Purchased on {{purchase.dateBought}}</h1></div>
+                    <div><h1 class="bold color-blue margin-bottom-0" id="view-specific-purchase-ID">Purchased on {{purchase.dateBought}}</h1></div>
                     <div class="div-btn-status">
                 
                     </div>
@@ -60,8 +60,8 @@
                             <th>Quantity</th>
                             <th>Unit</th>
                             <th>Count</th>
-                            <th>Unit Price</th>
-                            <th>Amount</th>
+                            <th style="text-align: right;">Unit Price</th>
+                            <th style="text-align: center;">Amount</th>
                         </tr>
                     </thead>
                     <tbody> 
@@ -72,8 +72,8 @@
                                 <td>{{stockUnit}}</td>
                         
                                 <td>{{count}}</td>
-                                <td>{{unitPrice}}</td>
-                                <td>{{amount}}</td>
+                                <td style="text-align: right;">{{unitPrice}}</td>
+                                <td style="text-align: center;">{{amount}}</td>
                             </tr>
                         {{/each}}
                     </tbody>

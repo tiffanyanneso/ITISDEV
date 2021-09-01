@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> New Order </title>
+        <meta name="description" content="New Order">
+        <meta name="keyword" content="New Order">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        
+    </head>
+    <body>
+
+        <!-- PARTIALS -->
+        <div id="navbar"> 
+            <div class="navbar-logout"> 
+                <a href= "#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="#">Home</a>
+            <a href="#">New Order</a>
+            <a href="#">View Menu</a>
+        </div>
+
+        <div class="content">
+            <div>
+                <div style="display: flex;">
+                    <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="new-order-number">New Order</h1></div>
+                    <div class="div-btn-status">
+                        <!--
+                        <h3 class="margin-bottom-0" id="date-new-order">MM/DD/YYYY</h3>
+                        -->
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="header-colored-bg">
+                <h3 class ="bold header-text">Order Details</h3>
+            </div>
+
+
+            <div style="margin-top: 10px;"> 
+                <input type="text" name="dish-name" id="dish-name" placeholder="Dish Name" style="margin-right: 5px">
+                <input type="number" name="dish-quantity" id="dish-quantity" placeholder="Quantity" min="0" style="margin-right: 10px">
+                <input class="btn-add" type="button" id="btn-add-dish" name="btn-add" value="+">
+            </div>
+
+            <p class="error" id="error-dish"></p>
+           
+
+            <div class="div-table" style="margin-top: 10px;">
+                <table class="table" id="table-view-dish">
+                    <thead class="table-head table-sticky-header">
+
+                        <tr> 
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Amount</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody id="table-view-dish-body"> 
+
+                    </tbody>
+                </table>
+            </div>
+
+            <hr>
+            
+            <div class="summary-container">
+                <div class="summary-text">Discount (%)</div>
+                <div class="summary-info-container">
+                    <input type="number" name="new-order-discount" id="new-order-discount" min="0" max="100" class="summary-info2" placeholder="Enter">
+                </div>
+            </div>
+
+            <div class="summary-container">
+                <div class="summary-text">Subtotal</div>
+                <div class="summary-info-container"><div id="new-order-subtotal" class="summary-info">₱ 0</div></div>
+            </div>
+            <div class="summary-container">
+                <div class="summary-text">VAT</div>
+                <div class="summary-info-container"><div id="new-order-VAT" class="summary-info">₱ 0</div></div>
+            </div>
+            <div class="summary-container">    
+                <div class="summary-text">Less: Discount</div>
+                <div class="summary-info-container"><div id="new-order-less-discount" class="summary-info">₱ 0</div></div>
+            </div>
+            <div class="summary-container">
+                <div class="summary-text">Total Due</div>
+                <div class="summary-info-container"><div id="new-order-total-due"class="summary-info">₱ 0</div></div>
+            </div>
+
+            <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-new-order-save">Save</button></div>
+        </div>
+        
+        <script> 
+
+            $(document).ready(function() {
+
+                 $("#dish-name").autocomplete({
+                    source:function(request, response) {
+                    $.ajax({
+                                url: `/getDishName?query=${request.term}`,
+                                dataType: "json",
+                                data: {
+                                    //request.term refers to the value currently in the text input
+                                    term: request.term,
+                                },
+                                success: function (data) {
+                                    response(data);
+                                }
+                         });
+                    }
+                });
+
+                /*function dishQuantityValidation(dishQty) { 
+                    if (dishQty == null || dishQty == "") {
+                        errorMessage("dishQty");
+                        return 1;
+                    } 
+                    else 
+                        return 0;
+                }
+
+                function dishNameValidation(dishName) {
+                    if (dishName == null || dishName == "") {
+                        errorMessage("dishName");
+                        return 1;
+                    }
+                    else    
+                        return 0;
+                }
+
+                
+                function errorMessage(type) {
+                    if (type == "dishName") {
+                        $("#new-dish-name").css("border", "1px solid #B00000");
+                        $("#error-new-dish-name").text("Please enter a Dish Name.");
+                    } 
+
+                    else if (type == "dishQty") {
+                        $("#new-dish-ingredients-quantity").css("border", "1px solid #B00000");
+                        $("#error-ingredients").text("Please enter the Dish Quantity.");
+                    }
+                }*/
+
+                function capitalize(string){
+                    var words = string.toLowerCase().split(' ');
+                    for (i=0; i<words.length; i++)
+                        words[i] = words[i].charAt(0).toUpperCase() + words[i].substring(1);
+                    return words.join(' ');
+                };
+
+
+                $('#btn-add-dish').click(function() {
+                    var dishName = capitalize($('#dish-name').val());
+                    var quantity = $('#dish-quantity').val();
+
+                    $.get('/getDishPrice', {dishName:dishName}, function (result) {
+                        //stockID was found in DB
+                        if (result!="") {
+                                var unitPrice = result.dishPrice
+                                var total = quantity*result.dishPrice;
+
+                                $('#table-view-dish').append (
+                                `<tr>
+                                    <td class="dishName">${dishName}</td>
+                                    <td class="quantity">${quantity}</td>
+                                    <td class-"unitPrice">${unitPrice}</td>
+                                    <td class="total">${total}</td>
+                                    <td><button class="delete-button add-stock-delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button></td>
+                                </tr>`);
+
+                                $('#dish-name').val(''); 
+                                $('#dish-quantity').val('');    
+                                $('#btn-new-order-save').prop('disabled', false);
+                                $("#btn-new-order-save").css("background-color", "#0F84D9");
+
+                                var overallTotal = parseInt($('#new-order-total-due').text().slice(1)) + total;
+                                var vat = overallTotal*.12;
+                                var subTotal = overallTotal - vat;
+
+                                $('#new-order-subtotal').text("₱ " + subTotal);
+                                $('#new-order-VAT').text("₱ " + vat);
+                                $('#new-order-total-due').text("₱ " + overallTotal);
+
+                            }
+
+                        //dish db not found, ask to change input
+                        else{                          
+                            alert("not found")
+                        }
+                    });
+                });
+
+                $('#btn-new-order-save').click(function() {
+                    var orderedDishes = [];
+                   
+                   $("#table-view-dish-body > tr").each(function () {
+                        var dish= {
+                            dishName: $(this).children('.dishName').text(),
+                            quantity: $(this).children('.quantity').text(),
+                            salesID: 0
+                        }
+                        orderedDishes.push(dish);
+                    });
+
+                   var dishString = JSON.stringify(orderedDishes);
+                   var orderTotal = $('#new-order-total-due').text().slice(1);
+                   $.post('/saveSale', {dishString, orderTotal});
+                   $("#table-view-dish-body tr").remove();
+                   $('#new-order-total-due').text('₱ 0');
+                   $('#btn-new-order-save').prop('disabled', true);
+                })                  
+           })
+            
+        </script>
+    </body>
+</html>

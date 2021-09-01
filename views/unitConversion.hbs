@@ -12,17 +12,58 @@
     </head>
 
     <body>
-        <label for="unitA">Unit A</label> <input type="text" id="unitA" style="margin-top: 5px; margin-bottom: 5px;"> <br>
-        <label for="unitB">Unit B</label> <input type="text" id="unitB" style="margin-top: 5px; margin-bottom: 5px;"> <br>
+        <h2>Add unit</h2>
+            <label for="unit">Unit</label><input type="text">
+            <button id="save-unit">Save unit</button>
+                
+
+        <br><br><br>
+
+        <h2>Add Conversion</h2>
+        <label for="unitA">Unit A</label> 
+        <select class="dropdown" id="unitA">
+            <option value="no-selected">--Select unit--</option>
+            {{#each unitNames}}
+                <option value="{{id}}">{{unitName}}</option>
+            {{/each}}
+        </select>
+                        <br>
+        <label for="unitB">Unit B</label>
+         <select class="dropdown" id="unitB">
+            <option value="no-selected">--Select unit--</option>
+            {{#each unitNames}}
+                <option value="{{id}}">{{unitName}}</option>
+            {{/each}}
+        </select>
+        <br>
         <p class="error" id="error-unit"></p>
         <label for="ratio">Ratio</label> <input type="number" id="ratio" style="margin-top: 5px; margin-bottom: 5px;"> <br>
         <p class="error" id="error-ratio"></p>
         <label for="dropdown-operator">Operator</label>
-        <select class="dropdown" style="margin-top: 5px; margin-bottom: 5px;">
+        <select class="dropdown" style="margin-top: 5px; margin-bottom: 5px;" id="operator">
             <option value="*">*</option>
             <option value="/">/</option>
         </select> <br> <br>
-        <button id="save-unit" class="btn-light-blue" disabled="true">Save</button>
+        <button id="save-conversion" class="btn-light-blue" disabled="true">Save</button>
+
+        <table>
+            <tr>
+                <th>Unit A</th>
+                <th>Unit B</th>
+                <th>Ratio</th>
+                <th>Operator</th>
+            </tr>
+            <tbody>
+                {{#each conversions}}
+                <tr>
+                    <td>{{unitA}}</td>
+                    <td>{{unitB}}</td>
+                    <td>{{ratio}}</td>
+                    <td>{{operator}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
 
         <script>
             $(document).ready(function() {
@@ -49,14 +90,14 @@
                     if (checkSameUnit()) {
                         $("#unitA").css("border", "1px solid #B00000");
                         $('#error-unit').text('Cannot convert between same unit');
-                        $("#save-unit").prop("disabled", true);
-                        $("#save-unit").css("background-color", "#b3b3b3");
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
                     }   
                     else {
                         $("#unitA").css("border", "1px solid #DDDDDD");
                         $("#error-unit").text("");
-                        $("#save-unit").prop("disabled", false);
-                        $("#save-unit").css("background-color", "#0F84D9");
+                        $("#save-conversion").prop("disabled", false);
+                        $("#save-conversion").css("background-color", "#0F84D9");
                     }
                 })
 
@@ -65,14 +106,14 @@
                     if (checkSameUnit()) {
                         $("#unitB").css("border", "1px solid #B00000");
                         $('#error-unit').text('Cannot convert between same unit');
-                        $("#save-unit").prop("disabled", true);
-                        $("#save-unit").css("background-color", "#b3b3b3");
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
                     }
                     else {
                         $("#unitB").css("border", "1px solid #DDDDDD");
                         $("#error-unit").text("");
-                        $("#save-unit").prop("disabled", false);
-                        $("#save-unit").css("background-color", "#0F84D9");
+                        $("#save-conversion").prop("disabled", false);
+                        $("#save-conversion").css("background-color", "#0F84D9");
                     }       
                 })
 
@@ -80,25 +121,25 @@
                     //is not positive
                     if (!isPositive()) {
                         $("#ratio").css("border", "1px solid #B00000");
-                        $('#error-ratio').text('Ratio cannot be negative');
-                        $("#save-unit").prop("disabled", true);
-                        $("#save-unit").css("background-color", "#b3b3b3");
+                        $('#error-ratio').text('Ratio cannot be less than 1');
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
                     }
                     else {
                         $("#ratio").css("border", "1px solid #DDDDDD");
                         $("#error-ratio").text("");
-                        $("#save-unit").prop("disabled", false);
-                        $("#save-unit").css("background-color", "#0F84D9");
+                        $("#save-conversion").prop("disabled", false);
+                        $("#save-conversion").css("background-color", "#0F84D9");
                     }       
                 })
 
-                $('#save-unit').click(function(){
+                $('#save-conversion').click(function(){
                     var unitA = $('#unitA').val();
                     var unitB = $('#unitB').val();
                     var ratio = $('#ratio').val();
                     var operator = $('#operator').val();
-
-                    //$.post('/saveUnit', {unitA, unitB, ratio, operator});
+                    
+                    $.post('/saveUnit', {unitA, unitB, ratio, operator});
 
                     $('#unitA').val('');
                     $('#unitB').val('');

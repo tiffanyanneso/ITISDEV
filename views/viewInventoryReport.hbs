@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> View Inventory Report </title>
+        <meta name="description" content="View Inventory Report">
+        <meta name="keyword" content="View Inventory Report">
+        <link rel="stylesheet" type="text/css" href="../css/general.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        
+    </head>
+    <body>
+
+        <!-- PARTIALS -->
+        <div id="navbar"> 
+            <div class="navbar-logout"> 
+                <a href= "#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <a href="#">Home</a>
+            <a href="#">Option 1</a>
+            <a href="#">Option 2</a>
+            <a href="#">Option 3</a>
+        </div>
+
+        <div class="content">
+            <div style="display: flex;">
+                <div style="width: 50%"><h1 class="bold color-blue">Inventory Report</h1></div>
+                <div class="div-btn-status">
+                    <h4 class="bold" id="dateToday">As of {{today}}</h4>
+                </div>
+            </div>
+
+            <div class="div-search">
+                <input type="search" placeholder="Search" name="search" class="search-field" id="view-inventory-report-search-field">
+            </div>
+
+            <div class= "div-dates">
+                <label for="start-date-inventory-report" class= "date-label">Start Date</label>
+                <input style="height: 34px" type="date" id="start-date-inventory-report" name="start-date-inventory-report">
+                <label class= "date-label" style="margin-left: 10px;" for="end-date-inventory-report">End Date</label>
+                <input style="height: 34px" type="date" id="end-date-inventory-report" name="end-date-inventory-report">
+                <button type="submit" style="height: 34px; margin-left: 10px" id="view-inventory-report-date-button"><i class="fa fa-search"></i></button>
+            </div>
+
+            <div style="margin-top: 40px;">
+                <!--<div> 
+                    <select class="dropdown" id="dropdown-view-inventory-report">
+                        {{#each ingredientTypes}}
+                            <option value={{_id}}>{{ingredientType}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>-->
+
+            <br>
+
+            <!-- make rows clickable -->
+            <div class="div-table" style="height: 500px">
+                <table class="table" id="table-view-inventory-report">
+                    <thead class="table-head table-sticky-header">
+                        <tr>
+                            <th>Name</th>
+                            <th>Add</th>
+                            <th>Used</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+                        {{#each ingredients}}
+                            <tr class="link" data-href="/inventoryReport/{{_id}}">
+                                <td>{{ingredientName}}</td>
+                                <td>{{add}}</td>
+                                <td>{{used}}</td>
+                                <td>{{unitName}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script> 
+            $(document).ready(function() {
+                $(".link").click(function() {
+                    var startDate = $("#start-date-inventory-report").val();
+                    var endDate = $("#end-date-inventory-report").val();
+
+                    //console.log(startDate + " " + endDate);
+
+                    //if ((startDate == null || startDate == "") || (startDate == null || startDate == ""))
+                        //window.location = $(this).data("href")+ '/' + startDate + '/' + endDate;
+
+                    window.location = $(this).data("href");
+
+                   // var link = $(this).data("href");
+                    //console.log(link);
+
+                    //$.get(link, {startDate: startDate, endDate: endDate}, function () {
+                        //console.log(result);
+                    //});
+                });
+
+                $('#view-inventory-report-search-field').keyup(function() {
+                    $('#table-view-inventory-report tr').show();
+                    var searchItem = $(this).val().toLowerCase();
+                 
+                    $('#table-view-inventory-report > tbody > tr').each(function(index) {
+                        var ingredientName = $(this).children('td:first').text().toLowerCase();
+                        if (!ingredientName.includes(searchItem))
+                            $(this).toggle();
+                    })
+                })
+
+                $("#view-inventory-report-date-button").click(function() {
+                    var startDate = $("#start-date-inventory-report").val();
+                    var endDate = $("#end-date-inventory-report").val();
+
+                    if (startDate == null || startDate == "" || endDate == null || endDate == "") {
+                        if (startDate == null || startDate == "")
+                            $("#start-date-inventory-report").css("border", "1px solid #B00000")
+
+                        if (endDate == null || endDate == "")
+                            $("#end-date-inventory-report").css("border", "1px solid #B00000")
+                    }
+                    else {
+                        var convertedStartDate = new Date(startDate);
+                        var convertedEndDate = new Date(endDate);
+
+                        if(convertedStartDate > convertedEndDate) {
+                            //alert("endDate is before startDate");
+                            $("#start-date-inventory-report").css("border", "1px solid #B00000");
+                            $("#end-date-inventory-report").css("border", "1px solid #B00000");
+                        }
+                        else {
+                            //alert("Valid dates");
+                            $("#start-date-inventory-report").css("border", "1px solid #DDDDDD");
+                            $("#end-date-inventory-report").css("border", "1px solid #DDDDDD");
+
+                            // get filtered data
+
+                            $.get("/getDateToday", {}, function (result2) {
+                                    $("#dateToday").text(result2);
+                            });
+
+                                //$("#start-date-inventory-report").val(null);
+                                //$("#end-date-inventory-report").val(null);
+                        }
+                    }
+                });
+            });
+        </script>  
+    </body>
+</html>

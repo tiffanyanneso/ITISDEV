@@ -131,46 +131,13 @@
                         </tr>
                     </thead>
                     <tbody> 
-                        <tr>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                        </tr>
-                        <tr>
-                            <td>All Purpose Flour</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>Salt</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                        </tr>
-                        <tr>
-                            <td>Canola Oil</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>Chicken</td>
-                            <td>500</td>
-                            <td>Grams</td>
-                        </tr>
-                        <tr>
-                            <td>All Purpose Flour</td>
-                            <td>1</td>
-                            <td>Cup</td>
-                        </tr>
-                        <tr>
-                            <td>Salt</td>
-                            <td>1</td>
-                            <td>Tablespoon</td>
-                        </tr>
+                        {{#each dishIngredients}}
+                            <tr>
+                                <td>{{ingredientName}}</td>
+                                <td>{{quantity}}</td>
+                                <td>{{measurementName}}</td>
+                            </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div>
