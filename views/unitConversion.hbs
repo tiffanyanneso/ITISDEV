@@ -34,7 +34,7 @@
          
          <div>
                 <div style="display: flex;">
-                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0">Unit Convertion</h1></div>
+                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0">Unit Conversion</h1></div>
                 
                 </div>
             </div>
@@ -60,18 +60,18 @@
                 <option value="{{id}}">{{unitName}}</option>
             {{/each}}
                 </select>
-                <select class="dropdown" id="unitB" style="margin-right: 10px">
+            <input type="number" name="ratio" id="ratio" placeholder="Ratio" style="margin-right: 10px">
+            <select class="dropdown" id="unitB" style="margin-right: 10px">
             <option value="no-selected">--Select Unit B--</option>
             {{#each unitNames}}
                 <option value="{{id}}">{{unitName}}</option>
             {{/each}}
         </select>
-            <input type="number" name="ratio" id="ratio" placeholder="Ratio" style="margin-right: 10px">
-            <select class="dropdown" style="margin-right: 10px" id="operator">
+           <!-- <select class="dropdown" style="margin-right: 10px" id="operator"> 
             <option value="*">*</option>
             <option value="/">/</option>
-        </select>
-                <input class="btn-add" type="button" id="btn-unitConverter" name="btn-unitConverter" value="+">
+        </select> -->
+                <input class="btn-add" type="button" id="save-conversion" name="save-conversion" value="+">
                 
             </div>
        
