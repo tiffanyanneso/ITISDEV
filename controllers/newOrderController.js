@@ -230,14 +230,16 @@ const newOrderController = {
 
         var dishes = JSON.parse(req.body.dishString);
         var orderTotal = req.body.orderTotal;
+        var vat= req.body.vat;
+        var discount = req.body.discount;
         var dateOrdered = new Date();
 
         var sale = {
             employeeID: "610c0a7076be1fa0308b0ef8",
             date: dateOrdered, 
             total: orderTotal,
-            VAT: 0,
-            discount: 0
+            VAT: vat,
+            discount: discount
         };
         
 
