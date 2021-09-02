@@ -6,6 +6,10 @@ const Ingredients = require('../models/IngredientsModel.js');
 
 const Stock = require('../models/StockModel.js');
 
+const Purchases = require('../models/PurchasesModel.js');
+
+const PurchasedStock = require('../models/PurchasedStockModel.js');
+
 const Units = require('../models/UnitsModel.js');
 
 const Dishes = require('../models/DishesModel.js');
@@ -283,8 +287,88 @@ const reportController = {
     },
 
     getViewSpecificInventoryReport: function(req, res) {
+        var ingredientID = req.params.ingredientID;
 
-        res.render('viewSpecificInventoryReport');
+        db.findOne(Ingredients, {_id: ingredientID}, 'ingredientName', function(result) {
+            var ingreidientName = result.ingredientName;
+
+            var purchaseIDs = [];
+
+            function getStocksPurchased(purchaseID){
+                return new Promise ((resolve, reject) => {
+                    var purchasedStocks = [];
+                    var projection = 'stockID count';
+                    db.findMany (PurchasedStock, {purchaseID:purchaseID}, projection, function(result) {
+                        for (var i=0; i<result.length; i++) {
+                            var purchasedStock = {
+                                stockID:result[i].stockID,
+                                count: result[i].count
+                            };
+                            purchasedStocks.push(purchasedStock);
+                        }
+                        if (purchasedStocks.length>0)
+                            resolve(purchasedStocks);
+                    
+                    });
+                });
+            }
+
+            function getStockIngredientInfo(stockID){
+                return new Promise ((resolve, reject) => {
+                    var projection = 'ingredientID stockName quantity stockUnit';
+                    db.findOne (Stock, {_id: stockID}, projection, function(result) {
+                        resolve(result);
+                    });
+                });
+            }
+
+            async function checkPurchasedStock(purchaseIDs, ingredientID) {
+                try {
+                    var stocks = [];
+                    for (var i = 0; i < purchaseIDs.length; i++) {
+                        //Look for purchaseID: _id in purchaseStocks, get stockID
+                        var purchasedStocks = await getStocksPurchased(purchaseIDs[i]);
+
+                        //console.log(purchasedStocks);
+                        for (var j = 0; j < purchasedStocks.length; j++) {
+                            var stockID = purchasedStocks[j].stockID;
+
+                            var stockIngredientInfo = await getStockIngredientInfo(stockID);
+                            console.log(stockIngredientInfo); // info shows
+
+                            if (stockIngredientInfo.length > 0) {
+                                console.log(stockIngredientInfo); // null??
+                                if (stockIngredientInfo.ingredientID == ingredientID) {
+                                    //console.log(stockIngredientInfo);
+                                    var purchasedStock = {
+                                        stockName: stockIngredientInfo.stockName,
+                                        quantity: stockIngredientInfo.quantity,
+                                        unit: stockIngredientInfo.stockUnit,
+                                        count: purchasedStocks[i].count
+                                    };
+    
+                                    stocks.push(purchasedStock);
+                                }
+                            }
+
+                            console.log(stocks);
+                        }
+                    }
+        
+                    res.render('viewSpecificInventoryReport', {ingreidientName, stocks});
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+
+            var projection = '_id dateBought';
+            db.findMany (Purchases, {}, projection, function(result2) {
+                for (var i = 0; i < result2.length; i++) {
+                    purchaseIDs.push(result2[i]._id);
+                }
+                checkPurchasedStock(purchaseIDs, ingredientID);
+            });
+        });
     }
 };
 
