@@ -31,8 +31,21 @@
     </div>
 
     <div class="content">
-        <h1 class="bold color-blue margin-bottom-0">{{ingreidientName}}</h1> 
-        <hr style="margin-bottom: 5px;">
+
+        <div>
+            <div style="display: flex;">
+                <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" >{{ingreidientName}}</h1></div>
+                <div class="div-btn-status">
+                    <label for="start-date-inventory-report" class= "date-label">Start Date</label>
+                    <input style="height: 34px" type="date" id="start-date-inventory-report" name="start-date-inventory-report">
+                    <label class= "date-label" style="margin-left: 10px;" for="end-date-inventory-report">End Date</label>
+                    <input style="height: 34px" type="date" id="end-date-inventory-report" name="end-date-inventory-report">
+                    <button type="submit" style="height: 34px; margin-left: 10px" id="view-inventory-report-date-button"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <hr style="margin-top: 10px; margin-bottom: 10px;">
 
         <h3 class="bold">Purchased Stock</h3> 
 
@@ -40,6 +53,7 @@
             <table class="table" id="table-view-specific-inventory-report-purchased-stock">
                 <thead class="table-head table-sticky-header">
                     <tr>
+                        <th>Date</th>
                         <th>Stock Name</th>
                         <th>Quantity</th>
                         <th>Unit</th>
@@ -49,6 +63,7 @@
                 <tbody> 
                     {{#each stocks}}
                             <tr>
+                                <td>{{date}}</td>
                                 <td>{{stockName}}</td>
                                 <td>{{quantity}}</td>
                                 <td>{{unit}}</td>

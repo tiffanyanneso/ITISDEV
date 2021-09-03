@@ -292,7 +292,7 @@ const reportController = {
         db.findOne(Ingredients, {_id: ingredientID}, 'ingredientName', function(result) {
             var ingreidientName = result.ingredientName;
 
-            var purchaseIDs = [];
+            var purchases = [];
 
             function getStocksPurchased(purchaseID){
                 return new Promise ((resolve, reject) => {
@@ -322,36 +322,42 @@ const reportController = {
                 });
             }
 
-            async function checkPurchasedStock(purchaseIDs, ingredientID) {
+            function getUnitName(unitId) {
+                return new Promise ((resolve, reject) => {
+                    db.findOne (Units, {_id:unitId}, 'unit', function(result){
+                        if (result!="")
+                            resolve(result.unit);
+                    });
+                });
+            }
+
+            async function checkPurchasedStock(purchases, ingredientID) {
                 try {
                     var stocks = [];
-                    for (var i = 0; i < purchaseIDs.length; i++) {
-                        //Look for purchaseID: _id in purchaseStocks, get stockID
-                        var purchasedStocks = await getStocksPurchased(purchaseIDs[i]);
+                    for (var i = 0; i < purchases.length; i++) {
 
-                        //console.log(purchasedStocks);
+                        var purchasedStocks = await getStocksPurchased(purchases[i]._id);
+
                         for (var j = 0; j < purchasedStocks.length; j++) {
                             var stockID = purchasedStocks[j].stockID;
 
                             var stockIngredientInfo = await getStockIngredientInfo(stockID);
-                            console.log(stockIngredientInfo); // info shows
+                            //console.log(stockIngredientInfo); // info shows
 
-                            if (stockIngredientInfo.length > 0) {
-                                console.log(stockIngredientInfo); // null??
                                 if (stockIngredientInfo.ingredientID == ingredientID) {
-                                    //console.log(stockIngredientInfo);
+                                    var unitName = await getUnitName(stockIngredientInfo.stockUnit);
+
                                     var purchasedStock = {
+                                        date: new Date(purchases[i].dateBought).toLocaleString('en-US'),
                                         stockName: stockIngredientInfo.stockName,
                                         quantity: stockIngredientInfo.quantity,
-                                        unit: stockIngredientInfo.stockUnit,
-                                        count: purchasedStocks[i].count
+                                        unit: unitName,
+                                        count: purchasedStocks[j].count
                                     };
     
                                     stocks.push(purchasedStock);
                                 }
-                            }
-
-                            console.log(stocks);
+                            //console.log(stocks);
                         }
                     }
         
@@ -364,9 +370,9 @@ const reportController = {
             var projection = '_id dateBought';
             db.findMany (Purchases, {}, projection, function(result2) {
                 for (var i = 0; i < result2.length; i++) {
-                    purchaseIDs.push(result2[i]._id);
+                    purchases.push(result2[i]);
                 }
-                checkPurchasedStock(purchaseIDs, ingredientID);
+                checkPurchasedStock(purchases, ingredientID);
             });
         });
     }
