@@ -363,7 +363,7 @@ const reportController = {
                         }
                     }
         
-                    res.render('viewSpecificInventoryReport', {ingreidientName, stocks});
+                    res.render('viewSpecificInventoryReport', {ingreidientName, stocks, ingredientID});
                 } catch (err) {
                     console.log(err);
                 }
@@ -454,6 +454,103 @@ const reportController = {
 
             getUsed (salesIDs);
         });*/
+    },
+
+    getFilteredRowsPurchasedStock: function(req, res) {
+        var ingredientID = req.query.ingredientID;
+        var startDate = new Date(req.query.startDate);
+		var endDate = new Date(req.query.endDate);
+		startDate.setHours(0,0,0,0);
+		endDate.setHours(0,0,0,0);
+
+        var purchases = [];
+
+        function getStocksPurchased(purchaseID){
+            return new Promise ((resolve, reject) => {
+                var purchasedStocks = [];
+                var projection = 'stockID count';
+                db.findMany (PurchasedStock, {purchaseID:purchaseID}, projection, function(result) {
+                    for (var i=0; i<result.length; i++) {
+                        var purchasedStock = {
+                            stockID:result[i].stockID,
+                            count: result[i].count
+                        };
+                        purchasedStocks.push(purchasedStock);
+                    }
+                    if (purchasedStocks.length>0)
+                        resolve(purchasedStocks);
+                    
+                });
+            });
+        }
+
+        function getStockIngredientInfo(stockID){
+            return new Promise ((resolve, reject) => {
+                var projection = 'ingredientID stockName quantity stockUnit';
+                db.findOne (Stock, {_id: stockID}, projection, function(result) {
+                    resolve(result);
+                });
+            });
+        }
+
+        function getUnitName(unitId) {
+            return new Promise ((resolve, reject) => {
+                db.findOne (Units, {_id:unitId}, 'unit', function(result){
+                    if (result!="")
+                        resolve(result.unit);
+                });
+            });
+        }
+
+        async function checkPurchasedStock(purchases, ingredientID) {
+            try {
+                var stocks = [];
+                for (var i = 0; i < purchases.length; i++) {
+
+                    var purchasedStocks = await getStocksPurchased(purchases[i]._id);
+
+                    for (var j = 0; j < purchasedStocks.length; j++) {
+                        var stockID = purchasedStocks[j].stockID;
+
+                        var stockIngredientInfo = await getStockIngredientInfo(stockID);
+                        //console.log(stockIngredientInfo); // info shows
+
+                            if (stockIngredientInfo.ingredientID == ingredientID) {
+                                var unitName = await getUnitName(stockIngredientInfo.stockUnit);
+
+                                var purchasedStock = {
+                                    date: new Date(purchases[i].dateBought).toLocaleString('en-US'),
+                                    stockName: stockIngredientInfo.stockName,
+                                    quantity: stockIngredientInfo.quantity,
+                                    unit: unitName,
+                                    count: purchasedStocks[j].count
+                                };
+    
+                                stocks.push(purchasedStock);
+                            }
+                        //console.log(stocks);
+                    }
+                }
+        
+                res.send(stocks);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        var projection = '_id dateBought';
+        db.findMany (Purchases, {}, projection, function(result) {
+            for (var i = 0; i < result.length; i++) {
+                var date = new Date(result[i].dateBought);
+                date.setHours(0,0,0,0);
+
+                if (!(startDate > date || date > endDate))
+                    purchases.push(result[i]);
+                    
+                //console.log(purchases);
+            }
+            checkPurchasedStock(purchases, ingredientID);
+        });
     }
 };
 

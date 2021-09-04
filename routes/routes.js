@@ -140,4 +140,6 @@ router.get('/getSalesInfo', reportController.getSalesInfo);
 
 router.get('/inventoryReport/:ingredientID', reportController.getViewSpecificInventoryReport); 
 
+router.get('/getFilteredRowsPurchasedStock', reportController.getFilteredRowsPurchasedStock); 
+
 module.exports = router;

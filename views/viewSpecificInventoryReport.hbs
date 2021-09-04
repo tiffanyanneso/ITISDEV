@@ -34,13 +34,13 @@
 
         <div>
             <div style="display: flex;">
-                <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" >{{ingreidientName}}</h1></div>
+                <div style="width: 50%"><h1 class="bold color-blue margin-bottom-0" id="ingredientID-value" value="{{ingredientID}}">{{ingreidientName}}</h1></div>
                 <div class="div-btn-status">
                     <label for="start-date-inventory-report" class= "date-label">Start Date</label>
                     <input style="height: 34px" type="date" id="start-date-inventory-report" name="start-date-inventory-report">
                     <label class= "date-label" style="margin-left: 10px;" for="end-date-inventory-report">End Date</label>
                     <input style="height: 34px" type="date" id="end-date-inventory-report" name="end-date-inventory-report">
-                    <button type="submit" style="height: 34px; margin-left: 10px" id="view-inventory-report-date-button"><i class="fa fa-search"></i></button>
+                    <button type="submit" style="height: 34px; margin-left: 10px" id="view-specific-inventory-report-date-button"><i class="fa fa-search"></i></button>
                 </div>
             </div>
         </div>
@@ -100,5 +100,64 @@
             </table>
          </div>
     </div>
+        <script> 
+            $(document).ready(function() {
+                $("#view-specific-inventory-report-date-button").click(function() {
+                    var startDate = $("#start-date-inventory-report").val();
+                    var endDate = $("#end-date-inventory-report").val();
+
+                    if (startDate == null || startDate == "" || endDate == null || endDate == "") {
+                        if (startDate == null || startDate == "")
+                            $("#start-date-inventory-report").css("border", "1px solid #B00000")
+
+                        if (endDate == null || endDate == "")
+                            $("#end-date-inventory-report").css("border", "1px solid #B00000")
+                    }
+                    else {
+                        var convertedStartDate = new Date(startDate);
+                        var convertedEndDate = new Date(endDate);
+
+                        if(convertedStartDate > convertedEndDate) {
+                            //alert("endDate is before startDate");
+                            $("#start-date-inventory-report").css("border", "1px solid #B00000");
+                            $("#end-date-inventory-report").css("border", "1px solid #B00000");
+                        }
+                        else {
+                            //alert("Valid dates");
+                            $("#start-date-inventory-report").css("border", "1px solid #DDDDDD");
+                            $("#end-date-inventory-report").css("border", "1px solid #DDDDDD");
+
+                            var ingredientID = $("#ingredientID-value").attr("value");
+
+                            $.get("/getFilteredRowsPurchasedStock", {startDate: convertedStartDate, endDate: convertedEndDate, ingredientID: ingredientID}, function (result) {
+
+                                $("#table-view-specific-inventory-report-purchased-stock tbody tr").remove();
+
+                                for (var i = 0; i < result.length; i++) {
+                                    var resultDate = result[i].date;
+                                    var resultStockName = result[i].stockName;
+                                    var resultQuantity = result[i].quantity;
+                                    var resultUnit = result[i].unit;
+                                    var resultCount = result[i].count;
+                                    
+                                    $("#table-view-specific-inventory-report-purchased-stock").find("tbody").append(
+                                        `  <tr> 
+                                                <td>${resultDate}</td>
+                                                <td>${resultStockName}</td> 
+                                                <td>${resultQuantity}</td>
+                                                <td>${resultUnit}</td>
+                                                <td>${resultCount}</td>
+                                            </tr>`
+                                    );
+                                }
+
+                                $("#start-date-inventory-report").val(null);
+                                $("#end-date-inventory-report").val(null);
+                            });
+                        }
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
