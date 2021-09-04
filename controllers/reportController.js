@@ -18,6 +18,8 @@ const Sales = require('../models/SalesModel.js');
 
 const SalesDishes = require('../models/SalesDishesModel.js');
 
+const DishIngredients = require('../models/DishIngredientsModel.js');
+
 //import models
 
 const reportController = {
@@ -375,6 +377,83 @@ const reportController = {
                 checkPurchasedStock(purchases, ingredientID);
             });
         });
+
+
+        /*function getDishes (salesID) {
+            return new Promise((resolve, reject) => {
+                db.findMany (SalesDishes, {salesID:salesID}, 'dishID', function(result) {
+                    if (result!="")
+                        resolve(result);
+                })
+            })
+        }
+
+        function getDishIngredients (dishID) {
+            return new Promise ((resolve, reject) => {
+                db.findMany (DishIngredients, {dishID:dishID}, 'ingredientID quantity unitMeasurement', function (result) {
+                    if (result!="")
+                        resolve(result);
+                })
+            })
+        }
+
+        function getDishName (dishID) {
+            return new Promise ((resolve, reject) => {
+                db.findOne (Dishes, {_id:dishID}, 'dishName', function (result) {
+                    if (result!="")
+                        resolve(result.dishName);
+                })
+            })
+        }
+
+        async function getUsed (salesIDs) {
+
+            //stores used ingredient, quantity and unit measurement
+            var usedQuantities = [];
+
+            for (var i=0; i<salesIDs.length; i++) {
+                var dishes = await getDishes(salesIDs[i]._id);
+
+                for (var j=0; j<dishes.length; j++) {
+                    var dishIngredients = await getDishIngredients(dishes[j].dishID);
+
+                    for (var k=0; k<dishIngredients.length; k++) {
+                        if (dishIngredients[k].ingredientID == ingredientID) {
+                            var usedQuantity = {
+                                dishID: dishes[j].dishID,
+                                quantity: dishIngredients[k].quantity,
+                                unit: dishIngredients[k].unitMeasurement
+                            }
+                            usedQuantities.push (usedQuantity)
+                        }
+                    }
+                }
+            }
+
+
+            for (var l=0; l<usedQuantities.length; l++) {
+                usedQuantities[l].dishName = await getDishName (usedQuantities[l].dishID);
+                usedQuantities[l].unit = await getUnitName (usedQuantities[l].unit);
+            }
+            //console.log(usedQuantities);
+            res.render ('viewSpecificInventoryReport', {usedQuantities});
+        }
+
+        var salesIDs = [];
+
+        //USED QUANTITY
+         db.findMany(Sales, {}, '_id date', function(result) {
+
+            for (var j = 0; j < result.length; j++) {
+                var date = new Date(result[j].date);
+                date.setHours(0,0,0,0);
+
+                if (!(startDate > date || date > endDate)) 
+                salesIDs.push (result[j]._id);
+            }
+
+            getUsed (salesIDs);
+        });*/
     }
 };
 

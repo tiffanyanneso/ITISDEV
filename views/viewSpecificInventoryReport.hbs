@@ -80,42 +80,22 @@
             <table class="table" id="table-view-specific-inventory-report-used-stock">
                 <thead class="table-head table-sticky-header">
                     <tr>
-                        <th>Dish ID</th>
-                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Dish Name</th>
                         <th>Quantity</th>
                         <th>Unit</th>
                         <th>Count</th>
                     </tr>
-                </thead>
-                <tbody> 
-                    <tr>
-                        <td>FCHIK</td>
-                        <td>Fried Chicken</td>
-                        <td>P 350.00</td>
-                        <td>Available</td>
-                        <td>Available</td>
-                    </tr>
-                    <tr>
-                        <td>FCHIK</td>
-                        <td>Fried Chicken</td>
-                        <td>P 350.00</td>
-                        <td>Available</td>
-                        <td>Available</td>
-                    </tr>
-                    <tr>
-                        <td>FCHIK</td>
-                        <td>Fried Chicken</td>
-                        <td>P 350.00</td>
-                        <td>Available</td>
-                        <td>Available</td>
-                    </tr>
-                    <tr>
-                        <td>FCHIK</td>
-                        <td>Fried Chicken</td>
-                        <td>P 350.00</td>
-                        <td>Available</td>
-                        <td>Available</td>
-                    </tr>
+                </thead>   
+                <tbody>
+                    {{#each usedQuantities}}
+                        <tr>
+                            <td>{{date}}</td>
+                            <td>{{dishName}}</td>
+                            <td>{{quantity}}</td>
+                            <td>{{unit}}</td>
+                        </tr>
+                    {{/each}}
                 </tbody>
             </table>
          </div>
