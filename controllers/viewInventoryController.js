@@ -25,10 +25,9 @@ const viewInventoryController = {
 		}
 
 		async function getUnit(ingredients) {
-			for (var i=0; i<ingredients.length; i++) {
-				var unitName = await getUnitName (ingredients[i].unitMeasurement);
-				ingredients[i].unitMeasurement = unitName;
-			}
+			for (var i=0; i<ingredients.length; i++) 
+				ingredients[i].unitMeasurement = await getUnitName (ingredients[i].unitMeasurement);
+
 
 			db.findMany (Units, {}, '_id unit', function (result2) {
 				var units = [];
@@ -73,7 +72,7 @@ const viewInventoryController = {
 			ingredientType: req.body.ingredientType,
 			quantityAvailable: 0,
 			unitMeasurement: req.body.ingredientUnitVal,
-			reorderLevel: 10
+			reorderLevel: 0
 		};
 
 		db.insertOne (Ingredients, ingredient, function (flag) {

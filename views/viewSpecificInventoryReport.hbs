@@ -82,9 +82,10 @@
                     <tr>
                         <th>Date</th>
                         <th>Dish Name</th>
-                        <th>Quantity</th>
-                        <th>Unit</th>
                         <th>Count</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Unit</th>
                     </tr>
                 </thead>   
                 <tbody>
@@ -92,7 +93,9 @@
                         <tr>
                             <td>{{date}}</td>
                             <td>{{dishName}}</td>
+                            <td>{{count}}</td>
                             <td>{{quantity}}</td>
+                            <td>{{total}}</td>
                             <td>{{unit}}</td>
                         </tr>
                     {{/each}}
@@ -129,16 +132,17 @@
 
                             var ingredientID = $("#ingredientID-value").attr("value");
 
-                            $.get("/getFilteredRowsPurchasedStock", {startDate: convertedStartDate, endDate: convertedEndDate, ingredientID: ingredientID}, function (result) {
+                            $.get("/getFilteredRowsInventoryReport", {startDate: convertedStartDate, endDate: convertedEndDate, ingredientID: ingredientID}, function (result) {
 
+                                var stocks = result[0];
                                 $("#table-view-specific-inventory-report-purchased-stock tbody tr").remove();
 
-                                for (var i = 0; i < result.length; i++) {
-                                    var resultDate = result[i].date;
-                                    var resultStockName = result[i].stockName;
-                                    var resultQuantity = result[i].quantity;
-                                    var resultUnit = result[i].unit;
-                                    var resultCount = result[i].count;
+                                for (var i = 0; i < stocks.length; i++) {
+                                    var resultDate = stocks[i].date;
+                                    var resultStockName = stocks[i].stockName;
+                                    var resultQuantity = stocks[i].quantity;
+                                    var resultUnit = stocks[i].unit;
+                                    var resultCount = stocks[i].count;
                                     
                                     $("#table-view-specific-inventory-report-purchased-stock").find("tbody").append(
                                         `  <tr> 
@@ -150,6 +154,28 @@
                                             </tr>`
                                     );
                                 }
+
+                                var used = result[1];
+
+                                 $("#table-view-specific-inventory-report-used-stock tbody tr").remove();
+
+                                for (var i = 0; i < used.length; i++) {
+                                    var resultDate = used[i].date;
+                                    var resultStockName = used[i].dishName;
+                                    var resultQuantity = used[i].quantity;
+                                    var resultUnit = used[i].unit;
+                                    //var resultCount = used[i].count;
+                                    
+                                    $("#table-view-specific-inventory-report-used-stock").find("tbody").append(
+                                        `  <tr> 
+                                                <td>${resultDate}</td>
+                                                <td>${resultStockName}</td> 
+                                                <td>${resultQuantity}</td>
+                                                <td>${resultUnit}</td>
+                                            </tr>`
+                                    );
+                                }
+
 
                                 $("#start-date-inventory-report").val(null);
                                 $("#end-date-inventory-report").val(null);

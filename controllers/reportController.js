@@ -291,97 +291,55 @@ const reportController = {
     getViewSpecificInventoryReport: function(req, res) {
         var ingredientID = req.params.ingredientID;
 
-        db.findOne(Ingredients, {_id: ingredientID}, 'ingredientName', function(result) {
-            var ingreidientName = result.ingredientName;
+        function getPurchases () {
+            return new Promise ((resolve, reject) => {
+                db.findMany (Purchases, {}, '_id dateBought', function(result) {
+                    if (result!="")
+                        resolve(result)
+                })
+            })
+        }
 
-            var purchases = [];
-
-            function getStocksPurchased(purchaseID){
-                return new Promise ((resolve, reject) => {
-                    var purchasedStocks = [];
-                    var projection = 'stockID count';
-                    db.findMany (PurchasedStock, {purchaseID:purchaseID}, projection, function(result) {
-                        for (var i=0; i<result.length; i++) {
-                            var purchasedStock = {
-                                stockID:result[i].stockID,
-                                count: result[i].count
-                            };
-                            purchasedStocks.push(purchasedStock);
-                        }
-                        if (purchasedStocks.length>0)
-                            resolve(purchasedStocks);
-                    
-                    });
-                });
-            }
-
-            function getStockIngredientInfo(stockID){
-                return new Promise ((resolve, reject) => {
-                    var projection = 'ingredientID stockName quantity stockUnit';
-                    db.findOne (Stock, {_id: stockID}, projection, function(result) {
-                        resolve(result);
-                    });
-                });
-            }
-
-            function getUnitName(unitId) {
-                return new Promise ((resolve, reject) => {
-                    db.findOne (Units, {_id:unitId}, 'unit', function(result){
-                        if (result!="")
-                            resolve(result.unit);
-                    });
-                });
-            }
-
-            async function checkPurchasedStock(purchases, ingredientID) {
-                try {
-                    var stocks = [];
-                    for (var i = 0; i < purchases.length; i++) {
-
-                        var purchasedStocks = await getStocksPurchased(purchases[i]._id);
-
-                        for (var j = 0; j < purchasedStocks.length; j++) {
-                            var stockID = purchasedStocks[j].stockID;
-
-                            var stockIngredientInfo = await getStockIngredientInfo(stockID);
-                            //console.log(stockIngredientInfo); // info shows
-
-                                if (stockIngredientInfo.ingredientID == ingredientID) {
-                                    var unitName = await getUnitName(stockIngredientInfo.stockUnit);
-
-                                    var purchasedStock = {
-                                        date: new Date(purchases[i].dateBought).toLocaleString('en-US'),
-                                        stockName: stockIngredientInfo.stockName,
-                                        quantity: stockIngredientInfo.quantity,
-                                        unit: unitName,
-                                        count: purchasedStocks[j].count
-                                    };
-    
-                                    stocks.push(purchasedStock);
-                                }
-                            //console.log(stocks);
-                        }
+        function getStocksPurchased(purchaseID){
+            return new Promise ((resolve, reject) => {
+                var purchasedStocks = [];
+                var projection = 'stockID count';
+                db.findMany (PurchasedStock, {purchaseID:purchaseID}, projection, function(result) {
+                    for (var i=0; i<result.length; i++) {
+                        var purchasedStock = {
+                            stockID:result[i].stockID,
+                            count: result[i].count
+                        };
+                        purchasedStocks.push(purchasedStock);
                     }
-        
-                    res.render('viewSpecificInventoryReport', {ingreidientName, stocks, ingredientID});
-                } catch (err) {
-                    console.log(err);
-                }
-            }
-
-            var projection = '_id dateBought';
-            db.findMany (Purchases, {}, projection, function(result2) {
-                for (var i = 0; i < result2.length; i++) {
-                    purchases.push(result2[i]);
-                }
-                checkPurchasedStock(purchases, ingredientID);
+                    if (purchasedStocks.length>0)
+                        resolve(purchasedStocks);
+                
+                });
             });
-        });
+        }
 
+        function getStockIngredientInfo(stockID){
+            return new Promise ((resolve, reject) => {
+                var projection = 'ingredientID stockName quantity stockUnit';
+                db.findOne (Stock, {_id: stockID}, projection, function(result) {
+                    resolve(result);
+                });
+            });
+        }
 
-        /*function getDishes (salesID) {
+        function getSales() {
+            return new Promise ((resolve, reject) => {
+                db.findMany (Sales, {}, '_id date', function(result) {
+                    if (result!="")
+                        resolve(result);
+                })
+            })
+        }
+
+        function getDishes (salesID) {
             return new Promise((resolve, reject) => {
-                db.findMany (SalesDishes, {salesID:salesID}, 'dishID', function(result) {
+                db.findMany (SalesDishes, {salesID:salesID}, 'dishID quantity', function(result) {
                     if (result!="")
                         resolve(result);
                 })
@@ -406,23 +364,67 @@ const reportController = {
             })
         }
 
-        async function getUsed (salesIDs) {
+        function getUnitName(unitId) {
+            return new Promise ((resolve, reject) => {
+                db.findOne (Units, {_id:unitId}, 'unit', function(result){
+                    if (result!="")
+                        resolve(result.unit);
+                });
+            });
+        }
 
+        async function getInfo () {
+            //GET PURCHASES
+            var purchases = await getPurchases();
+            var stocks = [];
+            for (var i = 0; i < purchases.length; i++) {
+
+                var purchasedStocks = await getStocksPurchased(purchases[i]._id);
+
+                for (var j = 0; j < purchasedStocks.length; j++) {
+                    var stockID = purchasedStocks[j].stockID;
+
+                    var stockIngredientInfo = await getStockIngredientInfo(stockID);
+                    //console.log(stockIngredientInfo); // info shows
+
+                        if (stockIngredientInfo.ingredientID == ingredientID) {
+                            var unitName = await getUnitName(stockIngredientInfo.stockUnit);
+
+                            var purchasedStock = {
+                                date: new Date(purchases[i].dateBought).toLocaleString('en-US'),
+                                stockName: stockIngredientInfo.stockName,
+                                quantity: stockIngredientInfo.quantity,
+                                unit: unitName,
+                                count: purchasedStocks[j].count
+                            };
+
+                            stocks.push(purchasedStock);
+                        }
+                    //console.log(stocks);
+                }
+            }
+
+            //GET USES
+            var sales = await getSales();
             //stores used ingredient, quantity and unit measurement
             var usedQuantities = [];
 
-            for (var i=0; i<salesIDs.length; i++) {
-                var dishes = await getDishes(salesIDs[i]._id);
+            for (var i=0; i<sales.length; i++) {
+                var dishes = await getDishes(sales[i]._id);
 
                 for (var j=0; j<dishes.length; j++) {
                     var dishIngredients = await getDishIngredients(dishes[j].dishID);
 
                     for (var k=0; k<dishIngredients.length; k++) {
                         if (dishIngredients[k].ingredientID == ingredientID) {
+                            total = dishes[j].quantity * dishIngredients[k].quantity
                             var usedQuantity = {
+                                date: new Date(sales[i].date).toLocaleString('en-US'),
                                 dishID: dishes[j].dishID,
+                                count: dishes[j].quantity,
                                 quantity: dishIngredients[k].quantity,
-                                unit: dishIngredients[k].unitMeasurement
+                                unit: dishIngredients[k].unitMeasurement,
+                                total: total
                             }
                             usedQuantities.push (usedQuantity)
                         }
@@ -430,40 +432,45 @@ const reportController = {
                 }
             }
 
-
             for (var l=0; l<usedQuantities.length; l++) {
                 usedQuantities[l].dishName = await getDishName (usedQuantities[l].dishID);
                 usedQuantities[l].unit = await getUnitName (usedQuantities[l].unit);
             }
-            //console.log(usedQuantities);
-            res.render ('viewSpecificInventoryReport', {usedQuantities});
+
+            db.findOne (Ingredients, {_id:ingredientID}, 'ingredientName', function(result) {
+                var ingredientName = result.ingredientName
+                res.render('viewSpecificInventoryReport', {stocks, usedQuantities, ingredientName, ingredientID})
+            })
         }
 
-        var salesIDs = [];
+        getInfo();
 
-        //USED QUANTITY
-         db.findMany(Sales, {}, '_id date', function(result) {
-
-            for (var j = 0; j < result.length; j++) {
-                var date = new Date(result[j].date);
-                date.setHours(0,0,0,0);
-
-                if (!(startDate > date || date > endDate)) 
-                salesIDs.push (result[j]._id);
-            }
-
-            getUsed (salesIDs);
-        });*/
     },
 
-    getFilteredRowsPurchasedStock: function(req, res) {
+    getFilteredRowsReport: function(req, res) {
         var ingredientID = req.query.ingredientID;
         var startDate = new Date(req.query.startDate);
 		var endDate = new Date(req.query.endDate);
 		startDate.setHours(0,0,0,0);
 		endDate.setHours(0,0,0,0);
+        
+        var ingredientID = req.params.ingredientID;
 
-        var purchases = [];
+        function getPurchases (startDate, endDate) {
+            return new Promise ((resolve, reject) => {
+                var purchases = []
+                db.findMany (Purchases, {}, '_id dateBought', function(result) {
+                    for (var i=0; i<result.length; i++) {
+                        var date = new Date(result[i].dateBought);
+                        date.setHours(0,0,0,0);
+
+                        if (!(startDate > date || date > endDate)) 
+                            purchases.push(result[i]);
+                    }
+                    resolve (purchases)
+                })
+            })
+        }
 
         function getStocksPurchased(purchaseID){
             return new Promise ((resolve, reject) => {
@@ -479,7 +486,7 @@ const reportController = {
                     }
                     if (purchasedStocks.length>0)
                         resolve(purchasedStocks);
-                    
+                
                 });
             });
         }
@@ -493,6 +500,50 @@ const reportController = {
             });
         }
 
+        function getSales(startDate, endDate) {
+            return new Promise ((resolve, reject) => {
+                var sales = []
+                db.findMany (Sales, {}, '_id date', function(result) {
+                    for (var i=0; i<result.length; i++) {
+                        var date = new Date(result[i].date);
+                        date.setHours(0,0,0,0);
+
+                        if (!(startDate > date || date > endDate))
+                            sales.push(result[i]);
+                    }
+                    resolve (sales)
+                })
+            })
+        }
+
+        function getDishes (salesID) {
+            return new Promise((resolve, reject) => {
+                db.findMany (SalesDishes, {salesID:salesID}, 'dishID', function(result) {
+                    if (result!="")
+                        resolve(result);
+                })
+            })
+        }
+
+        function getDishIngredients (dishID) {
+            return new Promise ((resolve, reject) => {
+                db.findMany (DishIngredients, {dishID:dishID}, 'ingredientID quantity unitMeasurement', function (result) {
+                    if (result!="")
+                        resolve(result);
+                })
+            })
+        }
+
+        function getDishName (dishID) {
+            return new Promise ((resolve, reject) => {
+                db.findOne (Dishes, {_id:dishID}, 'dishName', function (result) {
+                    console.log(result.dishName)
+                    if (result!="")
+                        resolve(result.dishName);
+                })
+            })
+        }
+
         function getUnitName(unitId) {
             return new Promise ((resolve, reject) => {
                 db.findOne (Units, {_id:unitId}, 'unit', function(result){
@@ -502,55 +553,75 @@ const reportController = {
             });
         }
 
-        async function checkPurchasedStock(purchases, ingredientID) {
-            try {
-                var stocks = [];
-                for (var i = 0; i < purchases.length; i++) {
 
-                    var purchasedStocks = await getStocksPurchased(purchases[i]._id);
+        async function getInfo () {
+            //GET PURCHASES
+            var purchases = await getPurchases(startDate, endDate);
+            var stocks = [];
+            for (var i = 0; i < purchases.length; i++) {
 
-                    for (var j = 0; j < purchasedStocks.length; j++) {
-                        var stockID = purchasedStocks[j].stockID;
+                var purchasedStocks = await getStocksPurchased(purchases[i]._id);
 
-                        var stockIngredientInfo = await getStockIngredientInfo(stockID);
-                        //console.log(stockIngredientInfo); // info shows
+                for (var j = 0; j < purchasedStocks.length; j++) {
+                    var stockID = purchasedStocks[j].stockID;
 
-                            if (stockIngredientInfo.ingredientID == ingredientID) {
-                                var unitName = await getUnitName(stockIngredientInfo.stockUnit);
+                    var stockIngredientInfo = await getStockIngredientInfo(stockID);
+                    //console.log(stockIngredientInfo); // info shows
 
-                                var purchasedStock = {
-                                    date: new Date(purchases[i].dateBought).toLocaleString('en-US'),
-                                    stockName: stockIngredientInfo.stockName,
-                                    quantity: stockIngredientInfo.quantity,
-                                    unit: unitName,
-                                    count: purchasedStocks[j].count
-                                };
-    
-                                stocks.push(purchasedStock);
-                            }
-                        //console.log(stocks);
+                    if (stockIngredientInfo.ingredientID == ingredientID) {
+                        var unitName = await getUnitName(stockIngredientInfo.stockUnit);
+
+                        var purchasedStock = {
+                            date: new Date(purchases[i].dateBought).toLocaleString('en-US'),
+                            stockName: stockIngredientInfo.stockName,
+                            quantity: stockIngredientInfo.quantity,
+                            unit: unitName,
+                            count: purchasedStocks[j].count
+                        };
+
+                        stocks.push(purchasedStock);
                     }
                 }
-        
-                res.send(stocks);
-            } catch (err) {
-                console.log(err);
             }
+
+            //GET USES
+            var sales = await getSales(startDate, endDate);
+            //stores used ingredient, quantity and unit measurement
+            var usedQuantities = [];
+
+            for (var i=0; i<sales.length; i++) {
+                var dishes = await getDishes(sales[i]._id);
+
+                for (var j=0; j<dishes.length; j++) {
+                    var dishIngredients = await getDishIngredients(dishes[j].dishID);
+
+                    for (var k=0; k<dishIngredients.length; k++) {
+
+                        if (dishIngredients[k].ingredientID == req.query.ingredientID) {
+                            var usedQuantity = {
+                                date: new Date(sales[i].date).toLocaleString('en-US'),
+                                dishID: dishes[j].dishID,
+                                quantity: dishIngredients[k].quantity,
+                                unit: dishIngredients[k].unitMeasurement
+                            }
+                            usedQuantities.push (usedQuantity)
+                        }
+                    }
+                }
+            }
+
+            for (var l=0; l<usedQuantities.length; l++) {
+                usedQuantities[l].dishName = await getDishName (usedQuantities[l].dishID);
+                usedQuantities[l].unit = await getUnitName (usedQuantities[l].unit);
+            }
+
+            var results = []
+            results.push (stocks);
+            results.push (usedQuantities)
+            res.send(results);
         }
 
-        var projection = '_id dateBought';
-        db.findMany (Purchases, {}, projection, function(result) {
-            for (var i = 0; i < result.length; i++) {
-                var date = new Date(result[i].dateBought);
-                date.setHours(0,0,0,0);
-
-                if (!(startDate > date || date > endDate))
-                    purchases.push(result[i]);
-                    
-                //console.log(purchases);
-            }
-            checkPurchasedStock(purchases, ingredientID);
-        });
+        getInfo();
     }
 };
 
