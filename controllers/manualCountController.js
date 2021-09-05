@@ -13,7 +13,7 @@ const Shrinkages = require('../models/ShrinkageModel.js');
 
 const Employees = require('../models/EmployeesModel.js');
 
-const Reasons = require('../models/Reasons.js');
+const Reasons = require('../models/ReasonsModel.js');
 
 const { insertOne } = require('../models/db.js');
 
@@ -32,13 +32,25 @@ const manualCountController = {
 			});
 		}
 
+		function getReasons() {
+			return new Promise((resolve, reject) => {
+				var reasons = []
+				db.findMany (Reasons, {}, '_id reason', function(result) {
+					if (result!="")
+					resolve(result);
+				}) 
+			})
+		}
+
 		async function getUnit (stocks) {
 			for (var i=0; i<stocks.length; i++) {
 				var unitName = await getUnitName (stocks[i].stockUnit);
 				stocks[i].stockUnit = unitName;
 			}
 			var ingredientID = req.params.ingredientID
-			res.render('updateManualCount', {ingredientID, stocks});
+
+			var reasons = await getReasons();
+			res.render('updateManualCount', {ingredientID, stocks, reasons});
 		}
 
 		var projection = 'stockName quantity stockUnit'
@@ -134,24 +146,33 @@ const manualCountController = {
 					manualCount: manualCount,
 					employeeID: '610c0a3a76be1fa0308b0ef5'
 				};
-				db.insertOne (Shrinkages, shrinkage, function (flag) {
-					if (flag) {
-						db.updateOne (Ingredients, {_id:ingredientID}, {quantityAvailable:manualCount}, function(flag) {
-							if (flag) {
-								console.log("insert redirect");
-							}
-						});
-					}
 
+				db.insertOneResult (Shrinkages, shrinkage, function (result) {
+					db.updateOne (Ingredients, {_id:ingredientID}, {quantityAvailable:manualCount}, function(flag) {
+						if (flag) {
+							//send shrinkageID to update later when reason is selected
+							res.send(result._id)
+						}
+					});
 				});
 			}
 			else {
-				console.log("redirect?");
-				res.redirect('/ingredient/' + ingredientID);
+				res.send(ingredientID);
 			}
 		}
 
 		manualCount();
+	},
+
+	saveShrinkage: function (req, res) {
+
+		var shrinkageID = req.body.shrinkageID;
+		var reason = req.body.reason;
+
+		db.updateOne (Shrinkages, {_id: shrinkageID}, {reason:reason}, function (flag) {
+
+		});
+
 	},
 
 	getViewShrinkages: function (req,res) {
@@ -198,6 +219,15 @@ const manualCountController = {
 				});
 			}
 
+			function getReason (reasonID) {
+				return new Promise ((resolve, reject) => {
+					db.findOne (Reasons, {_id:reasonID}, 'reason', function (result) {
+						if (result!="")
+							resolve(result.reason);
+					})
+				})
+			}
+
 			function getEmployeeName (employeeID) {
 				return new Promise ((resolve, reject) => {
 					db.findOne (Employees, {_id: employeeID}, 'name', function(result) {
@@ -212,6 +242,7 @@ const manualCountController = {
 					var ingredient = await getIngredientInfo(shrinkages[i].ingredientID);
 					shrinkages[i].ingredientName = ingredient.ingredientName;
 					shrinkages[i].ingredientUnit = ingredient.unitName;
+					shrinkages[i].reason = await getReason (shrinkages[i].reason);
 
 					shrinkages[i].employee = await getEmployeeName(shrinkages[i].employee);
 				}	

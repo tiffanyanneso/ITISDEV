@@ -128,6 +128,8 @@ router.get('/updateManualCount/:ingredientID', manualCountController.getUpdatePa
 
 router.post('/saveManualCount', manualCountController.saveManualCount);
 
+router.post('/saveShrinkage', manualCountController.saveShrinkage);
+
 router.get('/viewShrinkages', manualCountController.getViewShrinkages);
 
 router.get('/getFilteredRowsViewShrinkages', manualCountController.getFilteredRowsViewShrinkages); 
