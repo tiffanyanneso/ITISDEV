@@ -275,16 +275,104 @@ const reportController = {
                 });
             }
 
-            async function compute(ingredients, today) {
+            function getPurchases() {
+                return new Promise ((resolve, reject) => {
+                    var projection = '_id dateBought';
+                    db.findMany (Purchases, {}, projection, function(result) {
+                        //if (result!="")
+                            resolve(result);
+                    });
+                });
+            }
+
+            function getStocksPurchased(purchaseID){
+                return new Promise ((resolve, reject) => {
+                    var purchasedStocks = [];
+                    var projection = 'stockID count';
+                    db.findMany (PurchasedStock, {purchaseID:purchaseID}, projection, function(result) {
+                        for (var i=0; i<result.length; i++) {
+                            var purchasedStock = {
+                                stockID:result[i].stockID,
+                                count: result[i].count
+                            };
+                            purchasedStocks.push(purchasedStock);
+                        }
+                        if (purchasedStocks.length>0)
+                            resolve(purchasedStocks);
+                    
+                    });
+                });
+            }
+
+            function getStockIngredientInfo(stockID){
+                return new Promise ((resolve, reject) => {
+                    var projection = 'ingredientID quantity stockUnit';
+                    db.findOne (Stock, {_id: stockID}, projection, function(result) {
+                        resolve(result);
+                    });
+                });
+            }
+
+            async function ingredientUnitNames(ingredients) {
                 for (var i = 0; i < ingredients.length; i++) {
                     var unitName = await getUnitName (ingredients[i].unit);
                     ingredients[i].unitName = unitName;
+
+                    /* 
+                    _id: result[i]._id,
+                    ingredientName: result[i].ingredientName,
+                    add: 0,
+                    used: 0,
+                    unit: result[i].unitMeasurement,
+                    unitName: "Unit Name"
+                    */
                 }
-    
-                res.render('viewInventoryReport', {today, ingredients});
+
+                return ingredients;
             }
 
-            compute(ingredients, today);
+            async function addColumn(ingredients, today) {
+                var purchases = await getPurchases();
+
+                var ings = await ingredientUnitNames(ingredients);
+
+                //console.log(ings);
+                //console.log(purchases);
+
+                for (var j = 0; j < purchases.length; j++) {
+
+                    var purchasedStocks = await getStocksPurchased(purchases[j]._id);
+
+                    //console.log(purchasedStocks);
+
+                    for (var k = 0; k < purchasedStocks.length; k++) {
+                        var stockID = purchasedStocks[k].stockID;
+
+                        var stockIngredientInfo = await getStockIngredientInfo(stockID);
+                        console.log(stockIngredientInfo); // info shows
+
+                        console.log(stockIngredientInfo.length);
+
+                        for (var l = 0; l < stockIngredientInfo.length; l++) {
+                            console.log(stockIngredientInfo[l].stockID);
+                            for (var m = 0; m < ings.length; m++) {
+                                //console.log("stock ing id: " + stockIngredientInfo[l].ingredientID + " ing id: " + ingredients[m]._id);
+                                if (stockIngredientInfo[l].ingredientID == ings[m]._id) {
+                                    if (stockIngredientInfo[l].stockUnit == ings[m].unit) {
+                                        ings[m].add += stockIngredientInfo[l].quantity; // MULTIPLY BY QTY ALSO!
+                                    } else {
+                                        console.log("needs conversion");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+        
+                res.render('viewInventoryReport', {today, ings});
+            }
+
+            addColumn(ingredients, today);
         });
     },
 
@@ -295,9 +383,9 @@ const reportController = {
             return new Promise ((resolve, reject) => {
                 db.findMany (Purchases, {}, '_id dateBought', function(result) {
                     if (result!="")
-                        resolve(result)
-                })
-            })
+                        resolve(result);
+                });
+            });
         }
 
         function getStocksPurchased(purchaseID){
@@ -333,8 +421,8 @@ const reportController = {
                 db.findMany (Sales, {}, '_id date', function(result) {
                     if (result!="")
                         resolve(result);
-                })
-            })
+                });
+            });
         }
 
         function getDishes (salesID) {
@@ -342,8 +430,8 @@ const reportController = {
                 db.findMany (SalesDishes, {salesID:salesID}, 'dishID quantity', function(result) {
                     if (result!="")
                         resolve(result);
-                })
-            })
+                });
+            });
         }
 
         function getDishIngredients (dishID) {
@@ -351,8 +439,8 @@ const reportController = {
                 db.findMany (DishIngredients, {dishID:dishID}, 'ingredientID quantity unitMeasurement', function (result) {
                     if (result!="")
                         resolve(result);
-                })
-            })
+                });
+            });
         }
 
         function getDishName (dishID) {
@@ -360,8 +448,8 @@ const reportController = {
                 db.findOne (Dishes, {_id:dishID}, 'dishName', function (result) {
                     if (result!="")
                         resolve(result.dishName);
-                })
-            })
+                });
+            });
         }
 
         function getUnitName(unitId) {
@@ -417,7 +505,7 @@ const reportController = {
 
                     for (var k=0; k<dishIngredients.length; k++) {
                         if (dishIngredients[k].ingredientID == ingredientID) {
-                            total = dishes[j].quantity * dishIngredients[k].quantity
+                            total = dishes[j].quantity * dishIngredients[k].quantity;
                             var usedQuantity = {
                                 date: new Date(sales[i].date).toLocaleString('en-US'),
                                 dishID: dishes[j].dishID,
@@ -425,8 +513,8 @@ const reportController = {
                                 quantity: dishIngredients[k].quantity,
                                 unit: dishIngredients[k].unitMeasurement,
                                 total: total
-                            }
-                            usedQuantities.push (usedQuantity)
+                            };
+                            usedQuantities.push (usedQuantity);
                         }
                     }
                 }
@@ -438,9 +526,10 @@ const reportController = {
             }
 
             db.findOne (Ingredients, {_id:ingredientID}, 'ingredientName', function(result) {
-                var ingredientName = result.ingredientName
-                res.render('viewSpecificInventoryReport', {stocks, usedQuantities, ingredientName, ingredientID})
-            })
+                var ingredientName = result.ingredientName;
+                console.log(ingredientName);
+                res.render('viewSpecificInventoryReport', {stocks, usedQuantities, ingredientName, ingredientID});
+            });
         }
 
         getInfo();
