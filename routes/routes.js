@@ -82,6 +82,8 @@ router.post('/saveSale', newOrderController.saveSale);
 
 router.get('/newPurchase', purchaseController.renderPurchase);
 
+router.get('/renderPurchase', purchaseController.renderPurchase);
+
 router.get('/getStockName?', purchaseController.getStockName);
 
 router.get('/getStockInfo', purchaseController.getStockInfo);

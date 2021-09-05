@@ -30,6 +30,13 @@ const controller = {
             }
             else{
                 console.log("You are a " + req.session.position + "! You do not have access to this Inventory page!");
+
+                var position = req.session.position;
+
+                if(position == 'Purchasing')
+                    position = 'inventory';
+
+                res.render( position.toLowerCase()+"Dashboard" );
             }
 
         }
@@ -47,6 +54,13 @@ const controller = {
             }
             else{
                 console.log("You are a " + req.session.position + "! You do not have access to this Cashier page!");
+
+                var position = req.session.position;
+
+                if(position == 'Purchasing')
+                    position = 'inventory';
+
+                res.render( position.toLowerCase()+"Dashboard" );
             }          
         }
         else{
