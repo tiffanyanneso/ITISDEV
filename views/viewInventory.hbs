@@ -187,11 +187,28 @@
                     var ingredientUnitVal = $('#dropdown-ingredient-unit').val();
                     var ingredientUnitText = $('#dropdown-ingredient-unit :selected').text();
 
-                    $('#table-view-inventory').append ("<tr>" + "<td>" + ingredientName + "</td>" + "<td>" + ingredientType + "</td>" + "<td>0</td>" + "<td>" + ingredientUnitText + "</td>" + "<td>Out of Stock</td>");
+
+                    $('#table-view-inventory tbody').append ("<tr class='link'>" + "<td>" + ingredientName + "</td>" + "<td>" + ingredientType + "</td>" + "<td>0</td>" + "<td>" + ingredientUnitText + "</td>" + "<td>Out of Stock</td>");
 
                     $('#modal-add-ingredient').modal('toggle');
                     $('#add-new-ingredient').trigger('reset');
-                    $.post('/addIngredient', {ingredientName, ingredientType, ingredientUnitVal});
+
+                      $.ajax({
+                                url: "/addIngredient",              
+                                type: "POST",
+                                data: {'ingredientName': ingredientName,'ingredientType': ingredientType, 'ingredientUnitVal': ingredientUnitVal},
+                                async:false,
+                                success: function(result){
+                                    
+                                    window.location = result.redirect;
+                                  
+                                }
+                            });           
+
+
+                   // $.post('/addIngredient', {ingredientName, ingredientType, ingredientUnitVal});
+                    
+                    
                 });
 
                 $(".link").click(function() {

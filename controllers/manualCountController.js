@@ -13,6 +13,12 @@ const Shrinkages = require('../models/ShrinkageModel.js');
 
 const Employees = require('../models/EmployeesModel.js');
 
+const Reasons = require('../models/Reasons.js');
+
+const { insertOne } = require('../models/db.js');
+
+
+
 const manualCountController = {
 
 	getUpdatePage: function (req,res) {
@@ -208,7 +214,7 @@ const manualCountController = {
 					shrinkages[i].ingredientUnit = ingredient.unitName;
 
 					shrinkages[i].employee = await getEmployeeName(shrinkages[i].employee);
-				}
+				}	
 			
 				res.render('viewShrinkages', {shrinkages, today});
 			}

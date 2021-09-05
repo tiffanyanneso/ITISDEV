@@ -122,6 +122,8 @@ router.get('/unitConverter', unitController.getUnitConverter);
 
 router.post('/saveUnit', unitController.saveUnit);
 
+router.post('/saveUnitConvert', unitController.saveUnitConvert);
+
 router.get('/updateManualCount/:ingredientID', manualCountController.getUpdatePage);
 
 router.post('/saveManualCount', manualCountController.saveManualCount);

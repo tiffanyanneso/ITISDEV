@@ -70,39 +70,35 @@ const unitController = {
 			getConversions(result);
 		})
 		
-
-		//res.render('unitConversion')
-		
 	},
 
-	saveUnit: function (req, res) {
+	/*
+	getCheckUnit: function(req, res){
+		db.findOne(Units, {unit: req.query.unit}, 'unit', function(result){
+			res.send(result);
+		});
+	},
+	*/
 
-		/*function checkUnit (unit) {
-			return new Promise ((resolve, reject) => {
-				db.findOne(Units, {unit:unit}, '_id unit', function(result) {
-					//unit does not exist in db
-					if (result==null) {
-						db.insertOneResult (Units, {unit:unitA}, function(result1) {
-							resolve(result1.id);
-						});
-					}
-					else
-						resolve (result._id)
-				});
-			})
-		}
+	saveUnit: function (req, res){
 
-		async function insertConversion(unitA, unitB, ratio, operator) {
-			var unitAId = await checkUnit (unitA);
-			var unitBId = await checkUnit (unitB);
+		console.log(req.body.unit);
+		db.findOne(Units, {unit: req.body.unit}, '_id', function(result){
 
-			//removed sht goes here
-		}*/
+			console.log(req.body.unit);
+			var unitName = {
+				unit: req.body.unit
+			};
 
-		/*var unitA = req.body.unitA;
-		var unitB = req.body.unitB;
-		var ratio = req.body.ratio;
-		var operator = req.body.operator;*/
+			
+		
+			db.insertOne(Units, unitName, function(flag){
+				if(flag){}
+			});
+		});
+	},
+
+	saveUnitConvert: function (req, res) {
 
 		var conversion = {
 				unitA: req.body.unitA,

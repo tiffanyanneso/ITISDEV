@@ -35,12 +35,12 @@
         
         <h3 class="bold">Add Unit</h3>
         <br>
-            <label for="unit">Unit: </label><input type="text">
+            <input type="text" name="enter-unit" id="enter-unit" placeholder="Unit"> 
+            &nbsp;&nbsp;
+            <input class="btn-add" type="button" id="save-unit" name="save-conversion" value="+">
             <br> <br>
-            <button id="save-id" class="btn-light-blue" disabled="true">Save Unit</button>
-                
+           
 
-        <br><br>
 
         <hr>
          
@@ -59,41 +59,11 @@
                 <option value="{{id}}">{{unitName}}</option>
             {{/each}}
         </select>
-           <!-- <select class="dropdown" style="margin-right: 10px" id="operator"> 
-            <option value="*">*</option>
-            <option value="/">/</option>
-        </select> -->
                 <input class="btn-add" type="button" id="save-conversion" name="save-conversion" value="+">
                 
             </div>
        
-        <!--
-        <label for="unitA">Unit A</label> 
-        <select class="dropdown" id="unitA">
-            <option value="no-selected">--Select unit--</option>
-            {{#each unitNames}}
-                <option value="{{id}}">{{unitName}}</option>
-            {{/each}}
-        </select>
-                        <br>
-        <label for="unitB">Unit B</label>
-         <select class="dropdown" id="unitB">
-            <option value="no-selected">--Select unit--</option>
-            {{#each unitNames}}
-                <option value="{{id}}">{{unitName}}</option>
-            {{/each}}
-        </select>
-        <br>
-        <p class="error" id="error-unit"></p>
-        <label for="ratio">Ratio</label> <input type="number" id="ratio" style="margin-top: 5px; margin-bottom: 5px;"> <br>
-        <p class="error" id="error-ratio"></p>
-        <label for="dropdown-operator">Operator</label>
-        <select class="dropdown" style="margin-top: 5px; margin-bottom: 5px;" id="operator">
-            <option value="*">*</option>
-            <option value="/">/</option>
-        </select> <br> <br>
-        <button id="save-conversion" class="btn-light-blue" disabled="true">Save</button>
--->
+       
         <div class="div-table" style="margin-top: 20px;">
                 <table class="table" id="table-edit-dish-ingredients">
                     <thead class="table-head table-sticky-header">
@@ -120,6 +90,31 @@
 
         <script>
             $(document).ready(function() {
+
+/*
+                function lowercase(string){
+                    var words = string.toLowerCase();
+                    return words.join(' ');
+                };
+*/
+
+/*
+                $('#enter-unit').keyup(function() {
+                    var unit = $('#enter-unit').val();
+                    $.get('/getCheckUnit', {unit: unit}, function (result) {
+                            if (result.unit == unit) {
+                                $("#ingredient-name").css("border", "1px solid #B00000");
+                                $('#error-new-ingredient-name').text("Ingredient already exists");
+                                $("#btn-add-new-ingredient").prop("disabled", true);
+                                $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                            }
+                    });
+                }); 
+*/
+
+                
+
+
 
                 function checkSameUnit () {
                     var unitA = $('#unitA').val();
@@ -186,13 +181,22 @@
                     }       
                 })
 
+                $('#save-unit').click(function() {
+                    
+                    var unit = $('#enter-unit').val();
+                    alert("unit saved");
+                    $.post('/saveUnit', {unit});
+                    
+
+                });
+
                 $('#save-conversion').click(function(){
                     var unitA = $('#unitA').val();
                     var unitB = $('#unitB').val();
                     var ratio = $('#ratio').val();
                     var operator = $('#operator').val();
                     
-                    $.post('/saveUnit', {unitA, unitB, ratio, operator});
+                    $.post('/saveUnitConvert', {unitA, unitB, ratio, operator});
 
                     $('#unitA').val('');
                     $('#unitB').val('');

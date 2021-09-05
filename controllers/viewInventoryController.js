@@ -72,13 +72,40 @@ const viewInventoryController = {
 			ingredientType: req.body.ingredientType,
 			quantityAvailable: 0,
 			unitMeasurement: req.body.ingredientUnitVal,
-			reorderLevel: 0
+			reorderLevel: 0,
+			ingredientID: req.body.systemID,
+			//_id: req.params.systemID
 		};
+/*
+		db.insertOne (Ingredients, ingredient, function (result) {
+			res.send({redirect: '/ingredient/:id' + req.params.systemID});
 
-		db.insertOne (Ingredients, ingredient, function (flag) {
-			if (flag) { }
 		});
+
+		insertOneResult: function(model, doc, callback) {
+			model.create(doc, function(error, result) {
+				if(error) return callback(false);
+				console.log('Added ' + result);
+				return callback(result);
+			});
+		},
+*/
+		db.insertOneResult(Ingredients, ingredient, function(result){
+			
+
+			var ingredientID = result._id;
+			res.send({redirect: '/ingredient/' + ingredientID});
+			console.log(ingredientID);
+
+		
+		});
+
+		
+
+		
 	},
+
+	
 
 	//view individual ingredients and their stock
 	getIngredient: function(req, res) {
