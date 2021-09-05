@@ -78,6 +78,45 @@
 
             <h3 class="bold">Ingredients</h3> 
 
+            <!-- Modal -->
+            <div class="modal fade" id="modal-add-ingredient" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLongTitle">Add Ingredient</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="add-new-ingredient">
+                        <label for="ingredient-name">Name</label> <input id="ingredient-name" type="text"><br>
+                        <p class="error" id="error-new-ingredient-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
+                        <label for="dropdown-ingredient-type">Ingredient Type</label>
+                        <select class="dropdown" id="dropdown-ingredient-type"> 
+                            <option value="no-selected">--Select ingredient type--</option>
+                            <option value="all-type">All</option>
+                            <option value="option2">Option 2</option>
+                            <option value="option3">Option 3</option>
+                        </select><br>
+                        <label for="dropdown-ingredient-unit">Unit of Measurement</label>
+                        <select class="dropdown" id="dropdown-ingredient-unit">
+                            <option value="no-selected">--Select unit--</option>
+                            {{#each units}}
+                                <option value="{{id}}">{{unitName}}</option>
+                            {{/each}}
+                        </select><br>
+                        <label> Reorder Point </label> <input type="text"><br>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btn-add-new-ingredient" disabled="true">Add Ingredient</button>
+                      </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
             <div style="margin-top: 10px;"> 
                 <input type="text" name="new-dish-ingredients-name" id="new-dish-ingredients-name" placeholder="Name" style="margin-right: 5px">
                 <input type="number" name="new-dish-ingredients-quantity" id="new-dish-ingredients-quantity" placeholder="Quantity" style="margin-right: 10px">
@@ -126,6 +165,9 @@
                                 response(data);
                             }
                         });
+                    }, response: function (event, ui) {
+                        if (ui.content.length === 0) 
+                            $('#modal-add-ingredient').modal('show');
                     }
                 });
 
