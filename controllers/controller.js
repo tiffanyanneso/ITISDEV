@@ -20,13 +20,13 @@ const controller = {
         res.redirect('/inventory');
     },
 
-    getDashboard: function(req, res) {
+    getInventoryDashboard: function(req, res) {
 
       
         if(req.session.username != null){
 
              if(req.session.position == 'Inventory'){
-                res.render('dashboard', {name: req.session.name });
+                res.render('inventoryDashboard', {name: req.session.name });
             }
             else{
                 console.log("You are a " + req.session.position + "! You do not have access to this Inventory page!");
@@ -41,10 +41,16 @@ const controller = {
 
     getCashierDashboard: function(req, res){
         if(req.session.username != null){
-            res.render('cashierDashboard', {name: req.session.name});
+
+        	 if(req.session.position == 'Cashier'){
+                 res.render('cashierDashboard', {name: req.session.name});
+            }
+            else{
+                console.log("You are a " + req.session.position + "! You do not have access to this Cashier page!");
+            }          
         }
         else{
-            res.render('cashierDashboard', {name: "Name"});
+            res.render('login');
         }
     }
 };

@@ -25,7 +25,7 @@ const logInController = {
 		var username = req.body.username;
 		var password = req.body.password;
 
-		var projection = "name username password position email phoneNumber"
+		var projection = "_id name username password position email phoneNumber"
 
 		db.findOne(Employees, {username:username}, projection, function(result) {
 
@@ -36,6 +36,7 @@ const logInController = {
 
                     	//add session functions here
                        // req.session.avatar = result.avatar;
+                        req.session._id = result._id;
                       	req.session.name = result.name;
                       	req.session.username = result.username;
                         req.session.position = result.position;
@@ -46,7 +47,16 @@ const logInController = {
             						console.log( result.email );
             						console.log( result.phoneNumber );
 
-  						res.send({redirect: '/dashboard'});
+  						          
+                        if(req.session.position == 'Cashier'){
+                          res.send({redirect: '/cashierDashboard'});
+                        }
+
+                        if(req.session.position == 'Inventory' || req.session.position == 'Purchasing'){
+                          res.send({redirect: '/inventoryDashboard'});
+                        }
+
+
                     }
                     else
                     {
