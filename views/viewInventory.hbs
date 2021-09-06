@@ -237,8 +237,8 @@
                     var filter = $('#dropdown-view-inventory-status').val()
                     
                     $('#table-view-inventory > tbody > tr').each(function(index) {
-                        var statusID = $(this).children('.status-id').text().toLowerCase();
-                        if (filter != statusID)
+                        var statusID = $(this).children('.status-id').text()
+                        if (filter != statusID && filter!="all")
                             $(this).toggle();
                     })
                 })
