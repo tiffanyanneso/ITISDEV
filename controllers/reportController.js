@@ -297,6 +297,8 @@ const reportController = {
                             };
                             purchasedStocks.push(purchasedStock);
                         }
+                        //console.log(purchasedStocks);
+                        //console.log(purchasedStocks.length);
                         if (purchasedStocks.length>0)
                             resolve(purchasedStocks);
                     
@@ -337,7 +339,7 @@ const reportController = {
                 var ings = await ingredientUnitNames(ingredients);
 
                 //console.log(ings);
-                //console.log(purchases);
+                console.log(purchases);
 
                 for (var j = 0; j < purchases.length; j++) {
 
@@ -349,20 +351,19 @@ const reportController = {
                         var stockID = purchasedStocks[k].stockID;
 
                         var stockIngredientInfo = await getStockIngredientInfo(stockID);
-                        console.log(stockIngredientInfo); // info shows
+                        //console.log(stockIngredientInfo); // info shows
 
-                        console.log(stockIngredientInfo.length);
+                       //console.log(stockIngredientInfo.length);
 
-                        for (var l = 0; l < stockIngredientInfo.length; l++) {
-                            console.log(stockIngredientInfo[l].stockID);
-                            for (var m = 0; m < ings.length; m++) {
-                                //console.log("stock ing id: " + stockIngredientInfo[l].ingredientID + " ing id: " + ingredients[m]._id);
-                                if (stockIngredientInfo[l].ingredientID == ings[m]._id) {
-                                    if (stockIngredientInfo[l].stockUnit == ings[m].unit) {
-                                        ings[m].add += stockIngredientInfo[l].quantity; // MULTIPLY BY QTY ALSO!
-                                    } else {
-                                        console.log("needs conversion");
-                                    }
+                        for (var l = 0; l < ings.length; l++) {
+                            //console.log("stock ing id: " + stockIngredientInfo.ingredientID + " ing id: " + ingredients[l]._id);
+                            if (stockIngredientInfo.ingredientID == ings[l]._id) {
+                                //console.log("stock unit: " + stockIngredientInfo.stockUnit + " ing unit: " + ingredients[l].unit);
+                                if (stockIngredientInfo.stockUnit == ings[l].unit) {
+                                    //console.log("add: " + ings[l].add + "stock qty: " + stockIngredientInfo.quantity + "count: " + purchasedStocks[j].count);
+                                    ings[l].add += parseFloat(stockIngredientInfo.quantity) * parseFloat(purchasedStocks[j].count);
+                                } else {
+                                    console.log("needs conversion");
                                 }
                             }
                         }
