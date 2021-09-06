@@ -221,7 +221,6 @@ const newOrderController = {
             db.insertMany (SalesDishes, dishesSave, function (flag) {
                 if (flag) {}
             })
-
             res.redirect('/order/' + salesID);
         }
 
@@ -229,9 +228,10 @@ const newOrderController = {
 
 
         var dishes = JSON.parse(req.body.dishString);
-        var orderTotal = req.body.orderTotal;
+        var orderTotal = req.body.total;
         var vat= req.body.vat;
         var discount = req.body.discount;
+
         var dateOrdered = new Date();
 
         var sale = {

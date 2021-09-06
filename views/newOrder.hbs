@@ -266,10 +266,10 @@
                     });
 
                    var dishString = JSON.stringify(orderedDishes);
-                   var orderTotal = $('#new-order-total-due').text().slice(1);
+                   var total = $('#new-order-total-due').text().slice(1);
                    var vat =  $('#new-order-VAT').text().slice(1);
                    var discount = $("#new-order-less-discount").text().slice(1);
-                   $.post('/saveSale', {dishString, orderTotal, vat, total});
+                   $.post('/saveSale', {dishString, vat, discount, total});
 
                    $("#table-view-dish-body tr").remove();
                    $('#new-order-total-due').text('₱ 0');
