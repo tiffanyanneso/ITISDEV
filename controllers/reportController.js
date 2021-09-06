@@ -20,6 +20,8 @@ const SalesDishes = require('../models/SalesDishesModel.js');
 
 const DishIngredients = require('../models/DishIngredientsModel.js');
 
+const Conversion = require('../models/ConversionModel.js');
+
 //import models
 
 const reportController = {
@@ -315,6 +317,62 @@ const reportController = {
                 });
             }
 
+            function getConversion (ingredientUnit, dishUnit){
+                return new Promise((resolve, reject) => {
+                    var conversion = [];
+                    db.findOne (Conversion, {$and:[ {unitA:ingredientUnit}, {unitB:dishUnit} ]}, 'ratio operator', function(result){
+                        //console.log("direct " + result);
+                        if (result!="") {
+                            conversion.push (result);
+                            resolve(conversion);
+                        }
+                    });
+                });
+            }
+
+            function getIndirectConversion(unitA, unitB) {
+                return new Promise ((resolve, reject) => {
+                    var conversions = [];
+                    //get all conversions with ingredientUnit
+                    db.findMany (Conversion, {unitA:unitA}, 'unitB ratio operator', function (result) {	
+                        //get all conversions with dishUnit as unit to be converted to
+                        db.findMany (Conversion, {unitB:unitB}, 'unitA ratio operator', function (result1) {
+                            var found = false;
+                            for (var i=0; i<result.length && !found; i++) {
+                                for (var j=0; j<result1.length && !found; j++) {
+                                    if (result[i].unitB == result1[j].unitA) {
+                                        conversions.push (result[i]);
+                                        conversions.push (result1[j]);
+                                        found = true;
+                                    }
+                                }
+                            }
+                            //console.log("indirect " + conversions);
+                            resolve(conversions);
+                        });
+                    }); 
+                });
+            }
+
+            function computeQuantityAvailable(quantityAvailable, conversion) {
+                return new Promise((resolve, reject) => {
+                    var computedQuantity = quantityAvailable;
+    
+                    //console.log("compute quantity " + conversion);
+                    for (var i=0; i<conversion.length; i++) {
+                        var ratio = conversion[i].ratio
+                        var operator = conversion[i].operator
+    
+                        if (operator == "*")
+                            computedQuantity = computedQuantity * ratio
+                        else 
+                            computedQuantity = computedQuantity / ratio
+                    }
+                    //console.log(computedQuantity);
+                    resolve (computedQuantity);
+                }) ;
+            }
+
             async function ingredientUnitNames(ingredients) {
                 for (var i = 0; i < ingredients.length; i++) {
                     var unitName = await getUnitName (ingredients[i].unit);
@@ -363,7 +421,23 @@ const reportController = {
                                     //console.log("add: " + ings[l].add + "stock qty: " + stockIngredientInfo.quantity + "count: " + purchasedStocks[j].count);
                                     ings[l].add += parseFloat(stockIngredientInfo.quantity) * parseFloat(purchasedStocks[j].count);
                                 } else {
-                                    console.log("needs conversion");
+                                    //console.log("needs conversion");
+                                    
+                                    var conversion;
+
+                                    //checks if there is direct converion
+                                    conversion = await getConversion (stockIngredientInfo.stockUnit, ings[l].unit);
+                                    
+                                    //no direct conversion, check for indirect conversions
+                                    if (conversion == null || conversion == "") 
+                                        conversion = await getIndirectConversion(stockIngredientInfo.stockUnit, ings[l].unit);
+
+                                    //console.log("IN IF " + conversion);
+
+                                   // console.log(conversion);
+                                    
+                                    //console.log("DISH NAME " + dish.dishName + "     INGREDIENT " + ingredient.ingredientName);
+                                    ings[l].add += await computeQuantityAvailable(stockIngredientInfo.quantity, conversion);
                                 }
                             }
                         }
