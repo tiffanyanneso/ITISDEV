@@ -55,7 +55,7 @@
                         <select class="dropdown" id="dropdown-ingredient-unit">
                             <option value="no-selected">--Select unit--</option>
                             {{#each units}}
-                                <option value="{{id}}">{{unitName}}</option>
+                                <option value="{{_id}}">{{unit}}</option>
                             {{/each}}
                         </select><br>
                         <label> Reorder Point </label> <input type="text"><br>
@@ -79,9 +79,10 @@
     
                 <label for="dropdown-view-new-inventory-status" style="margin-right: 10px">Status</label>
                 <select class="dropdown" id="dropdown-view-inventory-status">
-                    <option value="low-stock" selected>Low Stock</option>
-                    <option value="in-stock">In Stock</option>
-                    <option value="all-status">All</option>
+                    <option value="all">All</option>
+                    {{#each statuses}}
+                        <option value="{{_id}}">{{status}}</option>
+                    {{/each}}
                 </select>
             </div>
 
@@ -106,6 +107,7 @@
                             <td>{{ingredientType}}</td>
                             <td>{{quantityAvailable}}</td>
                             <td>{{unitMeasurement}}</td>
+                            <td style="display: none;" class="status-id">{{statusID}}</td>
                             <td>{{status}}</td>
                         </tr>
                         {{/each}}
@@ -188,27 +190,30 @@
                     var ingredientUnitText = $('#dropdown-ingredient-unit :selected').text();
 
 
-                    $('#table-view-inventory tbody').append ("<tr class='link'>" + "<td>" + ingredientName + "</td>" + "<td>" + ingredientType + "</td>" + "<td>0</td>" + "<td>" + ingredientUnitText + "</td>" + "<td>Out of Stock</td>");
-
                     $('#modal-add-ingredient').modal('toggle');
                     $('#add-new-ingredient').trigger('reset');
 
                       $.ajax({
-                                url: "/addIngredient",              
-                                type: "POST",
-                                data: {'ingredientName': ingredientName,'ingredientType': ingredientType, 'ingredientUnitVal': ingredientUnitVal},
-                                async:false,
-                                success: function(result){
-                                    
-                                    window.location = result.redirect;
-                                  
-                                }
-                            });           
+                            url: "/addIngredient",              
+                            type: "POST",
+                            data: {'ingredientName': ingredientName,'ingredientType': ingredientType, 'ingredientUnitVal': ingredientUnitVal},
+                            async:false,
+                            success: function(result){
 
-
-                   // $.post('/addIngredient', {ingredientName, ingredientType, ingredientUnitVal});
-                    
-                    
+                                 $('#table-view-inventory tbody').append (
+                                    `<tr class='link' data-href='/ingredient/${result}'>
+                                        <td>${ingredientName}</td> 
+                                        <td>${ingredientType}</td> 
+                                        <td>0</td>
+                                        <td>${ingredientUnitText}</td> 
+                                        <td>Out of Stock</td>
+                                    </tr>`);
+                                
+                                 $(".link").click(function() {
+                                    window.location = $(this).data("href");
+                                });
+                            }
+                    });        
                 });
 
                 $(".link").click(function() {
@@ -222,6 +227,18 @@
                     $('#table-view-inventory > tbody > tr').each(function(index) {
                         var ingredientName = $(this).children('td:first').text().toLowerCase();
                         if (!ingredientName.includes(searchItem))
+                            $(this).toggle();
+                    })
+                })
+
+                $('#dropdown-view-inventory-status').change(function() {
+                    $('#table-view-inventory tr').show();
+
+                    var filter = $('#dropdown-view-inventory-status').val()
+                    
+                    $('#table-view-inventory > tbody > tr').each(function(index) {
+                        var statusID = $(this).children('.status-id').text().toLowerCase();
+                        if (filter != statusID)
                             $(this).toggle();
                     })
                 })

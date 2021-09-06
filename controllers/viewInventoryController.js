@@ -8,6 +8,8 @@ const Stock = require('../models/StockModel.js');
 
 const Units = require('../models/UnitsModel.js');
 
+const InventoryStatus = require('../models/InventoryStatusModel.js');
+
 //import models
 
 const viewInventoryController = {
@@ -24,40 +26,65 @@ const viewInventoryController = {
 			});
 		}
 
+		function getStatus (statusID) {
+			return new Promise ((resolve, reject) => {
+				db.findOne (InventoryStatus, {_id: statusID}, 'status', function (result) {
+					if (result!="")
+						resolve(result.status)
+				})
+			})
+		}
+
+		function getUnits() {
+			return new Promise ((resolve, reject) => {
+				db.findMany (Units, {}, ' _id unit', function(result){
+					if (result!="")
+						resolve(result);
+				});
+			});
+		}
+
+		function getStatuses() {
+			return new Promise ((resolve, reject) => {
+				db.findMany (InventoryStatus, {}, ' _id status', function(result){
+					if (result!="")
+						resolve(result);
+				});
+			});
+		}
+
 		async function getUnit(ingredients) {
-			for (var i=0; i<ingredients.length; i++) 
+			for (var i=0; i<ingredients.length; i++) {
 				ingredients[i].unitMeasurement = await getUnitName (ingredients[i].unitMeasurement);
 
+				var statusID;
+				if (ingredients[i].quantityAvailable > 0)
+					statusID = "6135a6a4ed3ee2ca352c7b94";
+				else
+					statusID = "6135a6c1ed3ee2ca352c7b96";
 
-			db.findMany (Units, {}, '_id unit', function (result2) {
-				var units = [];
-				for (var i=0; i<result2.length; i++) {
-					var unit = {
-						id:result2[i]._id,
-						unitName:result2[i].unit
-					};
-					units.push (unit);
-				}
-				res.render('viewInventory', {ingredients, units});
-			});
+				ingredients[i].statusID = statusID;
+				ingredients[i].status = await getStatus (statusID)
+			}
+
+			var units = await getUnits();
+			var statuses = await getStatuses();
+			
+			res.render('viewInventory', {ingredients, units, statuses});
 		}
 
 		var projection = '_id ingredientName ingredientType quantityAvailable unitMeasurement'; 	
 		var ingredients = [];
 		db.findMany (Ingredients, {}, projection, function(result) {
 			for (var i=0; i<result.length; i++) {
-				var status;
-				if (result[i].quantityAvailable > 0)
-					status = "In-Stock";
-				else
-					status = "Out of Stock";
+				
+
 				var ingredient = {
 					systemID: result[i]._id,
 					ingredientName: result[i].ingredientName,
 					ingredientType: result[i].ingredientType,
 					quantityAvailable: result[i].quantityAvailable,
 					unitMeasurement: result[i].unitMeasurement,
-					status: status
 				};
 				ingredients.push(ingredient);		
 			}
@@ -91,18 +118,9 @@ const viewInventoryController = {
 		},
 */
 		db.insertOneResult(Ingredients, ingredient, function(result){
-			
-
 			var ingredientID = result._id;
-			res.send({redirect: '/ingredient/' + ingredientID});
-			console.log(ingredientID);
-
-		
+			res.send(ingredientID);
 		});
-
-		
-
-		
 	},
 
 	
@@ -183,8 +201,6 @@ const viewInventoryController = {
 				if (flag) { }
 			});	
 		});
-		
-		
 	}
 };
 
