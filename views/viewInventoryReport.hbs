@@ -132,7 +132,30 @@
                             $("#start-date-inventory-report").css("border", "1px solid #DDDDDD");
                             $("#end-date-inventory-report").css("border", "1px solid #DDDDDD");
 
-                            // get filtered data
+                            $.get('/getFilteredInventoryReport', {startDate:convertedStartDate, endDate:convertedEndDate}, function (result) {
+                                 $("#table-view-inventory-report tbody tr").remove();
+
+                                for (var i = 0; i < result.length; i++) {
+                                    var id = result[i]._id
+                                    var ingredientName = result[i].ingredientName;
+                                    var add = result[i].add;
+                                    var used = result[i].used;
+                                    var unit = result[i].unitName;
+
+                                    $("#table-view-inventory-report").find("tbody").append(
+                                        `<tr class="link" data-href="/inventoryReport/${id}"> 
+                                            <td>${ingredientName}</td>
+                                            <td>${add}</td> 
+                                            <td>${used}</td>
+                                            <td>${unit}</td>
+                                        </tr>`
+                                    );
+
+                                    $(".link").click(function() {
+                                        window.location = $(this).data("href");
+                                    });
+                                }
+                            })
 
                             $.get("/getDateToday", {}, function (result2) {
                                     $("#dateToday").text(result2);

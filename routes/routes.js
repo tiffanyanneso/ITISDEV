@@ -138,6 +138,8 @@ router.get('/getDateToday', manualCountController.getDateToday);
 
 router.get('/viewInventoryReport', reportController.getInventoryReport); 
 
+router.get('/getFilteredInventoryReport', reportController.getFilteredInventoryReport)
+
 router.get('/viewSalesReport', reportController.getSalesReport); 
 
 router.get('/getFilteredRowsSalesReport', reportController.getFilteredRowsSalesReport); 

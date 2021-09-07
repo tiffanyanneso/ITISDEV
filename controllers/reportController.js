@@ -556,6 +556,330 @@ const reportController = {
         getInventoryReport();
     },
 
+    getFilteredInventoryReport: function (req, res) {
+        //var today = new Date().toLocaleString('en-US');
+        var startDate = new Date(req.query.startDate);
+        var endDate = new Date(req.query.endDate);
+        startDate.setHours(0,0,0,0);
+        endDate.setHours(0,0,0,0);
+
+        function getIngredients() {
+            return new Promise ((resolve, reject) => {
+                var ingredients = []
+                var ingredientProjection = '_id ingredientName unitMeasurement';
+                db.findMany (Ingredients, {}, ingredientProjection, function (result) {
+
+                    for (var i = 0; i < result.length; i++) {
+                        var ingredient = {
+                            _id: result[i]._id,
+                            ingredientName: result[i].ingredientName,
+                            add: 0,
+                            used: 0,
+                            unit: result[i].unitMeasurement,
+                            unitName: "Unit Name"
+                        };
+                        ingredients.push(ingredient);
+                    }
+                    resolve (ingredients);
+                })   
+            })
+        }
+
+        function getUnitName(unitId) {
+            return new Promise ((resolve, reject) => {
+                db.findOne (Units, {_id:unitId}, 'unit', function(result){
+                    if (result!="")
+                        resolve(result.unit);
+                });
+            });
+        }
+
+        function getPurchases (startDate, endDate) {
+            return new Promise ((resolve, reject) => {
+                var purchases = []
+                db.findMany (Purchases, {}, '_id dateBought', function(result) {
+                    for (var i=0; i<result.length; i++) {
+                        var date = new Date(result[i].dateBought);
+                        date.setHours(0,0,0,0);
+
+                        if (!(startDate > date || date > endDate)) 
+                            purchases.push(result[i]);
+                    }
+                    resolve (purchases)
+                })
+            })
+        }
+
+        function getStocksPurchased(purchaseID){
+            return new Promise ((resolve, reject) => {
+                var purchasedStocks = [];
+                var projection = 'stockID count';
+                db.findMany (PurchasedStock, {purchaseID:purchaseID}, projection, function(result) {
+                    for (var i=0; i<result.length; i++) {
+                        var purchasedStock = {
+                            stockID:result[i].stockID,
+                            count: result[i].count
+                        };
+                        purchasedStocks.push(purchasedStock);
+                    }
+                    //console.log(purchasedStocks);
+                    //console.log(purchasedStocks.length);
+                    if (purchasedStocks.length>0)
+                        resolve(purchasedStocks);
+                
+                });
+            });
+        }
+
+        function getStockIngredientInfo(stockID){
+            return new Promise ((resolve, reject) => {
+                var projection = 'ingredientID quantity stockUnit';
+                db.findOne (Stock, {_id: stockID}, projection, function(result) {
+                    resolve(result);
+                });
+            });
+        }
+
+         function getSales(startDate, endDate) {
+            return new Promise ((resolve, reject) => {
+                var sales = []
+                db.findMany (Sales, {}, '_id date', function(result) {
+                    for (var i=0; i<result.length; i++) {
+                        var date = new Date(result[i].date);
+                        date.setHours(0,0,0,0);
+
+                        if (!(startDate > date || date > endDate))
+                            sales.push(result[i]);
+                    }
+                    resolve (sales)
+                })
+            })
+        }
+
+        function getDishSales (salesID) {
+            return new Promise((resolve, reject) => {
+                db.findMany (SalesDishes, {salesID:salesID}, 'dishID quantity', function (result) {
+                    if (result!="")
+                        resolve(result);
+                })
+            })
+        }
+
+        function getDishIngredients (dishID) {
+            return new Promise ((resolve, reject) => {
+                db.findMany (DishIngredients, {dishID:dishID}, 'ingredientID quantity unitMeasurement', function (result) {
+                    if (result!="")
+                        resolve(result);
+                })
+            })
+        }
+
+        function getIngredient (ingredientID) {
+            return new Promise ((resolve, reject) => {
+                db.findOne (Ingredients, {_id: ingredientID}, 'unitMeasurement', function(result) {
+                    if (result!="")
+                        resolve(result);
+                })
+            })
+        }
+
+        function getConversion (fromUnit, toUnit){
+            return new Promise((resolve, reject) => {
+                var conversion = [];
+                db.findOne (Conversion, {$and:[ {unitA:fromUnit}, {unitB:toUnit} ]}, 'ratio operator', function(result){
+                    //console.log("direct " + result);
+                    if (result!="") {
+                        conversion.push (result);
+                        resolve(conversion);
+                    }
+                });
+            });
+        }
+
+        function getIndirectConversion(unitA, unitB) {
+            return new Promise ((resolve, reject) => {
+                var conversions = [];
+                //get all conversions with ingredientUnit
+                db.findMany (Conversion, {unitA:unitA}, 'unitB ratio operator', function (result) { 
+                    //get all conversions with dishUnit as unit to be converted to
+                    db.findMany (Conversion, {unitB:unitB}, 'unitA ratio operator', function (result1) {
+                        var found = false;
+                        for (var i=0; i<result.length && !found; i++) {
+                            for (var j=0; j<result1.length && !found; j++) {
+                                if (result[i].unitB == result1[j].unitA) {
+                                    conversions.push (result[i]);
+                                    conversions.push (result1[j]);
+                                    found = true;
+                                }
+                            }
+                        }
+                        //console.log("indirect " + conversions);
+                        resolve(conversions);
+                    });
+                }); 
+            });
+        }
+
+        function computeQuantityAdd(quantityAvailable, conversion) {
+            return new Promise((resolve, reject) => {
+                var computedQuantity = quantityAvailable;
+
+                //console.log("compute quantity " + conversion);
+                for (var i=0; i<conversion.length; i++) {
+                    var ratio = conversion[i].ratio
+                    var operator = conversion[i].operator
+
+                    if (operator == "*")
+                        computedQuantity = computedQuantity * ratio
+                    else 
+                        computedQuantity = computedQuantity / ratio
+                }
+                //console.log(computedQuantity);
+                resolve (computedQuantity);
+            }) ;
+        }
+
+        function computeQuantityUsed(quantityAvailable, conversion, quantity) {
+            return new Promise((resolve, reject) => {
+                var computedQuantity = quantityAvailable;
+
+                //console.log("compute quantity " + conversion);
+                for (var i=0; i<conversion.length; i++) {
+                    var ratio = conversion[i].ratio
+                    var operator = conversion[i].operator
+
+                    if (operator == "*")
+                        computedQuantity = computedQuantity * ratio
+                    else 
+                        computedQuantity = computedQuantity / ratio
+                }
+                //console.log(computedQuantity);
+                resolve (computedQuantity*quantity);
+            }) ;
+        }
+
+        async function ingredientUnitNames(ingredients) {
+            for (var i = 0; i < ingredients.length; i++) 
+                ingredients[i].unitName = await getUnitName (ingredients[i].unit);
+
+            return ingredients;
+        }
+
+        async function addColumn(ingredients) {
+            var purchases = await getPurchases(startDate, endDate);
+
+            //console.log(ings);
+            //console.log(purchases);
+
+            for (var j = 0; j < purchases.length; j++) {
+
+                var purchasedStocks = await getStocksPurchased(purchases[j]._id);
+
+                //console.log(purchasedStocks);
+
+                for (var k = 0; k < purchasedStocks.length; k++) {
+                    var stockID = purchasedStocks[k].stockID;
+
+                    var stockIngredientInfo = await getStockIngredientInfo(stockID);
+                    //console.log(stockIngredientInfo); // info shows
+
+                   //console.log(stockIngredientInfo.length);
+
+                    for (var l = 0; l < ingredients.length; l++) {
+                        //console.log("stock ing id: " + stockIngredientInfo.ingredientID + " ing id: " + ingredients[l]._id);
+                        if (stockIngredientInfo.ingredientID == ingredients[l]._id) {
+                            //console.log("stock unit: " + stockIngredientInfo.stockUnit + " ing unit: " + ingredients[l].unit);
+                            if (stockIngredientInfo.stockUnit == ingredients[l].unit) {
+                                //console.log("add: " + ings[l].add + "stock qty: " + stockIngredientInfo.quantity + "count: " + purchasedStocks[j].count);
+                                ingredients[l].add += parseFloat(stockIngredientInfo.quantity) * parseFloat(purchasedStocks[j].count);
+                            } else {
+                                //console.log("needs conversion");
+                                
+                                var conversion;
+
+                                //checks if there is direct converion
+                                conversion = await getConversion (stockIngredientInfo.stockUnit, ingredients[l].unit);
+                                
+                                //no direct conversion, check for indirect conversions
+                                if (conversion == null || conversion == "") 
+                                    conversion = await getIndirectConversion(stockIngredientInfo.stockUnit, ingredients[l].unit);
+
+                                //console.log("IN IF " + conversion);
+
+                               // console.log(conversion);
+                                
+                                //console.log("DISH NAME " + dish.dishName + "     INGREDIENT " + ingredient.ingredientName);
+                                ingredients[l].add += await computeQuantityAdd(stockIngredientInfo.quantity, conversion);
+                            }
+                        }
+                    }
+                }
+            }
+            //console.log(ings)
+            return ingredients
+        }
+
+        async function usedColumn (ingredients) {
+
+            var sales = await getSales(startDate, endDate);
+            
+            for (var i=0; i<sales.length; i++) {
+                //console.log("i " + i + " sales " + sales.length)
+                var dishSales = await getDishSales (sales[i]._id);
+
+                for (var j=0; j<dishSales.length; j++) {
+                    //console.log("j " + j + " dishSales " + dishSales.length)
+                    var dishIngredients = await getDishIngredients (dishSales[j].dishID);
+
+                    for (var k=0; k<dishIngredients.length; k++) {
+                        //console.log("k " + k + " dishIngredients " + dishIngredients.length)
+
+                        for (var l=0; l<ingredients.length; l++) {
+                            //console.log("l " + l + " ingredients " + ingredients.length)
+
+                            if (dishIngredients[k].ingredientID == ingredients[l]._id) {
+
+                                //need conversion
+                                if (dishIngredients[k].unitMeasurement != ingredients[l].unit) {
+                                    var conversion;
+
+                                    //checks if there is direct converion
+                                    conversion = await getConversion (dishIngredients[k].unitMeasurement, ingredients[l].unit);
+                                    
+                                    //no direct conversion, check for indirect conversions
+                                    if (conversion == null || conversion == "") {
+                                        conversion = await getIndirectConversion(dishIngredients[k].unitMeasurement, ingredients[l].unit);
+                                    }
+
+                                    ingredients[l].used += await computeQuantityUsed(dishIngredients[k].quantity, conversion, dishSales[j].quantity);
+                                }
+                               else {
+                                    //console.log(dishSales[j])
+                                    ingredients[l].used += (dishIngredients[k].quantity * dishSales[j].quantity)
+                                    //console.log(dishIngredients[k].quantity +" " + dishSales[j].quantity)
+                               }
+                                    
+                            }
+                        }
+                    }
+                }
+            }
+            return ingredients
+        } 
+
+        async function getFilteredInventoryReport() {
+            var ingredients = await getIngredients();
+            ingredients = await addColumn(ingredients);
+            ingrdients = await usedColumn(ingredients);
+            ingredients = await ingredientUnitNames(ingredients)
+
+            res.send(ingredients);
+
+        }
+
+        getFilteredInventoryReport();
+    },
+
     getViewSpecificInventoryReport: function(req, res) {
         var ingredientID = req.params.ingredientID;
 
