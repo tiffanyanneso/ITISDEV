@@ -47,9 +47,9 @@
                         <label for="dropdown-ingredient-type">Ingredient Type</label>
                         <select class="dropdown" id="dropdown-ingredient-type"> 
                             <option value="no-selected">--Select ingredient type--</option>
-                            <option value="all-type">All</option>
-                            <option value="option2">Option 2</option>
-                            <option value="option3">Option 3</option>
+                            {{#each ingredientTypes}}
+                                <option value="{{_id}}">{{ingredientType}}</option>
+                            {{/each}}
                         </select><br>
                         <label for="dropdown-ingredient-unit">Unit of Measurement</label>
                         <select class="dropdown" id="dropdown-ingredient-unit">
@@ -73,8 +73,9 @@
                 <label for="dropdown-view-new-inventory-type" style="margin-right: 10px">Type</label>
                 <select class="dropdown" id="dropdown-view-inventory-type" style="margin-right: 10px">
                     <option value="all-type" selected>All</option>
-                    <option value="option2">Option 2</option>
-                    <option value="option3">Option 3</option>
+                    {{#each ingredientTypes}}
+                        <option value="{{_id}}">{{ingredientType}}</option>
+                    {{/each}}
                 </select>
     
                 <label for="dropdown-view-new-inventory-status" style="margin-right: 10px">Status</label>
@@ -84,8 +85,49 @@
                         <option value="{{_id}}">{{status}}</option>
                     {{/each}}
                 </select>
+
+                <button class="btn-light-blue" id="btn-change-reoder" style="float: right;" data-toggle="modal" data-target="#modal-change-reorder">Change Reorder Level Computation</button>
+
+
+                 <!-- Modal -->
+                <div class="modal fade" id="modal-change-reorder" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h3 class="modal-title" id="exampleModalLongTitle">Change Reorder Point Computation</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <label for="dropdown-reorder-point" style="margin-right: 10px">Computation of Reorder</label>
+                        <select class="dropdown" id="dropdown-reorder-point">
+                            <option value="no-selected">--Select Formula--</option>
+                            <option value="sales">Based on Sales</option>
+                            <option value="input">Input Safety Stock</option>
+                        </select>
+                        <p id="description-sales" style="display: none;">This formula computes the reorder point based on sales</p>
+                        <p id="description-input" style="display: none;">This formula computes the reorder point based on how many dishes uses the ingredients, and multiplies based on the number inputted</p>
+                        <div id="div-multiplier-input" style="display: none;">
+                            {{#each ingredientTypes}}
+                                <label for="{{_id}}">{{ingredientType}}</label>
+                                <input type="text" id="{{_id}}" class="types">
+                                <br>
+                            {{/each}}
+                        </div>
+                      </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="btn-change-reorder-computation">Change Computation</button>
+                          </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
             </div>
 
+            <br>
             <br>
 
             <!-- make rows clickable -->
@@ -241,6 +283,46 @@
                         if (filter != statusID && filter!="all")
                             $(this).toggle();
                     })
+                })
+
+                $('#dropdown-reorder-point').change(function() {
+                    var reorder = $('#dropdown-reorder-point').val();
+
+                    if (reorder == "sales") {
+                        $('#description-sales').css('display', 'block')
+                        $('#description-input').css('display', 'none');
+                        $('#div-multiplier-input').css('display', 'none')
+                    }
+
+                    else if (reorder == "input") {
+                        $('#description-input').css('display', 'none')
+                        $('#description-input').css('display', 'block');
+                        $('#div-multiplier-input').css('display', 'block')
+                    }
+                })
+
+                $('#btn-change-reorder-computation').click(function() {
+                    var reorder = $('#dropdown-reorder-point').val();
+                    if (reorder == "sales") {
+                        $.post('/reorderFormulaSales');
+                    }
+
+                    else if (reorder == "input") {
+                        var values = []
+
+                        $('.types').each(function() {
+                            var typeID = $(this).attr('id')
+                            var multiplier = $(this).val();
+
+                            var value = {
+                                typeID: typeID,
+                                multiplier: multiplier
+                            }
+                            values.push(value);
+                        })
+
+                        $.post('/reorderFormulaInput', {values})
+                    }
                 })
             })
         </script>

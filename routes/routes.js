@@ -50,6 +50,10 @@ router.get('/getCheckStockName', viewInventoryController.getCheckStockName);
 
 router.post('/addStock', viewInventoryController.addStock);
 
+router.post('/reorderFormulaInput', viewInventoryController.reorderFormulaInput);
+
+router.post('/reorderFormulaSales', viewInventoryController.reorderFormulaSales);
+
 router.get('/addNewDish', addNewDishController.getAddNewDish);
 
 router.get('/getCheckDishName', addNewDishController.getCheckDishName);
