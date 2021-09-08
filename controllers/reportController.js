@@ -421,13 +421,13 @@ const reportController = {
 
                 //console.log("compute quantity " + conversion);
                 for (var i=0; i<conversion.length; i++) {
-                    var ratio = conversion[i].ratio
-                    var operator = conversion[i].operator
+                    var ratio = conversion[i].ratio;
+                    var operator = conversion[i].operator;
 
                     if (operator == "*")
-                        computedQuantity = computedQuantity * ratio
+                        computedQuantity = computedQuantity * ratio;
                     else 
-                        computedQuantity = computedQuantity / ratio
+                        computedQuantity = computedQuantity / ratio;
                 }
                 //console.log(computedQuantity);
                 resolve (computedQuantity*quantity);
