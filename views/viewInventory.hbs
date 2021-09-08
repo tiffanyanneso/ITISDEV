@@ -79,7 +79,7 @@
     
                 <label for="dropdown-view-new-inventory-status" style="margin-right: 10px">Status</label>
                 <select class="dropdown" id="dropdown-view-inventory-status">
-                    <option value="all">All</option>
+                    <option value="all-type">All</option>
                     {{#each statuses}}
                         <option value="{{_id}}">{{status}}</option>
                     {{/each}}
@@ -276,12 +276,22 @@
 
                 $('#dropdown-view-inventory-status').change(function() {
                     $('#table-view-inventory tr').show();
-
                     var filter = $('#dropdown-view-inventory-status').val()
                     
                     $('#table-view-inventory > tbody > tr').each(function(index) {
                         var statusID = $(this).children('.status-id').text()
-                        if (filter != statusID && filter!="all")
+                        if (filter != statusID && filter!="all-type")
+                            $(this).toggle();
+                    })
+                })
+
+                $('#dropdown-view-inventory-type').change(function() {
+                    $('#table-view-inventory tr').show();
+                    var filter = $('#dropdown-view-inventory-type').val()
+                    
+                    $('#table-view-inventory > tbody > tr').each(function(index) {
+                        var typeID = $(this).children('.type-id').text()
+                        if (filter != typeID && filter!="all-type")
                             $(this).toggle();
                     })
                 })
