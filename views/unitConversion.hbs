@@ -99,9 +99,8 @@
 
 
                 $('#enter-unit').keyup(function() {
-
-                    var unit = $('enter-unit').val());
-                    
+                    var unit = $('#enter-unit').val());
+                    var unit = $.trim(unit);
                     $.get('/getCheckUnit', {unit: unit}, function (result) {
                             if (result.unit == unit) {
                                 $("#enter-unit").css("border", "1px solid #B00000");
@@ -109,7 +108,6 @@
                                 $("#save-unit").prop("disabled", true);
                                 $("#save-unit").css("background-color", "#b3b3b3");
                             }
-
                             else {
                                 $("#enter-unit").css("border", "1px solid #DDDDDD");
                                 $("#error-unit").text("");

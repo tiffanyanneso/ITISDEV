@@ -227,6 +227,7 @@
 
                 $('#btn-add-new-ingredient').click(function() {
                     var ingredientName = capitalize($('#ingredient-name').val());
+                    var ingredientName = $.trim(ingredientName);
                     var ingredientTypeVal = $('#dropdown-ingredient-type').val();
                     var ingredientTypeText = $('#dropdown-ingredient-type :selected').text();
                     var ingredientUnitVal = $('#dropdown-ingredient-unit').val();
