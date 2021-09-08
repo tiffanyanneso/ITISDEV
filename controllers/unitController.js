@@ -73,21 +73,11 @@ const unitController = {
 	},
 	
 
-	getCheckUnit: function(req, res) { 
+	getCheckUnitName: function(req, res) { 
+		var unit = req.query.unit;
 
-		
-
-        db.findOne(Units, {unit: req.body.unit}, 'id', function(result) {
-            
-			var unit = {
-				unit: req.body.unit
-			};
-
-			db.findOne(Units, {unit: unit}, 'unit', function(result) {
-
-				res.send(result);
-			});
-		
+        db.findOne(Units, {unit: unit}, 'unit', function(result) {
+            res.send(result);
         });
     },
 

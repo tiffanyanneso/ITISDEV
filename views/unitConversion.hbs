@@ -17,41 +17,37 @@
 
     
         <div class="sidebar">
+            <!--
             <a href="#">Home</a>
             <a href="#">1</a>
             <a href="#">2</a>
+            -->
         </div>
         
          <div class="content">
          
-         <div>
-                <div style="display: flex;">
-                    <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0">Unit Conversion</h1></div>
+        <div>
+            <div style="display: flex;">
+                <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0">Unit Conversion</h1></div>
                 
-                </div>
             </div>
+        </div>
 
             <hr>
         
-       
-       
         <h3 class="bold">Add Unit</h3>
-        <div style="margin-top: 10px;"> 
+        <div class="input-container"> 
             <input type="text" name="enter-unit" id="enter-unit" placeholder="Unit"> 
-            &nbsp;&nbsp;
+            
             <input class="btn-add" type="button" id="save-unit" name="save-conversion" value="+">
-            <br>
-            <p class="error" id="error-unit"></p> 
         </div>
 
-       
-           
-
+        <p class="error" id="error-unit" style="margin-left: 20%"></p> 
 
         <hr>
          
          <h3 class="bold">Add Conversion</h3>
-         <div style="margin-top: 20px;">  
+         <div style="input-container">  
             <select class="dropdown" id="unitA" style="margin-right: 5px"> 
             <option value="no-selected">--Select Unit A--</option>
             {{#each unitNames}}
@@ -65,10 +61,9 @@
                 <option value="{{id}}">{{unitName}}</option>
             {{/each}}
         </select>
-                <input class="btn-add" type="button" id="save-conversion" name="save-conversion" value="+">
+            <input class="btn-add" type="button" id="save-conversion" name="save-conversion" value="+">
                 
-            </div>
-       
+        </div>
        
         <div class="div-table" style="margin-top: 20px;">
                 <table class="table" id="table-edit-dish-ingredients">
@@ -95,12 +90,19 @@
         </div>
 
         <script>
+
             $(document).ready(function() {
 
-
+/*
                 $('#enter-unit').keyup(function() {
                     var unit = $('#enter-unit').val());
-                    var unit = $.trim(unit);
+
+                    $("#enter-unit").css("border", "1px solid #B00000");
+                    $('#error-unit').text("Unit already exists");
+                    $("#save-unit").prop("disabled", true);
+                    $("#save-unit").css("background-color", "#b3b3b3");
+
+                    
                     $.get('/getCheckUnit', {unit: unit}, function (result) {
                             if (result.unit == unit) {
                                 $("#enter-unit").css("border", "1px solid #B00000");
@@ -115,7 +117,9 @@
                                 $("#save-unit").css("background-color", "#0F84D9");
                             }
                     });
+                    
                 }); 
+
 
                 function checkSameUnit () {
                     var unitA = $('#unitA').val();
@@ -182,14 +186,42 @@
                     }       
                 })
 
+*/
+
+                $('#enter-unit').keyup(function() {
+                
+                    var unit = $('#enter-unit').val();
+
+                    $.get('/getCheckUnitName', {unit: unit}, function (result) {
+
+                        if (result.unit == unit) {
+                            $("#enter-unit").css("border", "1px solid #B00000");
+                            $('#error-unit').text("Unit already exists");
+                            $("#error-unit").css("margin-left", "0px");
+                            $("#save-unit").prop("disabled", true);
+                            $("#save-unit").css("background-color", "#b3b3b3");
+                        }
+                           
+                    });
+
+                    $("#enter-unit").css("border", "1px solid #DDDDDD");
+                    $("#error-unit").text("");
+                    $("#error-unit").css("margin-left", "0px");
+                    $("#save-unit").prop("disabled", false);
+                    $("#save-unit").css("background-color", "#0F84D9");
+                    
+                });
+
+
                 $('#save-unit').click(function() {
                     
                     var unit = $('#enter-unit').val();
-                    alert("unit saved");
+                    var unit = $.trim(unit);
+                    alert("Unit " + unit + " saved");
                     $.post('/saveUnit', {unit});
-                    
 
                 });
+
 
                 $('#save-conversion').click(function(){
                     var unitA = $('#unitA').val();

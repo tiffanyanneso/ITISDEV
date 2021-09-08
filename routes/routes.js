@@ -142,7 +142,7 @@ router.get('/getFilteredRowsOrderHistory', orderHistoryController.getFilteredRow
 
 router.get('/unitConverter', unitController.getUnitConverter);
 
-router.get('/getCheckUnit', unitController.getCheckUnit);
+router.get('/getCheckUnitName', unitController.getCheckUnitName);
 
 router.post('/saveUnit', unitController.saveUnit);
 
