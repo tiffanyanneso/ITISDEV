@@ -103,7 +103,7 @@
                 </div>
             </div>
 
-            <p class="error" id="error-add-stock"> error message here</p>
+            <p class="error" id="error-add-stock" style="display: none;">Stock not found</p>
 
             <div class="div-table table-height-185" style="margin-top: 10px;">
                 <table class="table" id="table-add-stock-new-stock">
@@ -145,12 +145,15 @@
                                     term: request.term,
                                 },
                                 success: function (data) {
+                                    $('#error-add-stock').css('display', 'none')
                                     response(data);
                                 }
                          });
                     }, response: function (event, ui) {
-                        if (ui.content.length === 0) 
-                            $('#modal-add-stock').modal('show');
+                        if (ui.content.length === 0) {
+                            $('#error-add-stock').css('display', 'block')
+                            //$('#modal-add-stock').modal('show');
+                        }
                     }
                         
                 });

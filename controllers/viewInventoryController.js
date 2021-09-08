@@ -14,6 +14,10 @@ const IngredientTypes = require('../models/IngredientTypesModel.js');
 
 const DishIngredients = require('../models/DishIngredientsModel.js')
 
+const Conversion = require('../models/ConversionModel.js');
+
+const Sales = require('../models/SalesModel.js');
+
 //import models
 
 const viewInventoryController = {
@@ -66,14 +70,30 @@ const viewInventoryController = {
 			})
 		}
 
+		function getIngredientType (typeID) {
+			return new Promise ((resolve, reject) => {
+				db.findOne (IngredientTypes, {_id: typeID}, 'ingredientType', function (result) {
+					if (result!="")
+						resolve (result.ingredientType)
+				})
+			})
+		}
+
+
 		async function getUnit(ingredients) {
 			for (var i=0; i<ingredients.length; i++) {
 				ingredients[i].unitMeasurement = await getUnitName (ingredients[i].unitMeasurement);
+				ingredients[i].ingredientTypeName = await getIngredientType(ingredients[i].ingredientType);
 
 				var statusID;
-				if (ingredients[i].quantityAvailable > 0)
+				//ingredient is available
+				if (ingredients[i].quantityAvailable > 0 && ingredients[i].quantityAvailable > ingredients[i].reorderLevel)
 					statusID = "6135a6a4ed3ee2ca352c7b94";
-				else
+				//ingredient is low stock
+				else if (ingredients[i].quantityAvailable > 0 && ingredients[i].quantityAvailable < ingredients[i].reorderLevel)
+					statusID = "6135a6b3ed3ee2ca352c7b95";
+				//ingredient is out of stock
+				else 
 					statusID = "6135a6c1ed3ee2ca352c7b96";
 
 				ingredients[i].statusID = statusID;
@@ -87,7 +107,7 @@ const viewInventoryController = {
 			res.render('viewInventory', {ingredients, units, statuses, ingredientTypes});
 		}
 
-		var projection = '_id ingredientName ingredientType quantityAvailable unitMeasurement'; 	
+		var projection = '_id ingredientName ingredientType quantityAvailable unitMeasurement reorderLevel'; 	
 		var ingredients = [];
 		db.findMany (Ingredients, {}, projection, function(result) {
 			for (var i=0; i<result.length; i++) {
@@ -99,6 +119,7 @@ const viewInventoryController = {
 					ingredientType: result[i].ingredientType,
 					quantityAvailable: result[i].quantityAvailable,
 					unitMeasurement: result[i].unitMeasurement,
+					reorderLevel: result[i].reorderLevel
 				};
 				ingredients.push(ingredient);		
 			}
@@ -151,8 +172,18 @@ const viewInventoryController = {
 			});
 		}
 
+		function getIngredientType (typeID) {
+			return new Promise ((resolve, reject) => {
+				db.findOne (IngredientTypes, {_id: typeID}, 'ingredientType', function (result) {
+					if (result!="")
+						resolve (result.ingredientType)
+				})
+			})
+		}
+
 		async function getUnit(ingredientDetails, stocks) {
 			ingredientDetails.unitMeasurement = await getUnitName(ingredientDetails.unitMeasurement);
+			ingredientDetails.ingredientType = await getIngredientType(ingredientDetails.ingredientType)
 			for (var i=0; i<stocks.length; i++) {
 				var unitName = await getUnitName (stocks[i].stockUnit);
 				stocks[i].stockUnit = unitName;
@@ -218,13 +249,12 @@ const viewInventoryController = {
 	},
 
 	reorderFormulaInput: function (req, res) {
-		var reorderMultipliers = req.body.values;
+		var reorderMultipliers = JSON.parse(req.body.multipliers);
 
 		function getIngredients(ingredientType) {
 			return new Promise ((resolve, reject) => {
 				db.findMany (Ingredients, {ingredientType:ingredientType}, '_id reorderLevel unitMeasurement', function (result){
-					if (result!="")
-						resolve (result)
+					resolve (result)
 				})
 			})
 		}
@@ -239,39 +269,118 @@ const viewInventoryController = {
 			})
 		}
 
+		function updateMultiplier(reorderMultipliers) {
+			db.updateOne (IngredientTypes, {_id: reorderMultipliers.typeID}, {multiplier: reorderMultipliers.multiplier}, function (result) {
+
+			})
+		}
+
+		function getConversion (fromUnit, toUnit){
+		    return new Promise((resolve, reject) => {
+		        var conversion = [];
+		        db.findOne (Conversion, {$and:[ {unitA:fromUnit}, {unitB:toUnit} ]}, 'ratio operator', function(result){
+		            //console.log("direct " + result);
+		            if (result!="") {
+		                conversion.push (result);
+		                resolve(conversion);
+		            }
+		        });
+		    });
+		}
+
+		function getIndirectConversion(unitA, unitB) {
+		    return new Promise ((resolve, reject) => {
+		        var conversions = [];
+		        //get all conversions with ingredientUnit
+		        db.findMany (Conversion, {unitA:unitA}, 'unitB ratio operator', function (result) { 
+		            //get all conversions with dishUnit as unit to be converted to
+		            db.findMany (Conversion, {unitB:unitB}, 'unitA ratio operator', function (result1) {
+		                var found = false;
+		                for (var i=0; i<result.length && !found; i++) {
+		                    for (var j=0; j<result1.length && !found; j++) {
+		                        if (result[i].unitB == result1[j].unitA) {
+		                            conversions.push (result[i]);
+		                            conversions.push (result1[j]);
+		                            found = true;
+		                        }
+		                    }
+		                }
+		                //console.log("indirect " + conversions);
+		                resolve(conversions);
+		            });
+		        }); 
+		    });
+		}
+
+		function computeQuantity (quantity, conversion) {
+			return new Promise((resolve, reject) => {
+				//console.log(conversion.length)
+				var computedQuantity = quantity;
+
+				//console.log("compute quantity " + conversion);
+				for (var i=0; i<conversion.length; i++) {
+					var ratio = conversion[i].ratio
+					var operator = conversion[i].operator
+
+					if (operator == "*")
+						computedQuantity = computedQuantity * ratio
+					else 
+						computedQuantity = computedQuantity / ratio
+				}
+				//console.log(computedQuantity);
+				resolve (computedQuantity);
+			});
+		}
+
+		function updateReorderLevel (ingredient, reorderLevel) {
+			db.updateOne (Ingredients, {_id:ingredient._id}, {reorderLevel:reorderLevel}, function(result){
+
+			})
+		}
+
 
 		async function setReorder() {
-			for (var i=0; i<reorderMultipliers; i++) {
+			for (var i=0; i<reorderMultipliers.length; i++) {
 				//get all ingredients with specific ingredient type
 				var ingredients = await getIngredients(reorderMultipliers[i].typeID)
 
-				for (var j=0; j<ingredients; j++) {
-					
-					var totalQuantity = 0;			//total quantity of ingredients needed to make all dishes with that ingredient
-					var dishes = await getDishes(ingredients[i].id);		//get all dishes that use the ingredient 
+				//console.log(ingredients)
 
-					for (var k=0; k<dishes.length; i++) {
+				updateMultiplier(reorderMultipliers[i])
+
+				for (var j=0; j<ingredients.length; j++) {
+
+					//console.log("j  " + j + "  ignredients length " + ingredients.length)
+
+					var totalQuantity = 0;			//total quantity of ingredients needed to make all dishes with that ingredient
+					var dishes = await getDishes(ingredients[j]._id);		//get all dishes that use the ingredient 
+
+					//console.log(dishes.length)
+					for (var k=0; k<dishes.length; k++) {
 
 						var neededQuantity = dishes[k].quantity;
 
 						//needs conversion, convert from dish unit to ingredient unit
-						if (dishes[k].unitMeasurement != ingredient[j].unitMeasurement) {
+						if (dishes[k].unitMeasurement != ingredients[j].unitMeasurement) {
 							var conversion;
 
 							//checks if there is direct converion
-							conversion = await getConversion (dishes[k].unitMeasurement, ingredient[j].unitMeasurement);
+							conversion = await getConversion (dishes[k].unitMeasurement, ingredients[j].unitMeasurement);
 							
 							//no direct conversion, check for indirect conversions
 							if (conversion == null || conversion == "") 
-								conversion = await getIndirectConversion(dishes[k].unitMeasurement != ingredient[j].unitMeasurement);
+								conversion = await getIndirectConversion(dishes[k].unitMeasurement != ingredients[j].unitMeasurement);
 							
 							neededQuantity = await computeQuantity(dishes[k].quantity, conversion)
+							//console.log(neededQuantity)
 						}
 
 						totalQuantity += neededQuantity
 					}
 
-					ingredients[j].reorderLevel = totalQuantity * reorderMultipliers[i].multiplier
+					var reorderLevel = totalQuantity * reorderMultipliers[i].multiplier;
+					updateReorderLevel (ingredients[j], reorderLevel)
+					//console.log("reroder level: "+ ingredients[j].reorderLevel)
 				}
 			}
 		}
@@ -304,29 +413,36 @@ const viewInventoryController = {
 
 		//get the dates where there were sales recorded
 		function getSalesDays() {
-			return new Promise (Sales, {}, 'date', function(result) {
-				var uniqueDates = []
-				for (var i=0; i<result.length; i++) {
-					var date = new Date (result.date)
-					//checks if the date is new/unique, -1 means that it's not in the array
-					if (jquery.inArray(date, uniqueDates) == -1)
-						uniqueDates.push (date)
-				}
-				resolve (uniqueDates)
+			return new Promise ((resolve, reject)=> {
+				db.findMany(Sales, {}, 'date', function(result) {
+					var uniqueDates = []
+
+					for (var i=0; i<result.length; i++) {
+						var date = new Date (result[i].date)
+						//date.setHours(0,0,0,0);
+						//checks if the date is new/unique, -1 means that it's not in the array
+						for (var j=0; j<uniqueDates.length; j++) {
+							if (uniqueDates[j].valueOf() != date.valueOf())
+								uniqueDates.push(date)
+						}
+					}
+					resolve (uniqueDates)
+				})
 			})
 		}
 
 
 		function getSalesToday(dateToday) {
 			return new Promise ((resolve, reject) => {
-				var dateToday = new Data (dateToday); 
+				var dateToday = new Date (dateToday); 
 				var sales = 0
 				db.findMany (Sales, {}, '_id date', function(result) {
 		            for (var i=0; i<result.length; i++) {
 		                var date = new Date(result[i].date);
 		                date.setHours(0,0,0,0);
 
-		                if (!(startDate > date || date > endDate))
+		                //if (!(startDate > date || date > endDate))
+		                if (date == dateToday)
 		                    sales.push(result[i]);
 		            }
 		            resolve (sales)
@@ -398,18 +514,11 @@ const viewInventoryController = {
 		    });
 		}
 
+		function updateReorderLevel (ingredientID, used) {
+			db.updateOne(Ingredients, {_id: ingredientID}, {reorderLevel:used}, function (result) {
 
-		/*function computeAverageSales (totals) {
-			return new Promise ((resolve, reject) => {
-				var total = 0;
-				var length = totals.length
-				for (var i=0; i<totals.length; i++) 
-					total += totals[i]
-				
-				return total/length;
 			})
-		}*/
-
+		}
 
 
 		async function computeReorder() {
@@ -421,17 +530,20 @@ const viewInventoryController = {
 			//get all days with sales in db
 			var salesDay = await getSalesDays();
 
-			for (var i=0; i<salesDay; i++) {
+			console.log("sales day legnth " + salesDay.length)
+
+			for (var i=0; i<salesDay.length	; i++) {
 				//get sales id of sales made today
 				var salesToday = await getSalesToday(salesDay[i]);
+				console.log("sales today length " +  salesToday.length)
 
-				for (var j=0; j<salesToday; j++) {
+				for (var j=0; j<salesToday.length; j++) {
 					var dishSales = await getDishSales(salesToday[i]._id)
 
 					for (var k=0; k<dishSales.length; k++) {
 						var dishIngredients = await getDishIngredients (dishSales[k])
 
-						for (var l=0; l<dishIngredients; l++) {
+						for (var l=0; l<dishIngredients.length; l++) {
 
 							for (var m=0; m<ingredients.length; m++) {
 
@@ -461,8 +573,10 @@ const viewInventoryController = {
 					}
 				}
 				for (var n=0; n<ingredients.length; n++) {
-					if (ingredients[n].used > ingredients[n].reorderLevel)
-						ingredients[n].reorderLevel = ingredients[n].used;
+					if (ingredients[n].used > ingredients[n].reorderLevel) {
+						updateReorderLevel(ingredients[n].used)
+					}
+					//console.log(ingredients[n]._id, ingredients[n].reorderLevel)
 
 					//make used 0 again for the next day
 					ingredients[n].used = 0
