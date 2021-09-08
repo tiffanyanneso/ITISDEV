@@ -219,10 +219,12 @@
 
                 //saves new stock to db
                 $('#btn-add-new-stock').click(function() {
-                    var stockName = $('#stock-name').val(); 
+                    var stockName = $('#stock-name').val();
+                    var stockName = S.trim(stockName);
                     var quantity = $('#stock-quantity').val();
                     var stockUnit = $('#dropdown-stock-unit').val();
                     var ingredientName = $('#ingredient-id').val();
+
 
                     $('#table-add-stock-stock').append ("<tr>" + "<td>" + stockName + "</td>" + "<td>" + quantity + "</td>" + "<td>" + stockUnit + "</td>");
                     $('#modal-add-stock').modal('toggle');
