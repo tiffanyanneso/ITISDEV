@@ -33,12 +33,18 @@
 
             <hr>
         
+       
+       
         <h3 class="bold">Add Unit</h3>
-        <br>
+        <div style="margin-top: 10px;"> 
             <input type="text" name="enter-unit" id="enter-unit" placeholder="Unit"> 
             &nbsp;&nbsp;
             <input class="btn-add" type="button" id="save-unit" name="save-conversion" value="+">
-            <br> <br>
+            <br>
+            <p class="error" id="error-unit"></p> 
+        </div>
+
+       
            
 
 
@@ -91,30 +97,27 @@
         <script>
             $(document).ready(function() {
 
-/*
-                function lowercase(string){
-                    var words = string.toLowerCase();
-                    return words.join(' ');
-                };
-*/
 
-/*
                 $('#enter-unit').keyup(function() {
-                    var unit = $('#enter-unit').val();
+
+                    var unit = $('enter-unit').val());
+                    
                     $.get('/getCheckUnit', {unit: unit}, function (result) {
                             if (result.unit == unit) {
-                                $("#ingredient-name").css("border", "1px solid #B00000");
-                                $('#error-new-ingredient-name').text("Ingredient already exists");
-                                $("#btn-add-new-ingredient").prop("disabled", true);
-                                $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                                $("#enter-unit").css("border", "1px solid #B00000");
+                                $('#error-unit').text("Unit already exists");
+                                $("#save-unit").prop("disabled", true);
+                                $("#save-unit").css("background-color", "#b3b3b3");
+                            }
+
+                            else {
+                                $("#enter-unit").css("border", "1px solid #DDDDDD");
+                                $("#error-unit").text("");
+                                $("#save-unit").prop("disabled", false);
+                                $("#save-unit").css("background-color", "#0F84D9");
                             }
                     });
                 }); 
-*/
-
-                
-
-
 
                 function checkSameUnit () {
                     var unitA = $('#unitA').val();

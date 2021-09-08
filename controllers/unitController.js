@@ -71,14 +71,15 @@ const unitController = {
 		})
 		
 	},
+	
 
-	/*
-	getCheckUnit: function(req, res){
-		db.findOne(Units, {unit: req.query.unit}, 'unit', function(result){
-			res.send(result);
-		});
-	},
-	*/
+	getCheckUnit: function(req, res) { 
+    
+
+        db.findOne(Units, {unit: req.body.unit}, 'unit', function(result) {
+            res.send(result);
+        });
+    },
 
 	saveUnit: function (req, res){
 
@@ -89,14 +90,14 @@ const unitController = {
 			var unitName = {
 				unit: req.body.unit
 			};
-
-			
 		
 			db.insertOne(Units, unitName, function(flag){
 				if(flag){}
 			});
 		});
 	},
+
+
 
 	saveUnitConvert: function (req, res) {
 
