@@ -46,17 +46,8 @@ const logInController = {
             						console.log( result.position );
             						console.log( result.email );
             						console.log( result.phoneNumber );
-
-  						          
-                        if(req.session.position == 'Cashier'){
-                          res.send({redirect: '/cashierDashboard'});
-                        }
-
-                        if(req.session.position == 'Inventory' || req.session.position == 'Purchasing'){
-                          res.send({redirect: '/inventoryDashboard'});
-                        }
-
-
+               
+                        res.send({redirect: '/dashboard'});
                     }
                     else
                     {

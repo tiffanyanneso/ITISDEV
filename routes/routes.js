@@ -36,9 +36,7 @@ router.get('/favicon.ico', controller.getFavicon);
 
 router.get('/', controller.getIndex);
 
-router.get('/inventoryDashboard', controller.getInventoryDashboard);
-
-router.get('/cashierDashboard', controller.getCashierDashboard);
+router.get('/dashboard', controller.getDashboard);
 
 router.get('/inventory', viewInventoryController.getInventory);
 
