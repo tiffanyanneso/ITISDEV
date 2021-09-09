@@ -40,9 +40,7 @@ router.post('/checkLogIn', logInController.checkLogIn);
 
 //---DASHBOARD---
 
-router.get('/inventoryDashboard', controller.getInventoryDashboard);
-
-router.get('/cashierDashboard', controller.getCashierDashboard);
+router.get('/dashboard', controller.getDashboard);
 
 //---INVENTORY---
 
