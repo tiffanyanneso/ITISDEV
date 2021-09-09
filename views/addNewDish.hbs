@@ -70,7 +70,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <h3 class="modal-title" id="exampleModalLongTitle">Add Ingredient</h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" id="btn-close-add-new-ingredient" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
@@ -95,7 +95,7 @@
                         <label> Reorder Point </label> <input type="text"><br>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id ="btn-close-add-new-ingredient-2">Close</button>
                         <button type="button" class="btn btn-primary" id="btn-add-new-ingredient" disabled="true">Add Ingredient</button>
                       </div>
                   </form>
@@ -112,6 +112,7 @@
                     {{/each}}
                 </select>
                 <input class="btn-add" type="button" id="btn-add-new-dish-ingredient" name="btn-add-new-dish-ingredient" value="+">
+                <div class="div-btn-left" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-ingredient-popup">Add New Ingredient</button>
             </div>
             <p class="error" id="error-ingredients"></p>
 
@@ -137,6 +138,8 @@
         <script> 
             $(document).ready(function() {
 
+                $("#btn-add-new-ingredient-popup").hide();
+
                 // Autocomplete for Ingredient Name
                 $( "#new-dish-ingredients-name" ).autocomplete({
                     source:function(request, response) {
@@ -153,7 +156,14 @@
                         });
                     }, response: function (event, ui) {
                         if (ui.content.length === 0) 
-                            $('#modal-add-ingredient').modal('show');
+                            $("#btn-add-new-ingredient-popup").show();
+                            $("#btn-add-new-ingredient-popup").click(function() {
+                                 $('#modal-add-ingredient').modal('show');
+                                 });
+                            $("#btn-close-add-new-ingredient , #btn-close-add-new-ingredient-2").click(function() {
+                                  $("#btn-add-new-ingredient-popup").hide();
+                                  });
+                        
                     }
                 });
 

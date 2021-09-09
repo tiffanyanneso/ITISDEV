@@ -70,6 +70,7 @@
                 <input type="number" name="add-stock-count" id="add-stock-count" placeholder="Count" style="margin-right: 10px">
                 <input type="number" name="add-stock-price" id="add-stock-price" placeholder="Price" style="margin-right: 10px">
                 <input class="btn-add" type="button" id="btn-add-stock" name="btn-add-stock" value="+">
+                 <div class="div-btn-left" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-ingredient-popup">Add New Ingredient</button>
 
                 <!-- Modal -->
                 <div class="modal fade" id="modal-add-stock" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle" aria-hidden="true">
@@ -77,7 +78,7 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h3 class="modal-title" id="modalTitle">Add New Stock</h3>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="modal" id ="btn-close-add-new-ingredient" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
@@ -94,7 +95,7 @@
                                 {{/each}}
                             </select><br>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id ="btn-close-add-new-ingredient-2">Close</button>
                             <button type="button" class="btn btn-primary" id="btn-add-new-stock">Add Stock</button>
                           </div>
                       </form>
@@ -135,6 +136,8 @@
         <script>
             $(document).ready(function() {
 
+                 $("#btn-add-new-ingredient-popup").hide();
+                 
                 $( "#add-stock-name" ).autocomplete({
                     source: function(request, response) {
                     $.ajax({
@@ -152,7 +155,14 @@
                     }, response: function (event, ui) {
                         if (ui.content.length === 0) {
                             $('#error-add-stock').css('display', 'block')
-                            //$('#modal-add-stock').modal('show');
+                            // $("#btn-add-new-ingredient-popup").show();
+                            //$("#btn-add-new-ingredient-popup").click(function() {
+                                 //$('#modal-add-ingredient').modal('show');
+                                 //});
+                            //$("#btn-close-add-new-ingredient , #btn-close-add-new-ingredient-2").click(function() {
+                                  //$("#btn-add-new-ingredient-popup").hide();
+                                  //});
+
                         }
                     }
                         

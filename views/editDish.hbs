@@ -73,7 +73,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <h3 class="modal-title" id="exampleModalLongTitle">Add Ingredient</h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" "btn-close-add-new-ingredient" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
@@ -98,7 +98,7 @@
                         <label> Reorder Point </label> <input type="text"><br>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" "btn-close-add-new-ingredient-2">Close</button>
                         <button type="button" class="btn btn-primary" id="btn-add-new-ingredient" disabled="true">Add Ingredient</button>
                       </div>
                   </form>
@@ -115,6 +115,7 @@
                     {{/each}}
                 </select>
                 <input class="btn-add" type="button" id="btn-edit-dish-ingredients" name="btn-edit-dish-ingredients" value="+">
+                <div class="div-btn-left" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-ingredient-popup">Add New Ingredient</button>
             </div>
 
             <p class="error" id="error-edit-dish-ingredients"></p>
@@ -144,14 +145,13 @@
 
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-edit-dish-save">Save</button></div>
             <div class="div-btn-right" style="margin-top: 20px;"><a href = "/menu/{{dish.dishID}}"><button class="btn-light-blue" style="background-color: #B00000" id="btn-edit-dish-cancel" >Cancel</button></a></div>
-
             <div style="visibility: hidden;" id="view-dish-dishID">{{dish.dishID}}</div>
             <div style="visibility: hidden;" id="view-dish-statusID">{{dish.dishStatusID}}</div>
             <div style="visibility: hidden;" id="view-dish-orig-name">{{dish.dishName}}</div>
         </div>
         <script>
             $(document).ready(function() {
-
+                $("#btn-add-new-ingredient-popup").hide();
                 $('#btn-edit-dish-cancel').click(function() {
 
                 });
@@ -172,7 +172,14 @@
                         });
                     }, response: function (event, ui) {
                         if (ui.content.length === 0) 
-                            $('#modal-add-ingredient').modal('show');
+                          $("#btn-add-new-ingredient-popup").show();
+                            $("#btn-add-new-ingredient-popup").click(function() {
+                                 $('#modal-add-ingredient').modal('show');
+                                 });
+                            $("#btn-close-add-new-ingredient , #btn-close-add-new-ingredient-2").click(function() {
+                                  $("#btn-add-new-ingredient-popup").hide();
+                                  });
+                          
                     }
                 });
 
