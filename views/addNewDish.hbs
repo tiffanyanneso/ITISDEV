@@ -81,9 +81,9 @@
                         <label for="dropdown-ingredient-type">Ingredient Type</label>
                         <select class="dropdown" id="dropdown-ingredient-type"> 
                             <option value="no-selected">--Select ingredient type--</option>
-                            <option value="all-type">All</option>
-                            <option value="option2">Option 2</option>
-                            <option value="option3">Option 3</option>
+                            {{#each ingredientTypes}}
+                                <option value="{{_id}}">{{ingredientType}}</option>
+                            {{/each}}
                         </select><br>
                         <label for="dropdown-ingredient-unit">Unit of Measurement</label>
                         <select class="dropdown" id="dropdown-ingredient-unit">

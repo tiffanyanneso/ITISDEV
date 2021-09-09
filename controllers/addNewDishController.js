@@ -8,6 +8,8 @@ const DishIngredients = require('../models/DishIngredientsModel.js');
 
 const Ingredients = require('../models/IngredientsModel.js');
 
+const IngredientTypes = require('../models/IngredientTypesModel.js');
+
 const DishClassification = require('../models/DishClassificationModel.js');
 
 const DishStatus = require('../models/DishStatusModel.js');
@@ -19,49 +21,85 @@ const Conversion = require('../models/ConversionModel.js');
 const addNewDishController = {
 
     getAddNewDish: function (req, res) {
-        var projection1 = '_id classification';
-        var classifications = [];
 
-        db.findMany(DishClassification, {}, projection1, function (result) {
-            //console.log(result);
-			for (var i = 0; i < result.length; i++) {
-				var classification = {
-					_id: result[i]._id,
-					name: result[i].classification,
-				};
-				classifications.push(classification);
-            }
+        function getDishClassification() {
+            return new Promise ((resolve, reject) => {
+                var classifications = []
+                 db.findMany(DishClassification, {}, '_id classification', function (result) {
+                    for (var i = 0; i < result.length; i++) {
+                        var classification = {
+                            _id: result[i]._id,
+                            name: result[i].classification,
+                        };
+                        classifications.push(classification);
+                    }
+                    resolve (classifications)
+                 })
+            })
+        }
 
-            var projection2 = '_id status';
-            var statuses = [];
+        function getDishStatuses() {
+            return new Promise ((resolve, reject) => {
+                var statuses = []
+                db.findMany(DishStatus, {}, '_id status', function (result2) {
+                    //console.log(result2);
+                    for (var j = 0; j < result2.length; j++) {
+                        var status = {
+                            _id: result2[j]._id,
+                            status: result2[j].status,
+                        };
 
-            db.findMany(DishStatus, {}, projection2, function (result2) {
-                //console.log(result2);
-                for (var j = 0; j < result2.length; j++) {
-                    var status = {
-                        _id: result2[j]._id,
-                        status: result2[j].status,
-                    };
+                        if (status.status == "Available" || status.status == "Unavailable")
+                            statuses.push(status);
+                    }
+                    resolve(statuses)
+                })
+            })
+        }
 
-                    if (status.status == "Available" || status.status == "Unavailable")
-                        statuses.push(status);
-                }
-
+        function getUnits() {
+            return new Promise((resolve, reject) => {
+                var units = []
                 db.findMany(Units, {}, '_id unit', function (result3) {
                     var units = [];
 
-				    for (var k = 0; k < result3.length; k++) {
+                    for (var k = 0; k < result3.length; k++) {
                         var unit = {
                             _id: result3[k]._id,
                             unitName:result3[k].unit
                         };
-					    units.push (unit);
-				    }
-                    
-                    res.render('addNewDish', {classifications, statuses, units});
-                });
-            });
-		});
+                        units.push (unit);
+                    }
+                    resolve(units)
+                })
+            })
+        }
+
+        function getIngredientTypes() {
+            return new Promise((resolve, reject) => {
+                db.findMany (IngredientTypes, {}, '_id ingredientType', function (result) {
+                    if (result!="")
+                        resolve (result)
+                })
+            })
+        }
+
+        var projection1 = '_id classification';
+        var classifications = [];
+
+
+                
+        async function getInfo() {
+            var classifications = await getDishClassification();
+            var statuses = await getDishStatuses();
+            var units = await getUnits();
+            var ingredientTypes = await getIngredientTypes();
+        
+            res.render('addNewDish', {classifications, statuses, units, ingredientTypes});
+        }
+
+        getInfo();
+        
     },
 
     getCheckDishName: function(req, res) {
