@@ -360,6 +360,7 @@
 
                 $('#btn-add-new-dish-save').click(function() {
                     var dishName = capitalize($('#new-dish-name').val());
+                    var dishName = $.trim(dishName);
                     var dishPrice = $('#new-dish-price').val();
                     var dishClassification = $('#dropdown-add-new-dish-classification').val();
                     var dishStatus = $('#dropdown-add-new-dish-status').val();

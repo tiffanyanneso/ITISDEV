@@ -58,7 +58,6 @@
                                 <option value="{{_id}}">{{unit}}</option>
                             {{/each}}
                         </select><br>
-                        <label> Reorder Point </label> <input type="text"><br>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -80,7 +79,7 @@
     
                 <label for="dropdown-view-new-inventory-status" style="margin-right: 10px">Status</label>
                 <select class="dropdown" id="dropdown-view-inventory-status">
-                    <option value="all">All</option>
+                    <option value="all-type">All</option>
                     {{#each statuses}}
                         <option value="{{_id}}">{{status}}</option>
                     {{/each}}
@@ -111,7 +110,7 @@
                         <div id="div-multiplier-input" style="display: none;">
                             {{#each ingredientTypes}}
                                 <label for="{{_id}}">{{ingredientType}}</label>
-                                <input type="text" id="{{_id}}" class="types">
+                                <input type="number" id="{{_id}}" class="types">
                                 <br>
                             {{/each}}
                         </div>
@@ -144,9 +143,10 @@
                     </thead>
                     <tbody> 
                         {{#each ingredients}}
-                        <tr class="link" data-href="/ingredient/{{systemID}}">
+                        <tr class="link" style="cursor: pointer" data-href="/ingredient/{{systemID}}">
                             <td>{{ingredientName}}</td>
-                            <td>{{ingredientType}}</td>
+                            <td style="display: none;" class="type-id">{{ingredientType}}</td>
+                            <td>{{ingredientTypeName}}</td>
                             <td>{{quantityAvailable}}</td>
                             <td>{{unitMeasurement}}</td>
                             <td style="display: none;" class="status-id">{{statusID}}</td>
@@ -227,7 +227,9 @@
 
                 $('#btn-add-new-ingredient').click(function() {
                     var ingredientName = capitalize($('#ingredient-name').val());
-                    var ingredientType = $('#dropdown-ingredient-type').val();
+                    var ingredientName = $.trim(ingredientName);
+                    var ingredientTypeVal = $('#dropdown-ingredient-type').val();
+                    var ingredientTypeText = $('#dropdown-ingredient-type :selected').text();
                     var ingredientUnitVal = $('#dropdown-ingredient-unit').val();
                     var ingredientUnitText = $('#dropdown-ingredient-unit :selected').text();
 
@@ -235,17 +237,30 @@
                     $('#modal-add-ingredient').modal('toggle');
                     $('#add-new-ingredient').trigger('reset');
 
+                    $.get('/getCheckIngredientName', {ingredientName: ingredientName}, function (result) {
+                    if (result.ingredientName == ingredientName) {
+                        /*
+                        $("#ingredient-name").css("border", "1px solid #B00000");
+                        $('#error-new-ingredient-name').text("Ingredient already exists");
+                        $("#btn-add-new-ingredient").prop("disabled", true);
+                        $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                        */
+                        //another modal popup saying it exists
+                        alert("Ingredient already exists");
+                    }
+
+                    else{
                       $.ajax({
                             url: "/addIngredient",              
                             type: "POST",
-                            data: {'ingredientName': ingredientName,'ingredientType': ingredientType, 'ingredientUnitVal': ingredientUnitVal},
+                            data: {'ingredientName': ingredientName,'ingredientType': ingredientTypeVal, 'ingredientUnitVal': ingredientUnitVal},
                             async:false,
                             success: function(result){
 
                                  $('#table-view-inventory tbody').append (
                                     `<tr class='link' data-href='/ingredient/${result}'>
                                         <td>${ingredientName}</td> 
-                                        <td>${ingredientType}</td> 
+                                        <td>${ingredientTypeText}</td> 
                                         <td>0</td>
                                         <td>${ingredientUnitText}</td> 
                                         <td>Out of Stock</td>
@@ -255,7 +270,11 @@
                                     window.location = $(this).data("href");
                                 });
                             }
-                    });        
+                        });
+                    } 
+                    }); 
+
+     
                 });
 
                 $(".link").click(function() {
@@ -275,12 +294,22 @@
 
                 $('#dropdown-view-inventory-status').change(function() {
                     $('#table-view-inventory tr').show();
-
                     var filter = $('#dropdown-view-inventory-status').val()
                     
                     $('#table-view-inventory > tbody > tr').each(function(index) {
                         var statusID = $(this).children('.status-id').text()
-                        if (filter != statusID && filter!="all")
+                        if (filter != statusID && filter!="all-type")
+                            $(this).toggle();
+                    })
+                })
+
+                $('#dropdown-view-inventory-type').change(function() {
+                    $('#table-view-inventory tr').show();
+                    var filter = $('#dropdown-view-inventory-type').val()
+                    
+                    $('#table-view-inventory > tbody > tr').each(function(index) {
+                        var typeID = $(this).children('.type-id').text()
+                        if (filter != typeID && filter!="all-type")
                             $(this).toggle();
                     })
                 })
@@ -288,14 +317,20 @@
                 $('#dropdown-reorder-point').change(function() {
                     var reorder = $('#dropdown-reorder-point').val();
 
-                    if (reorder == "sales") {
+                    if (reorder == "no-selected") {
+                        $('#description-sales').css('display', 'none')
+                        $('#description-input').css('display', 'none');
+                        $('#div-multiplier-input').css('display', 'none')
+                    }
+
+                    else if (reorder == "sales") {
                         $('#description-sales').css('display', 'block')
                         $('#description-input').css('display', 'none');
                         $('#div-multiplier-input').css('display', 'none')
                     }
 
                     else if (reorder == "input") {
-                        $('#description-input').css('display', 'none')
+                        $('#description-sales').css('display', 'none')
                         $('#description-input').css('display', 'block');
                         $('#div-multiplier-input').css('display', 'block')
                     }
@@ -320,8 +355,15 @@
                             }
                             values.push(value);
                         })
+                        var multipliers = JSON.stringify(values)
+                        $.post('/reorderFormulaInput', {multipliers})
 
-                        $.post('/reorderFormulaInput', {values})
+                        $('#description-sales').css('display', 'none')
+                        $('#description-input').css('display', 'none');
+                        $('#div-multiplier-input').css('display', 'none')
+                        $('.types').each(function() {
+                            $(this).val('')
+                        })
                     }
                 })
             })

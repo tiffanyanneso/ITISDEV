@@ -73,20 +73,18 @@ const unitController = {
 	},
 	
 
-	getCheckUnit: function(req, res) { 
-    
+	getCheckUnitName: function(req, res) { 
+		var unit = req.query.unit;
 
-        db.findOne(Units, {unit: req.body.unit}, 'unit', function(result) {
+        db.findOne(Units, {unit: unit}, 'unit', function(result) {
             res.send(result);
         });
     },
 
 	saveUnit: function (req, res){
 
-		console.log(req.body.unit);
 		db.findOne(Units, {unit: req.body.unit}, '_id', function(result){
-
-			console.log(req.body.unit);
+	
 			var unitName = {
 				unit: req.body.unit
 			};
@@ -105,20 +103,14 @@ const unitController = {
 				unitA: req.body.unitA,
 				unitB: req.body.unitB,
 				ratio: req.body.ratio,
-				operator: req.body.operator
+				operator: '*'
 			};
-
-			var operator1;
-			if (conversion.operator == "*")
-				operator1 = '/';
-			else
-				operator1 = '*';
 
 			var conversion1 = {
 				unitA: req.body.unitB,
 				unitB: req.body.unitA,
 				ratio: req.body.ratio,
-				operator:operator1
+				operator: '/'
 			};
 
 			//insert conversion from unitA to unitB
