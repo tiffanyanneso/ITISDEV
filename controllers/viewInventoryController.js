@@ -117,9 +117,9 @@ const viewInventoryController = {
 					systemID: result[i]._id,
 					ingredientName: result[i].ingredientName,
 					ingredientType: result[i].ingredientType,
-					quantityAvailable: result[i].quantityAvailable,
+					quantityAvailable: parseFloat(result[i].quantityAvailable),
 					unitMeasurement: result[i].unitMeasurement,
-					reorderLevel: result[i].reorderLevel
+					reorderLevel: parseFloat(result[i].reorderLevel)
 				};
 				ingredients.push(ingredient);		
 			}

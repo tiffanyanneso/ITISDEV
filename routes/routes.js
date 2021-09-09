@@ -88,6 +88,8 @@ router.post('/postAddOneIngredient', addNewDishController.postAddOneIngredient);
 
 router.get('/newOrder', newOrderController.getNewOrder);
 
+router.get('/checkIngredientQuantity', newOrderController.checkIngredientQuantity)
+
 router.get('/getDishName', newOrderController.getDishName);
 
 router.get('/getDishPrice', newOrderController.getDishPrice);

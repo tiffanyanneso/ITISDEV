@@ -139,7 +139,7 @@ const MenuController = {
 				}
 
 				//console.log("DISH NAME " + dish.dishName + "     INGREDIENT " + ingredient.ingredientName);
-				console.log("AVAILABLE: " + availableIngredient + " DISH NEED: " + dishIngredients[t].quantity);
+				//console.log("AVAILABLE: " + availableIngredient + " DISH NEED: " + dishIngredients[t].quantity);
 				
 				//not enough to make the dish, set status to out of stock
 				if (availableIngredient < dishIngredients[t].quantity) {
