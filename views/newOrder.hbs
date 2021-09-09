@@ -156,15 +156,6 @@
                     return words.join(' ');
                 };
 
-                function canOrder(dishName, quantity) {
-                    $.get('/checkIngredientQuantity', {dishName, quantity}, function (result) {
-                        //returns true is there is enough ingredinents and false otherwise
-                        var canMake = result
-                    }) 
-                    return (canMake)
-                }
-
-
                 $('#btn-add-dish').click(function() {
                     var dishName = capitalize($('#dish-name').val());
                     var quantity = $('#dish-quantity').val();

@@ -18,6 +18,8 @@ const Conversion = require('../models/ConversionModel.js');
 
 const Sales = require('../models/SalesModel.js');
 
+const SalesDishes = require('../models/SalesDishesModel.js');
+
 //import models
 
 const viewInventoryController = {
@@ -431,7 +433,7 @@ const viewInventoryController = {
 							//console.log(uniqueDates);
 							if (!(date > arrayDate || date < arrayDate)) {
 								unique = 0;
-								console.log("not unique");
+								//console.log("not unique");
 							}
 						}
 						
@@ -457,9 +459,9 @@ const viewInventoryController = {
 
 		                //if (!(startDate > date || date > endDate))
 						//if (date == dateToday)
-						console.log("date: " + date + " , dateToday: " + dateToday);
+						//console.log("date: " + date + " , dateToday: " + dateToday);
 						if (!(date > dateToday || date < dateToday)) {
-							console.log("same date");
+							//console.log("same date");
 							sales.push(result[i]);
 						}
 					}
@@ -533,6 +535,26 @@ const viewInventoryController = {
 		    });
 		}
 
+		//converting from dishUnit to ingredientUnit
+        function computeQuantityUsed(quantityUsed, conversion, orderQuantity) {
+            return new Promise((resolve, reject) => {
+                var computedQuantity = quantityUsed;
+
+                //console.log("compute quantity " + conversion);
+                for (var i=0; i<conversion.length; i++) {
+                    var ratio = conversion[i].ratio
+                    var operator = conversion[i].operator
+
+                    if (operator == "*")
+                        computedQuantity = computedQuantity * ratio
+                    else 
+                        computedQuantity = computedQuantity / ratio
+                }
+                //console.log("COMPUTED QUANTITY: " + computedQuantity);
+                resolve (computedQuantity*orderQuantity);
+            }) 
+        }
+
 		function updateReorderLevel (ingredientID, used) {
 			db.updateOne(Ingredients, {_id: ingredientID}, {reorderLevel:used}, function (result) {
 
@@ -558,45 +580,50 @@ const viewInventoryController = {
 				console.log("sales today length " +  salesToday.length)
 
 				for (var j=0; j<salesToday.length; j++) {
-					var dishSales = await getDishSales(salesToday[i]._id)
+					var dishSales = await getDishSales(salesToday[j]._id)
+					console.log(dishSales)
 
 					for (var k=0; k<dishSales.length; k++) {
-						var dishIngredients = await getDishIngredients (dishSales[k])
-
+						var dishIngredients = await getDishIngredients (dishSales[k].dishID)
 						for (var l=0; l<dishIngredients.length; l++) {
+							//console.log(dishIngredients.length)
 
-							for (var m=0; m<ingredients.length; m++) {
+							for (var m=0; m<ingredients.length; m++) { 
 
 								if (dishIngredients[l].ingredientID == ingredients[m]._id) {
 									//need conversion
-		                                if (dishIngredients[l].unitMeasurement != ingredients[m].unit) {
-		                                    var conversion;
+	                                if (dishIngredients[l].unitMeasurement != ingredients[m].unit) {
+	                                    var conversion;
 
-		                                    //checks if there is direct converion
-		                                    conversion = await getConversion (dishIngredients[l].unitMeasurement, ingredients[m].unit);
-		                                    
-		                                    //no direct conversion, check for indirect conversions
-		                                    if (conversion == null || conversion == "") {
-		                                        conversion = await getIndirectConversion(dishIngredients[l].unitMeasurement, ingredients[m].unit);
-		                                    }
+	                                    //checks if there is direct converion
+	                                    conversion = await getConversion (dishIngredients[l].unitMeasurement, ingredients[m].unit);
+	                                    
+	                                    //no direct conversion, check for indirect conversions
+	                                    if (conversion == null || conversion == "") {
+	                                        conversion = await getIndirectConversion(dishIngredients[l].unitMeasurement, ingredients[m].unit);
+	                                    }
 
-		                                    ingredients[m].used += await computeQuantityUsed(dishIngredients[l].quantity, conversion, dishSales[k].quantity);
-		                                }
-		                               else {
-		                                    //console.log(dishSales[j])
-		                                    ingredients[m].used += (dishIngredients[l].quantity * dishSales[k].quantity)
-		                                    //console.log(dishIngredients[k].quantity +" " + dishSales[j].quantity)
-		                               }
+	                                    ingredients[m].used += await computeQuantityUsed(parseFloat(dishIngredients[l].quantity), conversion, parseFloat(dishSales[k].quantity));
+	                                }
+	                               else {
+	                                    //console.log(dishSales[j])
+	                                    ingredients[m].used += (parseFloat(dishIngredients[l].quantity) * parseFloat(dishSales[k].quantity))            
+	                                }
+	                                console.log(ingredients[m].used)
+	                                console.log("DISH IGNREDIETS " + dishIngredients[l].quantity +"  DISH SALES QUANITTY " + dishSales[k].quantity)
+                                    
 								}
+
 							}
 						}
 					}
 				}
 				for (var n=0; n<ingredients.length; n++) {
+					console.log(ingredients[n]._id, ingredients[n].reorderLevel)
+					console.log(ingredients[n].used, ingredients[n].reorderLevel)
 					if (ingredients[n].used > ingredients[n].reorderLevel) {
-						updateReorderLevel(ingredients[n].used)
+						updateReorderLevel(ingredients[n]._id, ingredients[n].used)
 					}
-					//console.log(ingredients[n]._id, ingredients[n].reorderLevel)
 
 					//make used 0 again for the next day
 					ingredients[n].used = 0
