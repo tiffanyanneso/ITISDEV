@@ -183,8 +183,17 @@ const viewInventoryController = {
 			})
 		}
 
+		function getStatusName (statusID) {
+			return new Promise((resolve, reject) => {
+				db.findOne (InventoryStatus, {_id:statusID}, 'status', function (result) {
+					if(result!="")
+						resolve(result.status);
+				})
+			})
+		}
+
 		async function getUnit(ingredientDetails, stocks) {
-			ingredientDetails.unitMeasurement = await getUnitName(ingredientDetails.unitMeasurement);
+			ingredientDetails.unitName = await getUnitName(ingredientDetails.unitMeasurement);
 			ingredientDetails.ingredientType = await getIngredientType(ingredientDetails.ingredientType)
 			for (var i=0; i<stocks.length; i++) {
 				var unitName = await getUnitName (stocks[i].stockUnit);
@@ -210,6 +219,13 @@ const viewInventoryController = {
 		db.findOne(Ingredients, {_id:req.params.systemID}, projection, function(result) {
 			//look for stocks of the ingredient
 			var ingredientDetails = result;
+			if (ingredientDetails.quantityAvailable > ingredientDetails.reorderLevel)
+				ingredientDetails.status = "Available"
+			else if (ingredientDetails.quantityAvailable < ingredientDetails.reorderLevel && ingredientDetails.quantityAvailable > 0 )
+				ingredientDetails.status = "Low Stock"
+			else
+				ingredientDetails.status = "Out of Stock"
+
 			var stockProjection = 'stockName quantity stockUnit';
 			var stocks = [];
 
@@ -233,6 +249,18 @@ const viewInventoryController = {
         db.findOne(Stock, {stockName: req.query.stockName}, 'stockName', function (result) {
             res.send(result);
         });
+	},
+
+	checkConversion: function (req, res) { 
+		var ingredientUnit = req.query.ingredientUnit;
+		var stockUnit = req.query.stockUnit;
+
+		db.findOne (Conversion, {$or:[{$and:[ {unitA:ingredientUnit}, {unitB:stockUnit} ]}, {$and:[ {unitA:stockUnit}, {unitB:ingredientUnit} ]}]}, '_id', function(result) {
+			if (result!=null)
+				res.send(true);
+			else
+				res.send(false)
+		})
 	},
 
 	addStock: function(req, res) {
