@@ -113,74 +113,84 @@ const purchaseController = {
 				})
 			})
 		}
-		function getRatioAndOperator (purchasedUnit, ingredientUnit) {
-			return new Promise((resolve, reject) => {
-				db.findOne (Conversion, {$and:[ {unitA:purchasedUnit}, {unitB:ingredientUnit} ]}, 'ratio operator', function(result){
-					if (result!="") 
-						resolve(result);
+
+		function insertPurchasedStocks(stocks) {
+			return new Promise ((resolve, reject) => {
+				db.insertOneResult(PurchasedStock, stocks, function (result) {
+					resolve (result);
 				})
 			})
 		}
 
-		function getCurrentAvailable (ingredientID) {
+		function getStockInfo (stockID) {
+			return new Promise((resolve, reject)=> {
+				db.findOne(Stock, {_id:stockID}, 'ingredientID quantity stockUnit', function(result) {
+					if (result!="")
+						resolve(result)
+				})
+			}) 
+		}
+
+		function getIngredientInfo (ingredientID) {
 			return new Promise ((resolve, reject) => {
-				db.findOne (Ingredients, {_id:ingredientID}, 'quantityAvailable', function(result) {
+				db.findOne (Ingredients, {_id:ingredientID}, '_id quantityAvailable unitMeasurement', function(result) {
 					if (result!="")
 						resolve(result);
 				})
 			})
 		}
 
-		//info in ingredient is ingredientName, unit, quantityAvailable
-		async function computeNewQuantity(quantity, purchasedUnit, ingredient) {
-			var purchasedQuantity;
-			//same unit, no need for conversion
-			if (purchasedUnit == ingredient.unitMeasurement)
-				purchasedQuantity = quantity;
-
-			//needs conversion
-			else {
-				var ratioAndOperator = await getRatioAndOperator(purchasedUnit, ingredient.unitMeasurement);
-				var ratio = ratioAndOperator.ratio;
-				if (ratioAndOperator.operator == "*")
-					purchasedQuantity = quantity*ratio;
-				else
-					purchasedQuantity = quantity/ratio;
-			}
-
-			var currentQuantity = await getCurrentAvailable (ingredient._id);
-			var newQuantity = currentQuantity.quantityAvailable + purchasedQuantity;
-
-			//update quantityAvailable in ingredient
-			db.updateOne (Ingredients, {ingredientID: ingredient.ingredientID}, {quantityAvailable:newQuantity}, function(flag) {
-
-			});
+		function getRatioAndOperator (purchasedUnit, ingredientUnit) {
+			return new Promise((resolve, reject) => {
+				db.findOne (Conversion, {$and:[ {unitA:purchasedUnit}, {unitB:ingredientUnit} ]}, 'ratio operator', function(result){
+					console.log(result)
+					if (result!="") 
+						resolve(result);
+				})
+			})
 		}
 
-		async function stockID (stocks, purchaseID) {
+
+		function updateQuantity (ingredientID, newQuantity) {
+			db.updateOne (Ingredients, {_id:ingredientID}, {quantityAvailable:newQuantity}, function (result) {
+
+			})
+		}
+
+
+		async function savePurchasedStock (stocks, purchaseID) {
 			for (var i=0; i<stocks.length; i++) {
 				stocks[i].purchaseID = purchaseID;
 				stocks[i].stockID = await getStockID(stocks[i].stockName);
 			}
 
 			//store individual purhcased stock
-			db.insertManyResult (PurchasedStock, stocks, function(result2) {
-				for (j=0; j<result2.length; j++) {
-					var currentStock = result2[j];		//data here is stockName, count, unitPrice
+			var purchasedStocks = await insertPurchasedStocks(stocks);
 
-					//compute total quantity purchased - look for stock name to get the quantity of the stock
-					db.findOneExtraParam (Stock, {_id: result2[j].stockID}, 'ingredientID quantity stockUnit', currentStock, function (result3, currentStock) {
+			for (var j=0; j<purchasedStocks.length; j++) {
 
-						var purchasedQuantity = currentStock.count * result3.quantity;
-						var purchasedUnit = result3.stockUnit;
+				//compute total quantity purchased - look for stock id to get the quantity of the stock
+				var stockInfo = await getStockInfo(purchasedStocks[j].stockID)
+				var purchasedQuantity = stockInfo.quantity * purchasedStocks[j].count
 
-						//look for ingredient to get currentAvailableQuantity
-						db.findOneExtraParams (Ingredients, {_id:result3.ingredientID}, '_id quantityAvailable unitMeasurement', purchasedQuantity, purchasedUnit, function (result4, purchasedQuantity, purchasedUnit) {
-							computeNewQuantity(purchasedQuantity, purchasedUnit, result4);							
-						});
-					});
+				//look for ingredient to get currentAvailableQuantity and unit
+				var ingredientInfo = await getIngredientInfo(stockInfo.ingredientID);
+
+				//stock unit is not equal to ingredient unit
+				if (stockInfo.stockUnit != ingredientInfo.unitMeasurement) {
+					var ratioAndOperator = await getRatioAndOperator(stockInfo.stockUnit, ingredientInfo.unitMeasurement);
+					var ratio = ratioAndOperator.ratio;
+					if (ratioAndOperator.operator == "*")
+						purchasedQuantity = quantity*ratio;
+					else
+						purchasedQuantity = quantity/ratio;
 				}
-			});
+
+				var newQuantity = ingredientInfo.quantityAvailable + purchasedQuantity;
+
+				updateQuantity (ingredientInfo._id, newQuantity)
+			}
+
 		}
 
 		var datePurchased = new Date();
@@ -198,7 +208,7 @@ const purchaseController = {
 		//store to Purchases
 		db.insertOneResult(Purchases, purchaseDetails, function (result) {
 			purchaseID = result._id;
-			stockID(stocks, purchaseID);
+			savePurchasedStock(stocks, purchaseID);
 		});
 	},
 

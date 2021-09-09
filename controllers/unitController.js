@@ -70,58 +70,47 @@ const unitController = {
 			getConversions(result);
 		})
 		
+	},
+	
 
-		//res.render('unitConversion')
+	getCheckUnitName: function(req, res) { 
+		var unit = req.query.unit;
+
+        db.findOne(Units, {unit: unit}, 'unit', function(result) {
+            res.send(result);
+        });
+    },
+
+	saveUnit: function (req, res){
+
+		db.findOne(Units, {unit: req.body.unit}, '_id', function(result){
+	
+			var unitName = {
+				unit: req.body.unit
+			};
 		
+			db.insertOne(Units, unitName, function(flag){
+				if(flag){}
+			});
+		});
 	},
 
-	saveUnit: function (req, res) {
 
-		/*function checkUnit (unit) {
-			return new Promise ((resolve, reject) => {
-				db.findOne(Units, {unit:unit}, '_id unit', function(result) {
-					//unit does not exist in db
-					if (result==null) {
-						db.insertOneResult (Units, {unit:unitA}, function(result1) {
-							resolve(result1.id);
-						});
-					}
-					else
-						resolve (result._id)
-				});
-			})
-		}
 
-		async function insertConversion(unitA, unitB, ratio, operator) {
-			var unitAId = await checkUnit (unitA);
-			var unitBId = await checkUnit (unitB);
-
-			//removed sht goes here
-		}*/
-
-		/*var unitA = req.body.unitA;
-		var unitB = req.body.unitB;
-		var ratio = req.body.ratio;
-		var operator = req.body.operator;*/
+	saveUnitConvert: function (req, res) {
 
 		var conversion = {
 				unitA: req.body.unitA,
 				unitB: req.body.unitB,
 				ratio: req.body.ratio,
-				operator: req.body.operator
+				operator: '*'
 			};
-
-			var operator1;
-			if (conversion.operator == "*")
-				operator1 = '/';
-			else
-				operator1 = '*';
 
 			var conversion1 = {
 				unitA: req.body.unitB,
 				unitB: req.body.unitA,
 				ratio: req.body.ratio,
-				operator:operator1
+				operator: '/'
 			};
 
 			//insert conversion from unitA to unitB

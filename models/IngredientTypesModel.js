@@ -2,11 +2,16 @@
 var mongoose = require('mongoose');
 
 // defines the schema for collection `users`
-var IngredientsSchema = new mongoose.Schema({
+var IngredientTypesSchema = new mongoose.Schema({
 
 	ingredientType: {
 		type: String,
 		required: true
+	},
+
+	multiplier: {
+		type: Number,
+		required: false
 	}
 
 });

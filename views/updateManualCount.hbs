@@ -46,8 +46,39 @@
                     </tbody>
                 </table>
             </div>
+
+             <!-- Modal -->
+            <div class="modal fade" id="modal-shrinkage-reason" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLongTitle">Shrinkage Reason</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="add-new-ingredient">
+                        <p id="shrinkage-id" style="display: none;"></p>
+                        <!--<label for="ingredient-name">Name</label> <input id="ingredient-name" type="text"><br>-->
+                        <label for="dropdown-ingredient-type">Shrinkage Reason</label>
+                        <select class="dropdown" id="dropdown-shrinkage-reason">
+                            <option value="no-selected">--Select Reason--</option>
+                            {{#each reasons}}
+                                <option value="{{_id}}">{{reason}}</option>
+                            {{/each}}
+                        </select><br>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btn-save-reason">Save Reason</button>
+                      </div>
+                  </form>
+                </div>
+              </div>
+            </div>
             <div class="div-btn-right" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-update-manual-count-save" disabled="true">Save</button></div>
-        </div>1
+        </div>
 
         <script>
             $(document).ready(function() {
@@ -94,9 +125,28 @@
                     var ingredientID = $('#ingredient-id').text();
                     var stockString = JSON.stringify(stocks);
                     $('.manual-count').val('');
-                    $.post('/saveManualCount', {ingredientID, stockString});
+                    $.post('/saveManualCount', {ingredientID, stockString}, function (result) {
+                        //no descrepancy
+                        if (ingredientID == result) 
+                            window.location.replace("/ingredient/" + ingredientID)
+                        //show popup for shrinkage reason
+                        else {
+                            $('#shrinkage-id').text(result);
+                            $('#modal-shrinkage-reason').modal('show')
+                        }
+
+                    });
 
                 });
+
+                $('#btn-save-reason').click(function() {
+                    var shrinkageID = $('#shrinkage-id').text();
+                    var reason = $('#dropdown-shrinkage-reason').val();
+
+                    $.post('/saveShrinkage', {shrinkageID, reason});
+                    var ingredientID = $('#ingredient-id').text();
+                    window.location.replace("/ingredient/" + ingredientID)
+                })
             })
             
         </script>

@@ -98,7 +98,7 @@ const MenuController = {
 				}
 				//console.log(computedQuantity);
 				resolve (computedQuantity);
-			}) 
+			});
 		}
 
 		async function checkAvailability(dish) {

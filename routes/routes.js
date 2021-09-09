@@ -26,17 +26,23 @@ const newOrderController = require('../controllers/newOrderController.js');
 
 const reportController = require('../controllers/reportController.js');
 
+router.get('/favicon.ico', controller.getFavicon);
+
+router.get('/', controller.getIndex);
+
+//---LOGIN---
+
 router.get('/login', logInController.login);
 
 router.get('/logout', logInController.logout);
 
 router.post('/checkLogIn', logInController.checkLogIn);
 
-router.get('/favicon.ico', controller.getFavicon);
-
-router.get('/', controller.getIndex);
+//---DASHBOARD---
 
 router.get('/dashboard', controller.getDashboard);
+
+//---INVENTORY---
 
 router.get('/inventory', viewInventoryController.getInventory);
 
@@ -47,6 +53,12 @@ router.get('/ingredient/:systemID', viewInventoryController.getIngredient);
 router.get('/getCheckStockName', viewInventoryController.getCheckStockName);
 
 router.post('/addStock', viewInventoryController.addStock);
+
+router.post('/reorderFormulaInput', viewInventoryController.reorderFormulaInput);
+
+router.post('/reorderFormulaSales', viewInventoryController.reorderFormulaSales);
+
+//---ADD NEW DISH---
 
 router.get('/addNewDish', addNewDishController.getAddNewDish);
 
@@ -70,13 +82,19 @@ router.post('/postAddIngredients', addNewDishController.postAddIngredients);
 
 router.post('/postAddOneIngredient', addNewDishController.postAddOneIngredient); 
 
+//---NEW ORDER---
+
 router.get('/newOrder', newOrderController.getNewOrder);
+
+router.get('/checkIngredientQuantity', newOrderController.checkIngredientQuantity)
 
 router.get('/getDishName', newOrderController.getDishName);
 
 router.get('/getDishPrice', newOrderController.getDishPrice);
 
 router.post('/saveSale', newOrderController.saveSale);
+
+//---PURCHASES---
 
 router.get('/newPurchase', purchaseController.renderPurchase);
 
@@ -96,6 +114,8 @@ router.get('/getSearchPurchase', purchaseController.getSearchPurchase);
 
 router.get('/getFilteredRows', purchaseController.getFilteredRows);
 
+//---MENU---
+
 router.get('/menu', menuController.getMenu);
 
 router.get('/menu/:systemID', menuController.getViewDish);
@@ -110,19 +130,32 @@ router.get('/postEditDish', menuController.postEditDish);
 
 router.get('/getDishName', menuController.getDishName);
 
+//---ORDER HISTORY---
+
 router.get('/orderHistory', orderHistoryController.getOrderHistory);
 
 router.get('/order/:systemID', orderHistoryController.getViewSpecificOrder);
 
 router.get('/getFilteredRowsOrderHistory', orderHistoryController.getFilteredRowsOrderHistory);
 
+//---UNIT---
+
 router.get('/unitConverter', unitController.getUnitConverter);
 
+router.get('/getCheckUnitName', unitController.getCheckUnitName);
+
 router.post('/saveUnit', unitController.saveUnit);
+
+router.post('/saveUnitConvert', unitController.saveUnitConvert);
+
+
+//---MANUAL COUNT---
 
 router.get('/updateManualCount/:ingredientID', manualCountController.getUpdatePage);
 
 router.post('/saveManualCount', manualCountController.saveManualCount);
+
+router.post('/saveShrinkage', manualCountController.saveShrinkage);
 
 router.get('/viewShrinkages', manualCountController.getViewShrinkages);
 
@@ -130,7 +163,11 @@ router.get('/getFilteredRowsViewShrinkages', manualCountController.getFilteredRo
 
 router.get('/getDateToday', manualCountController.getDateToday); 
 
+//---REPORT---
+
 router.get('/viewInventoryReport', reportController.getInventoryReport); 
+
+router.get('/getFilteredInventoryReport', reportController.getFilteredInventoryReport)
 
 router.get('/viewSalesReport', reportController.getSalesReport); 
 
@@ -141,5 +178,7 @@ router.get('/getSalesInfo', reportController.getSalesInfo);
 router.get('/inventoryReport/:ingredientID', reportController.getViewSpecificInventoryReport); 
 
 router.get('/getFilteredRowsInventoryReport', reportController.getFilteredRowsReport); 
+
+//----------
 
 module.exports = router;

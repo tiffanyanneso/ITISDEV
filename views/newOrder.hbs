@@ -156,60 +156,66 @@
                     return words.join(' ');
                 };
 
-
                 $('#btn-add-dish').click(function() {
                     var dishName = capitalize($('#dish-name').val());
                     var quantity = $('#dish-quantity').val();
 
-                    $.get('/getDishPrice', {dishName:dishName}, function (result) {
-                        //stockID was found in DB
-                        if (result!="") {
-                                var unitPrice = result.dishPrice
-                                var total = quantity*result.dishPrice;
+                    //checks if there is enough ingredients to make dish
+                    $.get('/checkIngredientQuantity', {dishName, quantity}, function (result) {
+                        //returns true is there is enough ingredinents and false otherwise
+                        if (result) {
+                            $.get('/getDishPrice', {dishName:dishName}, function (result) {
+                            //stockID was found in DB
+                            if (result!="") {
+                                    $('#error-dish').text("");
+                                    var unitPrice = result.dishPrice
+                                    var total = quantity*result.dishPrice;
 
-                                $('#table-view-dish').append (
-                                `<tr>
-                                    <td class="dishName">${dishName}</td>
-                                    <td class="quantity">${quantity}</td>
-                                    <td class-"unitPrice">${unitPrice}</td>
-                                    <td class="total">${total}</td>
-                                    <td><button class="delete-button add-stock-delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button></td>
-                                </tr>`);
+                                    $('#table-view-dish').append (
+                                    `<tr>
+                                        <td class="dishName">${dishName}</td>
+                                        <td class="quantity">${quantity}</td>
+                                        <td class-"unitPrice">${unitPrice}</td>
+                                        <td class="total">${total}</td>
+                                        <td><button class="delete-button add-stock-delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button></td>
+                                    </tr>`);
 
-                                $('#dish-name').val(''); 
-                                $('#dish-quantity').val('');    
-                                $('#btn-new-order-save').prop('disabled', false);
-                                $("#btn-new-order-save").css("background-color", "#0F84D9");
+                                    $('#dish-name').val(''); 
+                                    $('#dish-quantity').val('');    
+                                    $('#btn-new-order-save').prop('disabled', false);
+                                    $("#btn-new-order-save").css("background-color", "#0F84D9");
 
-                                var discountPercent = $('#new-order-discount').val();
-                                var discountAmount = 0;
+                                    var discountPercent = $('#new-order-discount').val();
+                                    var discountAmount = 0;
 
-                                var overallTotal = parseInt($('#new-order-total-due').text().slice(1)) + total;
-                                var subTotal = (overallTotal/1.12);
+                                    var overallTotal = parseInt($('#new-order-total-due').text().slice(1)) + total;
+                                    var subTotal = (overallTotal/1.12);
 
-                                //there is discount
-                                if (discountPercent!="") {
-                                    var discountPercentInt = parseInt($('#new-order-discount').val());
-                                    discountAmount = subTotal - (subTotal*(discountPercent/100));
+                                    //there is discount
+                                    if (discountPercent!="") {
+                                        var discountPercentInt = parseInt($('#new-order-discount').val());
+                                        discountAmount = subTotal - (subTotal*(discountPercent/100));
+                                    }
+
+
+                                    var vat = overallTotal - subTotal - discountAmount;
+                                    overallTotal -= discountAmount;
+
+                                    $('#new-order-subtotal').text("₱ " + subTotal.toFixed(2));
+                                    $('#new-order-VAT').text("₱ " + vat.toFixed(2));
+                                    $('#new-order-less-discount').text("₱ " + discountAmount.toFixed(2));
+                                    $('#new-order-total-due').text("₱ " + overallTotal.toFixed(2));
                                 }
-
-
-                                var vat = overallTotal - subTotal - discountAmount;
-                                overallTotal -= discountAmount;
-
-                                $('#new-order-subtotal').text("₱ " + subTotal.toFixed(2));
-                                $('#new-order-VAT').text("₱ " + vat.toFixed(2));
-                                $('#new-order-less-discount').text("₱ " + discountAmount.toFixed(2));
-                                $('#new-order-total-due').text("₱ " + overallTotal.toFixed(2));
-
-                            }
-
-                        //dish db not found, ask to change input
-                        else{                          
-                            alert("not found")
-                        }
-                    });
+                                //dish db not found, ask to change input
+                                else                        
+                                    $('#error-dish').text("Dish does not exist");
+                            })
+                    }
+                    else
+                        $('#error-dish').text("Not enough ingredients to make dish")
                 });
+            })
+                    
 
                 $('#new-order-discount').keyup(function() {
                     var overallTotal =0
@@ -266,10 +272,10 @@
                     });
 
                    var dishString = JSON.stringify(orderedDishes);
-                   var orderTotal = $('#new-order-total-due').text().slice(1);
+                   var total = $('#new-order-total-due').text().slice(1);
                    var vat =  $('#new-order-VAT').text().slice(1);
                    var discount = $("#new-order-less-discount").text().slice(1);
-                   $.post('/saveSale', {dishString, orderTotal, vat, total});
+                   $.post('/saveSale', {dishString, vat, discount, total});
 
                    $("#table-view-dish-body tr").remove();
                    $('#new-order-total-due').text('₱ 0');

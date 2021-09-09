@@ -283,6 +283,7 @@
 
                 $('#btn-edit-dish-ingredients').click(function() {
                     var ingredientName = capitalize($('#edit-dish-ingredients-name').val());
+                    var ingredientName = $.trim(ingredientName);
                     var ingredientQty = $('#edit-dish-ingredients-quantity').val();
                     var ingredientUnit = $('#edit-dish-ingredients-unit option:selected').text();
 

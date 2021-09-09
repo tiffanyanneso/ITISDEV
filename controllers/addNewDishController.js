@@ -14,6 +14,8 @@ const DishStatus = require('../models/DishStatusModel.js');
 
 const Units = require('../models/UnitsModel.js');
 
+const Conversion = require('../models/ConversionModel.js');
+
 const addNewDishController = {
 
     getAddNewDish: function (req, res) {
@@ -55,7 +57,7 @@ const addNewDishController = {
                         };
 					    units.push (unit);
 				    }
-
+                    
                     res.render('addNewDish', {classifications, statuses, units});
                 });
             });
@@ -232,11 +234,113 @@ const addNewDishController = {
             });
         }
 
+        function getIngredientInfo (ingredientID) {
+            return new Promise ((resolve, reject)=> {
+                db.findOne (Ingredients, {_id:ingredientID}, 'quantityAvailable unitMeasurement', function (result) {
+                    if (result!="")
+                        resolve (result)
+                })
+            })
+        }
+
+        //unitA will be ingredient unit, unitB will be dishUnit
+        function getConversion (ingredientUnit, dishUnit){
+            return new Promise((resolve, reject) => {
+                var conversion = []
+                db.findOne (Conversion, {$and:[ {unitA:ingredientUnit}, {unitB:dishUnit} ]}, 'ratio operator', function(result){
+                    //console.log("direct " + result);
+                    if (result!="") {
+                        conversion.push (result)
+                        resolve(conversion);
+                    }
+                })
+            })
+        }
+
+        function getIndirectConversion(unitA, unitB) {
+            return new Promise ((resolve, reject) => {
+                var conversions = [];
+                //get all conversions with ingredientUnit
+                db.findMany (Conversion, {unitA:unitA}, 'unitB ratio operator', function (result) { 
+                    //get all conversions with dishUnit as unit to be converted to
+                    db.findMany (Conversion, {unitB:unitB}, 'unitA ratio operator', function (result1) {
+                        var found = false;
+                        for (var i=0; i<result.length && !found; i++) {
+                            for (var j=0; j<result1.length && !found; j++) {
+                                if (result[i].unitB == result1[j].unitA) {
+                                    conversions.push (result[i]);
+                                    conversions.push (result1[j]);
+                                    found = true;
+                                }
+                            }
+                        }
+                        //console.log("indirect " + conversions);
+                        resolve(conversions);
+                    })
+                }) 
+            })
+        }
+
+        //converting from ingredientUnit to dishUnit
+        function computeQuantityAvailable(quantityAvailable, conversion) {
+            return new Promise((resolve, reject) => {
+                var computedQuantity = quantityAvailable;
+
+                //console.log("compute quantity " + conversion);
+                for (var i=0; i<conversion.length; i++) {
+                    var ratio = conversion[i].ratio
+                    var operator = conversion[i].operator
+
+                    if (operator == "*")
+                        computedQuantity = computedQuantity * ratio
+                    else 
+                        computedQuantity = computedQuantity / ratio
+                }
+                //console.log(computedQuantity);
+                resolve (computedQuantity);
+            });
+        }
+
+       async function checkAvailability(ingredientID, quantityUsed, unitMeasurementUsed) {
+            var ingredientInfo = await getIngredientInfo (ingredientID)
+
+            var availableIngredient = ingredientInfo.quantityAvailable
+
+            if (ingredientInfo.unitMeasurement != unitMeasurementUsed) {
+                    //checks if there is direct converion
+                conversion = await getConversion (ingredientInfo.unitMeasurement, unitMeasurementUsed);
+                
+                //no direct conversion, check for indirect conversions
+                if (conversion == null || conversion == "") 
+                    conversion = await getIndirectConversion(ingredientInfo.unitMeasurement, unitMeasurementUsed);
+
+                availableIngredient = await computeQuantityAvailable(ingredientInfo.quantityAvailable, conversion);
+            }
+
+            //quantity used is more than available, should not be available
+            if (quantityUsed > availableIngredient)
+                return false
+            else
+                return true
+        }
+
+
+        function updateDishStatus(dishID) {
+            db.updateOne(Dishes, {_id:dishID}, {dishStatus:"6119fac6f933ea6c2f6d014f"}, function (result) {
+
+            })
+        }
+
         async function saveIngredients(ingredients) {
             for (var i = 0; i < ingredients.length; i++) {
                 ingredients[i].ingredientID = await getIngredientID(ingredients[i].ingredientID);
                 ingredients[i].unitMeasurement = await getUnitID(ingredients[i].unitMeasurement);
+
+                var available = await checkAvailability(ingredients[i].ingredientID, ingredients[i].quantity, ingredients[i].unitMeasurement)
+                if (!available) 
+                    updateDishStatus(dishID)
             }
+
 
             //console.log(ingredients);
             // call unit and ingredient 
