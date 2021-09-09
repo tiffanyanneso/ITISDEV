@@ -415,16 +415,30 @@ const viewInventoryController = {
 		function getSalesDays() {
 			return new Promise ((resolve, reject)=> {
 				db.findMany(Sales, {}, 'date', function(result) {
-					var uniqueDates = []
+					var uniqueDates = [];
+					var unique = 1;
 
 					for (var i=0; i<result.length; i++) {
-						var date = new Date (result[i].date)
-						//date.setHours(0,0,0,0);
+						var date = new Date (result[i].date);
+						var unique = 1;
+						date.setHours(0,0,0,0);
+
 						//checks if the date is new/unique, -1 means that it's not in the array
-						for (var j=0; j<uniqueDates.length; j++) {
-							if (uniqueDates[j].valueOf() != date.valueOf())
-								uniqueDates.push(date)
+						for (var j=0; j < uniqueDates.length; j++) {
+							var arrayDate = new Date (uniqueDates[j]);
+							arrayDate.setHours(0,0,0,0);
+							//console.log("date: " + date + ", array date: " + arrayDate);
+							//console.log(uniqueDates);
+							if (!(date > arrayDate || date < arrayDate)) {
+								unique = 0;
+								console.log("not unique");
+							}
 						}
+						
+						if (unique == 1)
+							uniqueDates.push(date)
+
+						//console.log(uniqueDates);
 					}
 					resolve (uniqueDates)
 				})
@@ -434,17 +448,22 @@ const viewInventoryController = {
 
 		function getSalesToday(dateToday) {
 			return new Promise ((resolve, reject) => {
-				var dateToday = new Date (dateToday); 
-				var sales = 0
+				dateToday.setHours(0,0,0,0);
+				var sales = [];
 				db.findMany (Sales, {}, '_id date', function(result) {
 		            for (var i=0; i<result.length; i++) {
 		                var date = new Date(result[i].date);
 		                date.setHours(0,0,0,0);
 
 		                //if (!(startDate > date || date > endDate))
-		                if (date == dateToday)
-		                    sales.push(result[i]);
-		            }
+						//if (date == dateToday)
+						console.log("date: " + date + " , dateToday: " + dateToday);
+						if (!(date > dateToday || date < dateToday)) {
+							console.log("same date");
+							sales.push(result[i]);
+						}
+					}
+					console.log(sales);
 		            resolve (sales)
 		        })
 			})
@@ -534,6 +553,7 @@ const viewInventoryController = {
 
 			for (var i=0; i<salesDay.length	; i++) {
 				//get sales id of sales made today
+				//console.log("sales day: " + salesDay[i]);
 				var salesToday = await getSalesToday(salesDay[i]);
 				console.log("sales today length " +  salesToday.length)
 
