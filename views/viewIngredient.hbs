@@ -29,7 +29,7 @@
                 <div style="display: flex;">
                     <div style="width: 50%;"><h1 class="bold color-blue margin-bottom-0" id="view-ingredient-name">{{ingredientDetails.ingredientName}}</h1></div>
                     <div class="div-btn-status">
-                        <div><button class="btn-status" id="status-view-ingredient">Status</button></div>
+                        <div><button class="btn-status btn-{{ingredientDetails.status}}" id="status-view-ingredient">{{ingredientDetails.status}}</button></div>
                     </div>
                 </div>
             </div>
@@ -49,8 +49,9 @@
                 </div>
 
                 <div class="label-container" style="margin-top: 0px; width: 50%; float: left; display: flex; justify-content: flex-end; padding-left: 10px;">
+                    <p style="display: none;" id="unitID">{{ingredientDetails.unitMeasurement}}</p>
                     <div class="override-label">Unit Measurement</div> 
-                    <div class="label-content" id="view-ingredient-unit-measurement">{{ingredientDetails.unitMeasurement}}</div>
+                    <div class="label-content" id="view-ingredient-unit-measurement">{{ingredientDetails.unitName}}</div>
                 </div>
 
                 <div class="label-container">
@@ -85,13 +86,38 @@
                         <label for="stock-quantity">Quantity</label> <input id="stock-quantity" type="number"> <br>
                         <p class="error" id="error-stock-quantity" style="margin-top: 3px; margin-bottom: 3px;"></p>
                         <p class="error" id="error-new-stock-quantity" style="margin-top: 3px; margin-bottom: 3px;"></p>
-                        <label for="dropdown-stock-unit">Unit of Measurement</label>
-                        <select class="dropdown" id="dropdown-stock-unit">
-                             <option>--Select unit--</option>
-                            {{#each units}}
-                                <option value="{{id}}">{{unitName}}</option>
-                            {{/each}}
-                        </select><br>
+                        <div style="display: flex;">
+                            <label for="dropdown-stock-unit">Unit of Measurement</label>
+                            <select class="dropdown" id="dropdown-stock-unit">
+                                 <option>--Select unit--</option>
+                                {{#each units}}
+                                    <option value="{{id}}">{{unitName}}</option>
+                                {{/each}}
+                            </select><br>
+                            <button style="margin-left:3px; display: none;" id="btn-add-conversion" class="btn-dark-blue">Add Conversion</button>
+                        </div>
+                        <br>
+                        <div id="div-conversion-input" style="display: none;">
+
+                                <select class="dropdown" id="unitA" style="margin-right: 5px"> 
+                                <option value="no-selected">Select Unit A</option>
+                                {{#each unitNames}}
+                                    <option value="{{id}}">{{unitName}}</option>
+                                {{/each}}
+                                </select>
+
+                                <select class="dropdown" id="unitB" style="margin-right: 10px">
+                                <option value="no-selected">Select Unit B</option>
+                                {{#each unitNames}}
+                                    <option value="{{id}}">{{unitName}}</option>
+                                {{/each}}
+                                </select>
+
+                                <input type="number" name="ratio" id="ratio" placeholder="Ratio" style="margin-right: 10px">
+                                
+                                <input class="btn-add" type="button" id="save-conversion" name="save-conversion" value="+">
+                            
+                            </div>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -183,6 +209,22 @@
                     }
                 });
 
+                $('#dropdown-stock-unit').change(function() {
+                    var stockUnit = $('#dropdown-stock-unit').val()
+                    var ingredientUnit = $('#unitID').text();
+                    $.get('/checkConversion', {stockUnit, ingredientUnit}, function (result) {
+                        //conversion found
+                        if(result)
+                            $('#btn-add-conversion').css('display', 'none');
+                        else
+                            $('#btn-add-conversion').css('display', 'block');
+
+                    })
+                })
+
+                $('#btn-add-conversion').click(function() {
+                    $('#div-conversion-input').css('display', 'block')
+                })
 
 
                 $('#btn-add-new-stock').click(function() {

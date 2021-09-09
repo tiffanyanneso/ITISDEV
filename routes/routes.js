@@ -52,6 +52,8 @@ router.get('/ingredient/:systemID', viewInventoryController.getIngredient);
 
 router.get('/getCheckStockName', viewInventoryController.getCheckStockName);
 
+router.get('/checkConversion', viewInventoryController.checkConversion)
+
 router.post('/addStock', viewInventoryController.addStock);
 
 router.post('/reorderFormulaInput', viewInventoryController.reorderFormulaInput);

@@ -197,6 +197,11 @@
     height: 30px;
 }
 
+.btn-Low{
+    background-color: #eed202;
+    border:  #969696;
+}
+
 .btn-Unavailable {
     background-color: #969696;
     border:  #969696;
