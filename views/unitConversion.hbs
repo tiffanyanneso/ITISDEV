@@ -43,9 +43,12 @@
 
         <p class="error" id="error-unit"></p> 
         
+        
         <hr>
          
          <h3 class="bold">Add Conversion</h3>
+         <p>Unit A must always be bigger than Unit B</p>
+         <p>Unit B must always be smaller than Unit A</p>
          <!--DROPDOWN-->
          <div style="input-container">
 
@@ -64,9 +67,12 @@
             </select>
 
             <input type="number" name="ratio" id="ratio" placeholder="Ratio" style="margin-right: 10px">
+            
             <input class="btn-add" type="button" id="save-conversion" name="save-conversion" value="+">
         
         </div>
+            <p class="error" id="error-conversion"></p> 
+       
        
         <div class="div-table" style="margin-top: 20px;">
                 <table class="table" id="table-edit-dish-ingredients">
@@ -97,6 +103,7 @@
             $(document).ready(function() {
 
 /*
+
                 function checkSameUnit () {
                     var unitA = $('#unitA').val();
                     var unitB = $('#unitB').val();
@@ -108,10 +115,10 @@
 
                 function isPositive() {
                     var ratio = $('#ratio').val();
-                    if (ratio>0)
-                        return true;
+                    if (ratio > 0)
+                        return 1;
                     else
-                        return false;
+                        return 0;
                 }
 
                 $('#unitA').keyup(function() {
@@ -148,7 +155,8 @@
 
                 $('#ratio').keyup(function() {
                     //is not positive
-                    if (!isPositive()) {
+                    var check = isPositive();
+                    if (check == 0) {
                         $("#ratio").css("border", "1px solid #B00000");
                         $('#error-ratio').text('Ratio cannot be less than 1');
                         $("#save-conversion").prop("disabled", true);
@@ -163,6 +171,44 @@
                 })
 
 */
+/*
+                $('#unitA').click(function() {
+
+                    var unitA = $('#unitA').val();
+
+                    $('#unitB').click(function() {
+                    var unitB = $('#unitB').val();
+                    });
+
+                    if(unit A == unit B){
+                        $("#unitA").css("border", "1px solid #B00000");
+                        $('#error-conversion').text("Units are same");
+                        $("#error-conversion").css("margin-left", "0px");
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
+                    }
+
+                });
+*/
+                $('#ratio').keyup(function() {
+                
+                    var ratio = $('#ratio').val();
+
+                    if (ratio < 0) {
+                        $("#ratio").css("border", "1px solid #B00000");
+                        $('#error-conversion').text("Ratio cannot be negative");
+                        $("#error-conversion").css("margin-left", "0px");
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
+                    }
+                    else{
+                    $("#ratio").css("border", "1px solid #DDDDDD");
+                    $("#error-conversion").text("");
+                    $("#error-conversion").css("margin-left", "0px");
+                    $("#save-conversion").prop("disabled", false);
+                    $("#save-conversion").css("background-color", "#0F84D9");
+                    }
+                });
 
                 $('#enter-unit').keyup(function() {
                 
@@ -192,24 +238,36 @@
                 $('#save-unit').click(function() {
                     
                     var unit = $('#enter-unit').val();
-                    var unit = $.trim(unit);
+                        unit = $.trim(unit);
 
-                    //alert("Unit " + unit + " saved");
+                    $.get('/getCheckUnitName', {unit: unit}, function (result) {
 
-                    if(unit != ''){
-                    $.post('/saveUnit', {unit});
+                        if (result.unit == unit) {
+                            $("#enter-unit").css("border", "1px solid #B00000");
+                            $('#error-unit').text("Unit already exists");
+                            $("#error-unit").css("margin-left", "0px");
+                            $("#error-unit").css("color", "#B00000");
+                            $("#save-unit").prop("disabled", true);
+                            $("#save-unit").css("background-color", "#b3b3b3");
+                        }
 
-                    $("#error-unit").text("Unit has been saved");
-                    $("#error-unit").css("margin-left", "0px");
-                    $("#error-unit").css("color", "green");
-                    
-                    }
-                    else if(unit == ''){
+                        else if(unit != '' && result.unit != unit){
+                        $.post('/saveUnit', {unit});
+
+                            $("#error-unit").text("Unit has been saved");
+                            $("#error-unit").css("margin-left", "0px");
+                            $("#error-unit").css("color", "green");
+                        }
+
+                        else if(unit == ''){
+
                         $("#enter-unit").css("border", "1px solid #B00000");
                         $('#error-unit').text("Invalid entry");
                         $("#error-unit").css("margin-left", "0px");
                         $("#error-unit").css("color", "#B00000");
                     }
+                           
+                    });   
 
                 });
 
@@ -220,7 +278,7 @@
                     var ratio = $('#ratio').val();
                     var operator = $('#operator').val();
                     
-                    $.post('/saveUnitConvert', {unitA, unitB, ratio, operator});
+                    $.post('/saveUnitConvert', {unitA, unitB, ratio});
 
                     $('#unitA').val('');
                     $('#unitB').val('');

@@ -103,20 +103,14 @@ const unitController = {
 				unitA: req.body.unitA,
 				unitB: req.body.unitB,
 				ratio: req.body.ratio,
-				operator: req.body.operator
+				operator: '*'
 			};
-
-			var operator1;
-			if (conversion.operator == "*")
-				operator1 = '/';
-			else
-				operator1 = '*';
 
 			var conversion1 = {
 				unitA: req.body.unitB,
 				unitB: req.body.unitA,
 				ratio: req.body.ratio,
-				operator:operator1
+				operator: '/'
 			};
 
 			//insert conversion from unitA to unitB
