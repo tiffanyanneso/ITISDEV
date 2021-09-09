@@ -237,6 +237,19 @@
                     $('#modal-add-ingredient').modal('toggle');
                     $('#add-new-ingredient').trigger('reset');
 
+                    $.get('/getCheckIngredientName', {ingredientName: ingredientName}, function (result) {
+                    if (result.ingredientName == ingredientName) {
+                        /*
+                        $("#ingredient-name").css("border", "1px solid #B00000");
+                        $('#error-new-ingredient-name').text("Ingredient already exists");
+                        $("#btn-add-new-ingredient").prop("disabled", true);
+                        $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                        */
+                        //another modal popup saying it exists
+                        alert("Ingredient already exists");
+                    }
+
+                    else{
                       $.ajax({
                             url: "/addIngredient",              
                             type: "POST",
@@ -257,7 +270,11 @@
                                     window.location = $(this).data("href");
                                 });
                             }
-                    });        
+                        });
+                    } 
+                    }); 
+
+     
                 });
 
                 $(".link").click(function() {
