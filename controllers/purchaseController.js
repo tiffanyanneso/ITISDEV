@@ -254,7 +254,17 @@ const purchaseController = {
 				purchases.reverse();
 
                 //console.log(purchases);
-                res.render('viewPurchases', {purchases, total, today});
+
+                if(req.session.position == "Inventory"  || req.session.position == "Purchasing"){
+                	var inventory = req.session.position;
+                	 res.render('viewPurchases', {purchases, total, today, inventory});
+                }
+
+                if(req.session.position == "Admin"){
+                	var manager = req.session.position;
+                	 res.render('viewPurchases', {purchases, total, today, manager});
+                }
+               
             });
         });
     },
@@ -305,8 +315,20 @@ const purchaseController = {
 					purchasedStocks[i].stockName = stockInfo.stockName;
 					purchasedStocks[i].quantity  = stockInfo.quantity;
 					purchasedStocks[i].stockUnit = stockInfo.stockUnit;
-				}		
-				res.render ('viewSpecificPurchase', {purchase, employeeName, purchasedStocks});
+				}
+
+				if(req.session.position == "Inventory" || req.session.position == "Purchasing"){
+                	var inventory = req.session.position;
+                	res.render ('viewSpecificPurchase', {purchase, employeeName, purchasedStocks, inventory});
+                }
+
+                if(req.session.position == "Admin"){
+                	var manager = req.session.position;
+                	res.render ('viewSpecificPurchase', {purchase, employeeName, purchasedStocks, manager});
+                }
+
+				
+
 			} catch (err) {
 				console.log(err);
 			}

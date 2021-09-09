@@ -307,7 +307,15 @@ const MenuController = {
 						}
 					}
 
-					res.render('menu', {menu});		
+					if(req.session.position == "Cashier"){
+                		var cashier = req.session.position;
+                	 	res.render('menu', {menu, cashier});	
+                	}
+
+	                if(req.session.position == "Admin"){
+	                	var manager = req.session.position;
+	                	 res.render('menu', {menu, manager});
+	                }
 				});
 			});
 		});
@@ -398,7 +406,17 @@ const MenuController = {
 							
 								//console.log(dish);
 								//console.log(statuses);
-								res.render('viewDish', {dish, statuses, dishIngredients});
+
+								 if(req.session.position == "Cashier"){
+				                	var cashier = req.session.position;
+									res.render('viewDish', {dish, statuses, dishIngredients, cashier});
+				                }
+
+				                if(req.session.position == "Admin"){
+				                	var manager = req.session.position;
+									res.render('viewDish', {dish, statuses, dishIngredients, manager});
+				                }
+
 							}
 
 							getNames(dishIngredients);

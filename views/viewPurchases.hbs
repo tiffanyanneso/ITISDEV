@@ -16,7 +16,14 @@
         <!-- PARTIALS -->
         {{> logoutPartial }}
 
-        {{> inventoryPartial }}
+        {{#if inventory}}
+            {{> inventoryPartial }}
+        {{/if}}
+
+        {{#if manager}}
+            {{> managerPartial }}
+        {{/if}}
+        
 
         <div class="content">
             <div style="display: flex;">

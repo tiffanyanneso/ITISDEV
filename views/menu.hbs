@@ -16,7 +16,15 @@
         <!-- PARTIALS -->
         {{> logoutPartial }}
         
-        {{> cashierPartial }}
+
+        {{#if cashier}}
+            {{> cashierPartial }}
+        {{/if}}
+
+        {{#if manager}}
+            {{> managerPartial }}
+        {{/if}}
+      
 
         <div class="content">
             <h1 class="bold color-blue margin-bottom-0">Menu</h1> 

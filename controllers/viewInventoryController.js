@@ -105,8 +105,16 @@ const viewInventoryController = {
 			var units = await getUnits();
 			var statuses = await getStatuses();
 			var ingredientTypes = await getIngredientTypes();
-			
-			res.render('viewInventory', {ingredients, units, statuses, ingredientTypes});
+
+		 	if(req.session.position == "Inventory"  || req.session.position == "Purchasing"){
+               	var inventory = req.session.position;
+               res.render('viewInventory', {ingredients, units, statuses, ingredientTypes, inventory});
+            }
+
+            if(req.session.position == "Admin"){
+            	var manager = req.session.position;            
+				res.render('viewInventory', {ingredients, units, statuses, ingredientTypes, manager});
+            }
 		}
 
 		var projection = '_id ingredientName ingredientType quantityAvailable unitMeasurement reorderLevel'; 	
@@ -200,7 +208,17 @@ const viewInventoryController = {
 					};
 					units.push (unit);
 				}
-				res.render('viewIngredient', {ingredientDetails, stocks, units});
+
+                if(req.session.position == "Inventory" || req.session.position == "Purchasing"){
+                	var inventory = req.session.position;
+                	res.render('viewIngredient', {ingredientDetails, stocks, units, inventory});
+                }
+
+                if(req.session.position == "Admin"){
+                	var manager = req.session.position;
+                	res.render('viewIngredient', {ingredientDetails, stocks, units, manager});
+                }
+
 			});
 		}
 
