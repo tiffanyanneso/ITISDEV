@@ -577,11 +577,11 @@ const viewInventoryController = {
 				//get sales id of sales made today
 				//console.log("sales day: " + salesDay[i]);
 				var salesToday = await getSalesToday(salesDay[i]);
-				console.log("sales today length " +  salesToday.length)
+				//console.log("sales today length " +  salesToday.length)
 
 				for (var j=0; j<salesToday.length; j++) {
 					var dishSales = await getDishSales(salesToday[j]._id)
-					console.log(dishSales)
+					//console.log(dishSales)
 
 					for (var k=0; k<dishSales.length; k++) {
 						var dishIngredients = await getDishIngredients (dishSales[k].dishID)
@@ -609,8 +609,8 @@ const viewInventoryController = {
 	                                    //console.log(dishSales[j])
 	                                    ingredients[m].used += (parseFloat(dishIngredients[l].quantity) * parseFloat(dishSales[k].quantity))            
 	                                }
-	                                console.log(ingredients[m].used)
-	                                console.log("DISH IGNREDIETS " + dishIngredients[l].quantity +"  DISH SALES QUANITTY " + dishSales[k].quantity)
+	                                //console.log(ingredients[m].used)
+	                                //console.log("DISH IGNREDIETS " + dishIngredients[l].quantity +"  DISH SALES QUANITTY " + dishSales[k].quantity)
                                     
 								}
 
@@ -619,8 +619,8 @@ const viewInventoryController = {
 					}
 				}
 				for (var n=0; n<ingredients.length; n++) {
-					console.log(ingredients[n]._id, ingredients[n].reorderLevel)
-					console.log(ingredients[n].used, ingredients[n].reorderLevel)
+					//console.log(ingredients[n]._id, ingredients[n].reorderLevel)
+					//console.log(ingredients[n].used, ingredients[n].reorderLevel)
 					if (ingredients[n].used > ingredients[n].reorderLevel) {
 						updateReorderLevel(ingredients[n]._id, ingredients[n].used)
 					}
