@@ -466,8 +466,8 @@ const reportController = {
                         if (stockIngredientInfo.ingredientID == ingredients[l]._id) {
                             //console.log("stock unit: " + stockIngredientInfo.stockUnit + " ing unit: " + ingredients[l].unit);
                             if (stockIngredientInfo.stockUnit == ingredients[l].unit) {
-                                //console.log("add: " + ings[l].add + "stock qty: " + stockIngredientInfo.quantity + "count: " + purchasedStocks[j].count);
-                                ingredients[l].add += parseFloat(stockIngredientInfo.quantity) * parseFloat(purchasedStocks[j].count);
+                                //console.log("add: " + ings[l].add + "stock qty: " + stockIngredientInfo.quantity + "count: " + purchasedStocks[k].count);
+                                ingredients[l].add += parseFloat(stockIngredientInfo.quantity) * parseFloat(purchasedStocks[k].count);
                             } else {
                                 //console.log("needs conversion");
                                 

@@ -184,8 +184,8 @@
                 //gets stocks info
                 $('#btn-add-stock').click(function() {
                     var stockName = $('#add-stock-name').val();
-                    var count = $('#add-stock-count').val();
-                    var price = $('#add-stock-price').val();
+                    var count = parseInt($('#add-stock-count').val());
+                    var price = parseInt($('#add-stock-price').val());
 
 
                     $.get('/getStockInfo', {stockName:stockName}, function (result) {
@@ -260,7 +260,7 @@
                    var purchaseTotal = $('#add-stock-total').text();
                    $.post('/savePurchase', {stockString, purchaseTotal});
                    $("#table-add-stock-new-stock tbody tr").remove();
-                   $('#add-stock-total').text('');
+                   $('#add-stock-total').text('0');
                    $('#btn-add-stock-save').prop('disabled', true);
                 });
 
