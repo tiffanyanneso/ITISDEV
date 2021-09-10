@@ -21,6 +21,11 @@ const purchaseController = {
 
 	renderPurchase: function (req, res) {
 
+		if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' ){
+			res.redirect('/dashboard');
+		}
+		else{	
+
 		db.findMany (Units, {}, '_id unit', function (result) {
 			var units = [];
 			for (var i=0; i<result.length; i++) {
@@ -73,6 +78,7 @@ const purchaseController = {
 			}
 			getUnit (stocks);
 		});*/
+		}
 	},
 
 	getStockName: function (req, res) {
@@ -201,7 +207,7 @@ const purchaseController = {
 		var purchaseDetails = {
 			dateBought: datePurchased,
 			total: purchaseTotal,
-			employeeID: "610c0a3a76be1fa0308b0ef5"
+			employeeID: req.session._id
 		};
 
 		var purchaseID;
@@ -214,6 +220,12 @@ const purchaseController = {
 
 	// render existing purchases
     getViewPurchases: function (req, res) {
+
+    	if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' && req.session.position != 'Admin' ){
+			res.redirect('/dashboard');
+		}
+		else{	
+
         var projection = '_id dateBought total employeeID';
 		var purchases = [];
 		var today = new Date().toLocaleString('en-US');
@@ -267,9 +279,15 @@ const purchaseController = {
                
             });
         });
+    	}
     },
 
     viewSpecificPurchase: function (req, res) {
+
+    	if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' && req.session.position != 'Admin' ){
+			res.redirect('/dashboard');
+		}
+		else{	
 
     	function getStocksPurchased(purchaseID){
     		return new Promise ((resolve, reject) => {
@@ -351,6 +369,7 @@ const purchaseController = {
 				
     		});
     	});
+    	}
 	},
 	
 	getSearchPurchase: function(req, res) {

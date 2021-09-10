@@ -18,6 +18,12 @@ const Conversion = require('../models/ConversionModel.js');
 const MenuController = {
 
 	getMenu: function (req, res) {
+
+		if( req.session.position != 'Cashier' && req.session.position != 'Admin' ){
+			res.redirect('/dashboard');
+		}
+		else{	
+
 		var checkedStatuses = [];
 		var k;
 
@@ -319,9 +325,16 @@ const MenuController = {
 				});
 			});
 		});
+		}
 	},
 
 	getViewDish: function (req, res) {
+
+		if( req.session.position != 'Cashier' && req.session.position != 'Admin' ){
+			res.redirect('/dashboard');
+		}
+		else{	
+
 		var systemID = req.params.systemID;
 		var statuses = [];
 
@@ -416,7 +429,6 @@ const MenuController = {
 				                	var manager = req.session.position;
 									res.render('viewDish', {dish, statuses, dishIngredients, manager});
 				                }
-
 							}
 
 							getNames(dishIngredients);
@@ -425,9 +437,11 @@ const MenuController = {
 				});
 			});
 		});
+		}
 	},
 
 	updateDishStatus: function (req, res) {
+
 		db.updateOne(Dishes, {_id: req.body.dishID}, {dishStatus: req.body.dropdownValID}, function(flag) {
 			if (flag) {
 
@@ -436,6 +450,12 @@ const MenuController = {
 	},
 
 	editDish: function (req, res) {
+
+		if( req.session.position != 'Cashier' && req.session.position != 'Admin' ){
+			res.redirect('/dashboard');
+		}
+		else{	
+
 		var dishID = req.params.dishID;
 		var projection = '_id dishName dishPrice dishStatus dishClassification';
 	
@@ -534,7 +554,18 @@ const MenuController = {
 									}
 				
 									//console.log(dishIngredients);
-									res.render('editDish', {dish, classifications, dishIngredients, units});
+
+									if(req.session.position == "Cashier"){
+					                	var cashier = req.session.position;
+										res.render('editDish', {dish, classifications, dishIngredients, units, cashier});
+					                }
+
+					                if(req.session.position == "Admin"){
+					                	var manager = req.session.position;
+										res.render('editDish', {dish, classifications, dishIngredients, units, manager});
+					                }
+
+									
 								});
 							}
 
@@ -544,6 +575,7 @@ const MenuController = {
 				});
 			});
 		});
+		}
 	},
 
 	getAutoIngredientNameEdit: function (req, res) {

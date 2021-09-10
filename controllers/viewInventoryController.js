@@ -27,6 +27,11 @@ const viewInventoryController = {
 	//render existing inventory list
 	getInventory: function (req, res) {
 
+		if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' && req.session.position != 'Admin' ){
+			res.redirect('/dashboard');
+		}
+		else{	
+
 		function getUnitName(unitId) {
 			return new Promise ((resolve, reject) => {
 				db.findOne (Units, {_id:unitId}, 'unit', function(result){
@@ -136,6 +141,7 @@ const viewInventoryController = {
 			getUnit(ingredients);
 			
 		});
+		}
 	},
 
 	addIngredient: function(req, res) {
@@ -172,6 +178,11 @@ const viewInventoryController = {
 
 	//view individual ingredients and their stock
 	getIngredient: function(req, res) {
+
+		if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' && req.session.position != 'Admin' ){
+			res.redirect('/dashboard');
+		}
+		else{	
 
 		function getUnitName(unitId) {
 			return new Promise ((resolve, reject) => {
@@ -260,7 +271,7 @@ const viewInventoryController = {
 				getUnit(ingredientDetails, stocks);
 			});
 		});
-		
+		}
 	},
 
 	getCheckStockName: function (req, res) {

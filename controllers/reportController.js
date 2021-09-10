@@ -27,6 +27,11 @@ const Conversion = require('../models/ConversionModel.js');
 const reportController = {
 
     getSalesReport: function (req, res) {
+
+        if( req.session.position != 'Admin' ){
+            res.redirect('/dashboard');
+        }
+        else{   
         var today = new Date().toLocaleString('en-US');
         var dishes = [];
         var total = 0;
@@ -111,6 +116,7 @@ const reportController = {
                 
             });
         });
+    }
     },
 
     getFilteredRowsSalesReport: function(req, res) {
@@ -250,6 +256,11 @@ const reportController = {
 
     	//render existing inventory list
 	getInventoryReport: function (req, res) {
+
+        if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' && req.session.position != 'Admin' ){
+            res.redirect('/dashboard');
+        }
+        else{   
         var today = new Date().toLocaleString('en-US');
 
         function getIngredients() {
@@ -549,11 +560,20 @@ const reportController = {
             ingrdients = await usedColumn(ingredients);
             ingredients = await ingredientUnitNames(ingredients)
 
-            res.render('viewInventoryReport', {today, ingredients});
 
+            if(req.session.position == "Inventory"  || req.session.position == "Purchasing"){
+                var inventory = req.session.position;
+                res.render('viewInventoryReport', {today, ingredients, inventory});
+            }
+
+            if(req.session.position == "Admin"){
+                var manager = req.session.position;
+                 res.render('viewInventoryReport', {today, ingredients, inventory, manager});
+            }
         }
 
         getInventoryReport();
+        }
     },
 
     getFilteredInventoryReport: function (req, res) {
@@ -881,6 +901,11 @@ const reportController = {
     },
 
     getViewSpecificInventoryReport: function(req, res) {
+
+        if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' && req.session.position != 'Admin' ){
+            res.redirect('/dashboard');
+        }
+        else{   
         var ingredientID = req.params.ingredientID;
 
         function getPurchases () {
@@ -1032,11 +1057,23 @@ const reportController = {
             db.findOne (Ingredients, {_id:ingredientID}, 'ingredientName', function(result) {
                 var ingredientName = result.ingredientName;
                 console.log(ingredientName);
-                res.render('viewSpecificInventoryReport', {stocks, usedQuantities, ingredientName, ingredientID});
+
+                if(req.session.position == "Inventory" || req.session.position == "Purchasing"){
+                    var inventory = req.session.position;
+                    res.render('viewSpecificInventoryReport', {stocks, usedQuantities, ingredientName, ingredientID, inventory});
+                }
+
+                if(req.session.position == "Admin"){
+                    var manager = req.session.position;
+                    res.render('viewSpecificInventoryReport', {stocks, usedQuantities, ingredientName, ingredientID, manager});
+                }
+
+               
             });
         }
 
         getInfo();
+        }
 
     },
 

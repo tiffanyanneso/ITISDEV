@@ -9,6 +9,11 @@ const Conversion = require('../models/ConversionModel.js');
 const unitController = {
 	getUnitConverter: function (req, res) {
 
+		if( req.session.position != 'Admin' ){
+			res.redirect('/dashboard');
+		}
+		else{	
+
 		function getUnitName(unitId) {
 			return new Promise ((resolve, reject) => {
 				db.findOne (Units, {_id:unitId}, 'unit', function(result){
@@ -69,7 +74,8 @@ const unitController = {
 		db.findMany (Units, {}, '_id unit', function (result) {
 			getConversions(result);
 		})
-		
+	
+		}
 	},
 	
 

@@ -34,8 +34,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session( {
 	secret: 'secret',
 	resave: true,
-	saveUninitialized: true
+	saveUninitialized: true,
+	cookie: { maxAge: 20*60*1000 }
 } ));
+
 
 // set `hbs` as view engine
 app.set('view engine', 'hbs');

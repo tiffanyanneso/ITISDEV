@@ -22,6 +22,11 @@ const addNewDishController = {
 
     getAddNewDish: function (req, res) {
 
+        if( req.session.position != 'Admin' ){
+            res.redirect('/dashboard');
+        }
+        else{
+
         function getDishClassification() {
             return new Promise ((resolve, reject) => {
                 var classifications = []
@@ -100,6 +105,7 @@ const addNewDishController = {
 
         getInfo();
         
+        }
     },
 
     getCheckDishName: function(req, res) {

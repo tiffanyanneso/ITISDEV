@@ -23,6 +23,11 @@ const manualCountController = {
 
 	getUpdatePage: function (req,res) {
 
+		if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' ){
+			res.redirect('/dashboard');
+		}
+		else{	
+
 		function getUnitName(unitId) {
 			return new Promise ((resolve, reject) => {
 				db.findOne (Units, {_id:unitId}, 'unit', function(result){
@@ -57,6 +62,7 @@ const manualCountController = {
 		db.findMany (Stocks, {ingredientID:req.params.ingredientID}, projection, function (result) {
 			getUnit (result);
 		});
+		}
 	},
 
 	saveManualCount: function (req, res) {
@@ -144,7 +150,7 @@ const manualCountController = {
 					date: dateReported,
 					systemCount: systemCount.quantityAvailable,
 					manualCount: manualCount,
-					employeeID: '610c0a3a76be1fa0308b0ef5'
+					employeeID: req.session._id
 				};
 
 				db.insertOneResult (Shrinkages, shrinkage, function (result) {
@@ -162,6 +168,7 @@ const manualCountController = {
 		}
 
 		manualCount();
+
 	},
 
 	saveShrinkage: function (req, res) {
@@ -176,6 +183,12 @@ const manualCountController = {
 	},
 
 	getViewShrinkages: function (req,res) {
+
+		if( req.session.position != 'Inventory' && req.session.position != 'Purchasing'){
+			res.redirect('/dashboard');
+		}
+		else{
+
 		var today = new Date().toLocaleString('en-US');
 		var projection = '_id ingredientID date systemCount manualCount employeeID reason';
 		var shrinkages = [];
@@ -252,6 +265,7 @@ const manualCountController = {
 
 			getNames(shrinkages, today);
 		});	
+		}
 	},
 
 	getFilteredRowsViewShrinkages: function(req, res) {

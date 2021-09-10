@@ -21,6 +21,11 @@ const newOrderController = {
     //Render Template
     getNewOrder: function(req, res) { 
 
+        if( req.session.position != 'Cashier'){
+            res.redirect('/dashboard');
+        }
+        else{   
+
         function getDishes () {
             return new Promise ((resolve, reject) => {
                 db.findMany (Dishes, {$or: [{dishStatus:"611369ebaf90cc0e419b25e0"}, {dishStatus:"6119fac6f933ea6c2f6d014f"}]}, '_id dishStatus', function (result) {
@@ -173,9 +178,8 @@ const newOrderController = {
             res.render('newOrder');
         }
 
-            
-
         checkAvailability();
+        }
 
     },
 
@@ -485,7 +489,7 @@ const newOrderController = {
         var dateOrdered = new Date();
 
         var sale = {
-            employeeID: "610c0a7076be1fa0308b0ef8",
+            employeeID: req.session._id,
             date: dateOrdered, 
             total: orderTotal,
             VAT: vat,

@@ -16,9 +16,14 @@
         <!-- PARTIALS -->
         {{> logoutPartial }}
 
-        {{> inventoryPartial }}
+        {{#if inventory}}
+            {{> inventoryPartial }}
+        {{/if}}
 
-
+        {{#if manager}}
+            {{> managerPartial }}
+        {{/if}}
+        
         <div class="content">
             <div style="display: flex;">
                 <div style="width: 50%"><h1 class="bold color-blue">Inventory Report</h1></div>

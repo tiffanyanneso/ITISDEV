@@ -15,7 +15,14 @@
     <!-- PARTIALS -->
     {{> logoutPartial }}
     
-    {{> innerInventoryPartial }}
+     {{#if inventory}}
+        {{> innerInventoryPartial }}
+    {{/if}}
+
+    {{#if manager}}
+        {{> innerManagerPartial }}
+    {{/if}}
+        
 
     <div class="content">
 

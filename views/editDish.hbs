@@ -19,12 +19,13 @@
         <!-- PARTIALS -->
       {{> logoutPartial }}
 
-        <div class="sidebar">
-            <a href="#">Home</a>
-            <a href="#">1</a>
-            <a href="#">2</a>
-        </div>
+        {{#if cashier}}
+            {{> innerCashierPartial }}
+        {{/if}}
 
+        {{#if manager}}
+            {{> innerManagerPartial }}
+        {{/if}}
         <div class="content">
             <div>
                 <div style="display: flex;">

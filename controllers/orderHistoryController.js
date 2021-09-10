@@ -15,6 +15,12 @@ const Dishes = require('../models/DishesModel.js');
 const orderHistoryController = {
 
     getOrderHistory: function (req, res) {
+
+        if( req.session.position != 'Admin' ){
+            res.redirect('/dashboard');
+        }
+        else{   
+
        /* var salesOrder = {
             salesID: "2",
         
@@ -70,6 +76,7 @@ const orderHistoryController = {
                 res.render('viewOrderHistory', {orders, total, today});
             });
         });
+        }
     },
 
     getFilteredRowsOrderHistory: function(req, res) {
@@ -117,6 +124,12 @@ const orderHistoryController = {
 	},
 
     getViewSpecificOrder: function (req, res) {
+
+        if( req.session.position != 'Admin' ){
+            res.redirect('/dashboard');
+        }
+        else{   
+
         var systemID = req.params.systemID;
         var projection = '_id date employeeID VAT discount total';
 
@@ -185,7 +198,7 @@ const orderHistoryController = {
             });
         });
     }
-	
+	}
 };
 
 module.exports = orderHistoryController;
