@@ -45,14 +45,14 @@
          <div style="input-container">
 
             <select class="dropdown" id="unitA" style="margin-right: 5px"> 
-            <option value="no-selected">Select Unit A</option>
+            <option value="">Select Unit A</option>
             {{#each unitNames}}
                 <option value="{{id}}">{{unitName}}</option>
             {{/each}}
             </select>
 
             <select class="dropdown" id="unitB" style="margin-right: 10px">
-            <option value="no-selected">Select Unit B</option>
+            <option value="">Select Unit B</option>
             {{#each unitNames}}
                 <option value="{{id}}">{{unitName}}</option>
             {{/each}}
@@ -94,102 +94,122 @@
 
             $(document).ready(function() {
 
-/*
+                if($('#uniA').val() == '' || $('#unitB').val() == ''){
+                    $("#save-conversion").prop("disabled", true);
+                    $("#save-conversion").css("background-color", "#b3b3b3");
 
-                function checkSameUnit () {
-                    var unitA = $('#unitA').val();
-                    var unitB = $('#unitB').val();
-                    if (unitA == unitB)
-                        return true;
-                    else
-                        return false;
                 }
 
-                function isPositive() {
-                    var ratio = $('#ratio').val();
-                    if (ratio > 0)
-                        return 1;
-                    else
-                        return 0;
-                }
+                $('#unitA').on('change', function(){
 
-                $('#unitA').keyup(function() {
-                    //unit is same
-                    if (checkSameUnit()) {
+                    var unitA = $("#unitA").val();
+
+                    $('#unitB').on('change', function(){
+
+                        var unitB = $("#unitB").val();
+
+                        if (unitA == unitB) {
+
                         $("#unitA").css("border", "1px solid #B00000");
-                        $('#error-unit').text('Cannot convert between same unit');
-                        $("#save-conversion").prop("disabled", true);
-                        $("#save-conversion").css("background-color", "#b3b3b3");
-                    }   
-                    else {
-                        $("#unitA").css("border", "1px solid #DDDDDD");
-                        $("#error-unit").text("");
-                        $("#save-conversion").prop("disabled", false);
-                        $("#save-conversion").css("background-color", "#0F84D9");
-                    }
-                })
-
-                $('#unitB').keyup(function() {
-                    //unit is same
-                    if (checkSameUnit()) {
                         $("#unitB").css("border", "1px solid #B00000");
-                        $('#error-unit').text('Cannot convert between same unit');
-                        $("#save-conversion").prop("disabled", true);
-                        $("#save-conversion").css("background-color", "#b3b3b3");
-                    }
-                    else {
-                        $("#unitB").css("border", "1px solid #DDDDDD");
-                        $("#error-unit").text("");
-                        $("#save-conversion").prop("disabled", false);
-                        $("#save-conversion").css("background-color", "#0F84D9");
-                    }       
-                })
-
-                $('#ratio').keyup(function() {
-                    //is not positive
-                    var check = isPositive();
-                    if (check == 0) {
-                        $("#ratio").css("border", "1px solid #B00000");
-                        $('#error-ratio').text('Ratio cannot be less than 1');
-                        $("#save-conversion").prop("disabled", true);
-                        $("#save-conversion").css("background-color", "#b3b3b3");
-                    }
-                    else {
-                        $("#ratio").css("border", "1px solid #DDDDDD");
-                        $("#error-ratio").text("");
-                        $("#save-conversion").prop("disabled", false);
-                        $("#save-conversion").css("background-color", "#0F84D9");
-                    }       
-                })
-
-*/
-/*
-                $('#unitA').click(function() {
-
-                    var unitA = $('#unitA').val();
-
-                    $('#unitB').click(function() {
-                    var unitB = $('#unitB').val();
-                    });
-
-                    if(unit A == unit B){
-                        $("#unitA").css("border", "1px solid #B00000");
-                        $('#error-conversion').text("Units are same");
+                        $('#error-conversion').text("Invalid selection");
                         $("#error-conversion").css("margin-left", "0px");
+                        $("#error-conversion").css("color", "#B00000");
                         $("#save-conversion").prop("disabled", true);
                         $("#save-conversion").css("background-color", "#b3b3b3");
-                    }
 
+                        }
+
+                        else if($('#unitA').val() == '' || $('#unitB').val() == ''){
+                        $("#unitA").css("border", "1px solid #DDDDDD");
+                        $("#unitB").css("border", "1px solid #DDDDDD");
+                        $('#error-conversion').text("No unit has been selected");
+                        $("#error-conversion").css("margin-left", "0px");
+                        $("#error-conversion").css("color", "#B00000");
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
+
+                        }
+
+                        
+                        else if($('#ratio').val() == ''){
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
+
+                        }
+
+                        else{
+                        $("#unitA").css("border", "1px solid #DDDDDD");
+                        $("#unitB").css("border", "1px solid #DDDDDD");
+                        $("#error-conversion").text("");
+                        $("#error-conversion").css("margin-left", "0px");
+                        $("#save-conversion").prop("disabled", false);
+                        $("#save-conversion").css("background-color", "#0F84D9");
+                        }  
+                    });
                 });
-*/
+
+                $('#unitB').on('change', function(){
+
+                    var unitA = $("#unitB").val();
+
+                    $('#unitA').on('change', function(){
+
+                        var unitB = $("#unitA").val();
+
+                        if (unitA == unitB) {
+
+                        $("#unitA").css("border", "1px solid #B00000");
+                        $("#unitB").css("border", "1px solid #B00000");
+                        $('#error-conversion').text("Invalid selection");
+                        $("#error-conversion").css("margin-left", "0px");
+                        $("#error-conversion").css("color", "#B00000");
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
+
+                        }
+
+                        else if($('#unitA').val() == '' || $('#unitB').val() == ''){
+                        $("#unitA").css("border", "1px solid #DDDDDD");
+                        $("#unitB").css("border", "1px solid #DDDDDD");
+                        $('#error-conversion').text("No unit has been selected");
+                        $("#error-conversion").css("margin-left", "0px");
+                        $("#error-conversion").css("color", "#B00000");
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
+
+                        }
+
+                        
+                        else if($('#ratio').val() == ''){
+                        $("#save-conversion").prop("disabled", true);
+                        $("#save-conversion").css("background-color", "#b3b3b3");
+
+                        }
+
+                        else{
+                        $("#unitA").css("border", "1px solid #DDDDDD");
+                        $("#unitB").css("border", "1px solid #DDDDDD");
+                        $("#error-conversion").text("");
+                        $("#error-conversion").css("margin-left", "0px");
+                        $("#save-conversion").prop("disabled", false);
+                        $("#save-conversion").css("background-color", "#0F84D9");
+                        }  
+
+                    });
+                });
+            
+
+            
                 $('#ratio').keyup(function() {
                 
                     var ratio = $('#ratio').val();
 
                     if (ratio < 0) {
                         $("#ratio").css("border", "1px solid #B00000");
-                        $('#error-conversion').text("Ratio cannot be negative");
+                        $('#error-conversion').text("Ratio invalid");
                         $("#error-conversion").css("margin-left", "0px");
+                        $("#error-conversion").css("color", "#B00000");
                         $("#save-conversion").prop("disabled", true);
                         $("#save-conversion").css("background-color", "#b3b3b3");
                     }
@@ -265,19 +285,27 @@
 
 
                 $('#save-conversion').click(function(){
+                    
                     var unitA = $('#unitA').val();
                     var unitB = $('#unitB').val();
                     var ratio = $('#ratio').val();
                     var operator = $('#operator').val();
+
+                   
                     
                     $.post('/saveUnitConvert', {unitA, unitB, ratio});
-
-                    $('#unitA').val('');
-                    $('#unitB').val('');
+                    
+                    
+                    $('#unitA').val('Select Unit A');
+                    $('#unitB').val('Select Unit B');
                     $('#ratio').val('');
                     $('#operator').val('');
-                })
-            })
+
+                });
+                
+            });
+
+
         </script>
     </body>
 
