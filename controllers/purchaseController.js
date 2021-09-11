@@ -122,7 +122,7 @@ const purchaseController = {
 
 		function insertPurchasedStocks(stocks) {
 			return new Promise ((resolve, reject) => {
-				db.insertOneResult(PurchasedStock, stocks, function (result) {
+				db.insertManyResult(PurchasedStock, stocks, function (result) {
 					resolve (result);
 				})
 			})
