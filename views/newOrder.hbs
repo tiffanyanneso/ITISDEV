@@ -177,7 +177,7 @@
                                         <td class="quantity">${quantity}</td>
                                         <td class-"unitPrice">${unitPrice}</td>
                                         <td class="total">${total}</td>
-                                        <td><button class="delete-button add-stock-delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button></td>
+                                        <td><button class="delete-button new-order-delete-button"><img src="../images/delete-icon.png" height="20px" width="15x" alt="Delete"></button></td>
                                     </tr>`);
 
                                     $('#dish-name').val(''); 
@@ -194,7 +194,7 @@
                                     //there is discount
                                     if (discountPercent!="") {
                                         var discountPercentInt = parseInt($('#new-order-discount').val());
-                                        discountAmount = subTotal - (subTotal*(discountPercent/100));
+                                        discountAmount = subTotal - (subTotal*(discountPercentInt/100));
                                     }
 
 
@@ -215,47 +215,69 @@
                         $('#error-dish').text("Not enough ingredients to make dish")
                 });
             })
+
+                $("#table-view-dish").on('click','.new-order-delete-button',function() {
+                    var overallTotal = parseInt($('#new-order-total-due').text().slice(1));
+
+                    var removeRowAmount = parseInt($(this).closest('tr').find('.total').text());
+                    var discountAmount = 0;
+                    overallTotal-=removeRowAmount
+                    var subTotal = (overallTotal/1.12);
+                    //there is discount
+                    if ($('#new-order-discount').val()!="") {
+                        var discountPercentInt = parseInt($('#new-order-discount').val());
+                        discountAmount = subTotal - (subTotal*(discountPercentInt/100));
+                    }
+
+
+                    var vat = overallTotal - subTotal - discountAmount;
+                    overallTotal -= discountAmount;
+                
+                    $('#new-order-subtotal').text("₱ " + subTotal.toFixed(2));
+                    $('#new-order-VAT').text("₱ " + vat.toFixed(2));
+                    $('#new-order-less-discount').text("₱ " + discountAmount.toFixed(2));
+                    $('#new-order-total-due').text("₱ " + overallTotal.toFixed(2));
+                    $(this).closest('tr').remove();
+                });
                     
 
                 $('#new-order-discount').keyup(function() {
+
                     var overallTotal =0
                     $("#table-view-dish-body > tr").each(function () {
                         overallTotal += parseInt ($(this).children('.total').text())
                     })
+                    var subTotal = overallTotal/1.12
+                    var vat = overallTotal - subTotal
 
-                    if ($('#new-order-less-discount').text() != "")
-                        overallTotal -= parseInt($('#new-order-less-discount').text().slice(1))
+                    //there is inputted discount
+                    if ($('#new-order-discount').val()!="") {
 
-                    var subTotal = (overallTotal/1.12);
+                        var discountPercent = $('#new-order-discount').val();
+                        var discountAmount = 0;
 
-                    var vat = overallTotal - subTotal;
-
-                    var discountPercent = $('#new-order-discount').val();
-                    var discountAmount = 0;
-
-                    //discount is not empty
-                    if (discountPercent != "") {
                         var discountPercentInt = parseInt(discountPercent);
                         discountAmount = subTotal*(discountPercentInt/100);
 
-                        var net = subTotal - discountAmount
-                        overallTotal -= discountAmount;
-                        vat = overallTotal - net;
+                        var net = subTotal - discountAmount;
+                        overallTotal -=discountAmount;
+                        subTotal = overallTotal /1.12
 
-                        
+                        var vat = overallTotal - subTotal;
 
                         $('#new-order-subtotal').text("₱ " + subTotal.toFixed(2));
                         $('#new-order-VAT').text("₱ " + vat.toFixed(2));
                         $('#new-order-less-discount').text("₱ " + discountAmount.toFixed(2));
                         $('#new-order-total-due').text("₱ " + overallTotal.toFixed(2));
                     }
+
                     else
                     {
                         $('#new-order-subtotal').text("₱ " + subTotal.toFixed(2));
                         $('#new-order-VAT').text("₱ " + vat.toFixed(2));
                         $('#new-order-less-discount').text("₱ 0");
                         $('#new-order-total-due').text("₱ " + overallTotal.toFixed(2));
-                    }
+                    } 
                 })
 
 
