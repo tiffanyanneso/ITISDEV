@@ -93,134 +93,49 @@
         <script>
 
             $(document).ready(function() {
+                
 
-                if($('#uniA').val() == '' || $('#unitB').val() == ''){
-                    $("#save-conversion").prop("disabled", true);
-                    $("#save-conversion").css("background-color", "#b3b3b3");
+                function noSelected(){
 
+                    var unitA = $('#unitA').val();
+                    var unitB = $('#unitB').val();
+
+                    if($('#unitA').val() == '' || $('#unitB').val() == ''){
+                        return true;
+
+                    }
+
+                    else{
+                        return false;
+                    }
                 }
 
-                $('#unitA').on('change', function(){
+                function sameUnit() {
 
-                    var unitA = $("#unitA").val();
+                    var unitA = $('#unitA').val();
+                    var unitB = $('#unitB').val();
 
-                    $('#unitB').on('change', function(){
+                    if(unitA == unitB){
+                        return true;
+                    }
 
-                        var unitB = $("#unitB").val();
+                    else if(unitA != unitB){
+                        return false;
+                    }
+                }
 
-                        if (unitA == unitB) {
+                function ratioValidation(){
 
-                        $("#unitA").css("border", "1px solid #B00000");
-                        $("#unitB").css("border", "1px solid #B00000");
-                        $('#error-conversion').text("Invalid selection");
-                        $("#error-conversion").css("margin-left", "0px");
-                        $("#error-conversion").css("color", "#B00000");
-                        $("#save-conversion").prop("disabled", true);
-                        $("#save-conversion").css("background-color", "#b3b3b3");
-
-                        }
-
-                        else if($('#unitA').val() == '' || $('#unitB').val() == ''){
-                        $("#unitA").css("border", "1px solid #DDDDDD");
-                        $("#unitB").css("border", "1px solid #DDDDDD");
-                        $('#error-conversion').text("No unit has been selected");
-                        $("#error-conversion").css("margin-left", "0px");
-                        $("#error-conversion").css("color", "#B00000");
-                        $("#save-conversion").prop("disabled", true);
-                        $("#save-conversion").css("background-color", "#b3b3b3");
-
-                        }
-
-                        
-                        else if($('#ratio').val() == ''){
-                        $("#save-conversion").prop("disabled", true);
-                        $("#save-conversion").css("background-color", "#b3b3b3");
-
-                        }
-
-                        else{
-                        $("#unitA").css("border", "1px solid #DDDDDD");
-                        $("#unitB").css("border", "1px solid #DDDDDD");
-                        $("#error-conversion").text("");
-                        $("#error-conversion").css("margin-left", "0px");
-                        $("#save-conversion").prop("disabled", false);
-                        $("#save-conversion").css("background-color", "#0F84D9");
-                        }  
-                    });
-                });
-
-                $('#unitB').on('change', function(){
-
-                    var unitA = $("#unitB").val();
-
-                    $('#unitA').on('change', function(){
-
-                        var unitB = $("#unitA").val();
-
-                        if (unitA == unitB) {
-
-                        $("#unitA").css("border", "1px solid #B00000");
-                        $("#unitB").css("border", "1px solid #B00000");
-                        $('#error-conversion').text("Invalid selection");
-                        $("#error-conversion").css("margin-left", "0px");
-                        $("#error-conversion").css("color", "#B00000");
-                        $("#save-conversion").prop("disabled", true);
-                        $("#save-conversion").css("background-color", "#b3b3b3");
-
-                        }
-
-                        else if($('#unitA').val() == '' || $('#unitB').val() == ''){
-                        $("#unitA").css("border", "1px solid #DDDDDD");
-                        $("#unitB").css("border", "1px solid #DDDDDD");
-                        $('#error-conversion').text("No unit has been selected");
-                        $("#error-conversion").css("margin-left", "0px");
-                        $("#error-conversion").css("color", "#B00000");
-                        $("#save-conversion").prop("disabled", true);
-                        $("#save-conversion").css("background-color", "#b3b3b3");
-
-                        }
-
-                        
-                        else if($('#ratio').val() == ''){
-                        $("#save-conversion").prop("disabled", true);
-                        $("#save-conversion").css("background-color", "#b3b3b3");
-
-                        }
-
-                        else{
-                        $("#unitA").css("border", "1px solid #DDDDDD");
-                        $("#unitB").css("border", "1px solid #DDDDDD");
-                        $("#error-conversion").text("");
-                        $("#error-conversion").css("margin-left", "0px");
-                        $("#save-conversion").prop("disabled", false);
-                        $("#save-conversion").css("background-color", "#0F84D9");
-                        }  
-
-                    });
-                });
-            
-
-            
-                $('#ratio').keyup(function() {
-                
                     var ratio = $('#ratio').val();
+                    if(ratio < 0 || ratio == ''){
+                        return true;
+                    }
 
-                    if (ratio < 0) {
-                        $("#ratio").css("border", "1px solid #B00000");
-                        $('#error-conversion').text("Ratio invalid");
-                        $("#error-conversion").css("margin-left", "0px");
-                        $("#error-conversion").css("color", "#B00000");
-                        $("#save-conversion").prop("disabled", true);
-                        $("#save-conversion").css("background-color", "#b3b3b3");
-                    }
                     else{
-                    $("#ratio").css("border", "1px solid #DDDDDD");
-                    $("#error-conversion").text("");
-                    $("#error-conversion").css("margin-left", "0px");
-                    $("#save-conversion").prop("disabled", false);
-                    $("#save-conversion").css("background-color", "#0F84D9");
+                        return false;
                     }
-                });
+                }
+
 
                 $('#enter-unit').keyup(function() {
                 
@@ -231,6 +146,7 @@
                         if (result.unit == unit) {
                             $("#enter-unit").css("border", "1px solid #B00000");
                             $('#error-unit').text("Unit already exists");
+                            $("#error-unit").css("color", "#B00000");
                             $("#error-unit").css("margin-left", "0px");
                             $("#save-unit").prop("disabled", true);
                             $("#save-unit").css("background-color", "#b3b3b3");
@@ -240,70 +156,71 @@
 
                     $("#enter-unit").css("border", "1px solid #DDDDDD");
                     $("#error-unit").text("");
-                    $("#error-unit").css("margin-left", "0px");
                     $("#save-unit").prop("disabled", false);
                     $("#save-unit").css("background-color", "#0F84D9");
+
 
                 });
 
 
+
                 $('#save-unit').click(function() {
-                    
+    
                     var unit = $('#enter-unit').val();
                         unit = $.trim(unit);
 
                     $.get('/getCheckUnitName', {unit: unit}, function (result) {
 
                         if (result.unit == unit) {
-                            $("#enter-unit").css("border", "1px solid #B00000");
-                            $('#error-unit').text("Unit already exists");
+                            $('#error-unit').text("Unit already exists").delay(2300).fadeOut();
                             $("#error-unit").css("margin-left", "0px");
                             $("#error-unit").css("color", "#B00000");
-                            $("#save-unit").prop("disabled", true);
-                            $("#save-unit").css("background-color", "#b3b3b3");
                         }
 
                         else if(unit != '' && result.unit != unit){
-                        $.post('/saveUnit', {unit});
-
+                            $.post('/saveUnit', {unit});
                             $("#error-unit").text("Unit has been saved");
                             $("#error-unit").css("margin-left", "0px");
-                            $("#error-unit").css("color", "green");
+                            $("#error-unit").css("color", "#008000");
+                            location.reload(true);
+                            
                         }
 
                         else if(unit == ''){
-
-                        $("#enter-unit").css("border", "1px solid #B00000");
-                        $('#error-unit').text("Invalid entry");
-                        $("#error-unit").css("margin-left", "0px");
-                        $("#error-unit").css("color", "#B00000");
-                    }
+                            $('#error-unit').text("Invalid entry").delay(2300).fadeOut();
+                            $("#error-unit").css("margin-left", "0px");
+                            $("#error-unit").css("color", "#B00000");
+                        }
                            
-                    });   
+                    }); 
+                    location.reload(true); 
 
                 });
-
 
                 $('#save-conversion').click(function(){
-                    
-                    var unitA = $('#unitA').val();
-                    var unitB = $('#unitB').val();
-                    var ratio = $('#ratio').val();
-                    var operator = $('#operator').val();
 
-                   
-                    
-                    $.post('/saveUnitConvert', {unitA, unitB, ratio});
-                    
-                    
-                    $('#unitA').val('Select Unit A');
-                    $('#unitB').val('Select Unit B');
-                    $('#ratio').val('');
-                    $('#operator').val('');
+                    if(!noSelected() && !sameUnit() && !ratioValidation()){
 
+                        $('#error-conversion').text("Unit Conversion has been saved");
+                        $("#error-conversion").css("margin-left", "0px");
+                        $("#error-conversion").css("color", "#008000");
+
+                        var unitA = $('#unitA').val();
+                        var unitB = $('#unitB').val();
+                        var ratio = $('#ratio').val();
+
+                        $.post('/saveUnitConvert', {unitA, unitB, ratio});
+                        location.reload(true);
+
+                    }
+                    else{
+                        $('#error-conversion').text("Invalid input for unit or ratio").delay(2300).fadeOut();;
+                        $("#error-conversion").css("margin-left", "0px");
+                        $("#error-conversion").css("color", "#B00000");
+
+                    }
+                    });
                 });
-                
-            });
 
 
         </script>
