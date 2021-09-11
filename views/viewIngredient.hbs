@@ -66,20 +66,20 @@
                 <div style="display: flex; width: 50%; float: left; margin-top: 30px;">
                     <h3 class ="bold" style="width: 80%; margin-top: 0px;">Stock</h3>
                 </div>
-                <div style="margin-top: 30px; display: flex; float: left; width: 50%; justify-content: flex-end"><button class="btn-light-blue" id="btn-view-ingredient-new-stock" data-toggle="modal" data-target="#modal-add-stock">+ New Stock</button></div>
+                <div style="margin-top: 30px; display: flex; float: left; width: 50%; justify-content: flex-end"><button class="btn-light-blue" id="btn-view-ingredient-new-stock"  data-toggle="modal" data-target="#modal-add-stock">+ New Stock</button></div>
             </div>
 
             <!-- Modal -->
             <div class="modal fade" id="modal-add-stock" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h3 class="modal-title" id="modalTitle">Add Stock</h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="modalTitle">Add Stock</h3>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>  
+                <div class="modal-body">
                     <form id="add-new-stock">
                         <label for="stock-name">Name</label> <input id="stock-name" type="text"><br>
                         <p class="error" id="error-new-stock-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
@@ -96,34 +96,13 @@
                             </select><br>
                             <button style="margin-left:3px; display: none;" id="btn-add-conversion" class="btn-dark-blue">Add Conversion</button>
                         </div>
-                        <br>
-                        <div id="div-conversion-input" style="display: none;">
-
-                                <select class="dropdown" id="unitA" style="margin-right: 5px"> 
-                                <option value="no-selected">Select Unit A</option>
-                                {{#each unitNames}}
-                                    <option value="{{id}}">{{unitName}}</option>
-                                {{/each}}
-                                </select>
-
-                                <select class="dropdown" id="unitB" style="margin-right: 10px">
-                                <option value="no-selected">Select Unit B</option>
-                                {{#each unitNames}}
-                                    <option value="{{id}}">{{unitName}}</option>
-                                {{/each}}
-                                </select>
-
-                                <input type="number" name="ratio" id="ratio" placeholder="Ratio" style="margin-right: 10px">
-                                
-                                <input class="btn-add" type="button" id="save-conversion" name="save-conversion" value="+">
-                            
-                            </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="btn-add-new-stock" disabled="=true">Add Stock</button>
-                      </div>
-                  </form>
+                    </form>
+                    <button id="add-conversion" data-href="/unitConverter">Add Conversion</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btn-add-new-stock" disabled="=true">Add Stock</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -209,23 +188,9 @@
                     }
                 });
 
-                $('#dropdown-stock-unit').change(function() {
-                    var stockUnit = $('#dropdown-stock-unit').val()
-                    var ingredientUnit = $('#unitID').text();
-                    $.get('/checkConversion', {stockUnit, ingredientUnit}, function (result) {
-                        //conversion found
-                        if(result)
-                            $('#btn-add-conversion').css('display', 'none');
-                        else
-                            $('#btn-add-conversion').css('display', 'block');
-
-                    })
+                $('#add-conversion').click(function() {
+                    window.location = $(this).data("href")
                 })
-
-                $('#btn-add-conversion').click(function() {
-                    $('#div-conversion-input').css('display', 'block')
-                })
-
 
                 $('#btn-add-new-stock').click(function() {
                     var stockName = capitalize($('#stock-name').val());

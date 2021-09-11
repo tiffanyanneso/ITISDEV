@@ -280,18 +280,6 @@ const viewInventoryController = {
         });
 	},
 
-	checkConversion: function (req, res) { 
-		var ingredientUnit = req.query.ingredientUnit;
-		var stockUnit = req.query.stockUnit;
-
-		db.findOne (Conversion, {$or:[{$and:[ {unitA:ingredientUnit}, {unitB:stockUnit} ]}, {$and:[ {unitA:stockUnit}, {unitB:ingredientUnit} ]}]}, '_id', function(result) {
-			if (result!=null)
-				res.send(true);
-			else
-				res.send(false)
-		})
-	},
-
 	addStock: function(req, res) {
 		db.findOne(Ingredients, {ingredientName:req.body.ingredientName}, '_id', function(result) {
 			var stock = {
