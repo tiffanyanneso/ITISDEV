@@ -34,7 +34,7 @@
 
             <div class="input-container">    
                 <div class="input-label"><label for="new-dish-price">Price</label></div>
-                <div class="input-info-container"><input type="number" name="new-dish-price" id="new-dish-price" style="width: 100%"></div>
+                <div class="input-info-container"><input type="number" min="0" name="new-dish-price" id="new-dish-price" style="width: 100%"></div>
             </div>
 
             <p class="error" id="error-new-dish-price" style="margin-left: 20%;"></p>
@@ -391,6 +391,16 @@
                         });
 					}
                 });
+
+                var number = document.getElementById('new-dish-price');
+
+                number.onkeydown = function(e) {
+                    if(!((e.keyCode > 95 && e.keyCode < 106)
+                    || (e.keyCode > 47 && e.keyCode < 58) 
+                    || e.keyCode == 8)) {
+                        return false;
+                    }
+                }
         });
         </script>
 
