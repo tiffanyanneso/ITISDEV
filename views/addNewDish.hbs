@@ -92,7 +92,6 @@
                                 <option value="{{id}}">{{unitName}}</option>
                             {{/each}}
                         </select><br>
-                        <label> Reorder Point </label> <input type="text"><br>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" id ="btn-close-add-new-ingredient-2">Close</button>
@@ -112,8 +111,9 @@
                     {{/each}}
                 </select>
                 <input class="btn-add" type="button" id="btn-add-new-dish-ingredient" name="btn-add-new-dish-ingredient" value="+">
-                <div class="div-btn-left" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-ingredient-popup">Add New Ingredient</button>
-            </div>
+                <div class="div-btn-left" style="margin-top: 20px;">
+                    <button class="btn-light-blue" id="btn-add-new-ingredient-popup" data-toggle="modal" data-target="#modal-add-ingredient">Add New Ingredient</button>
+                </div>
             <p class="error" id="error-ingredients"></p>
 
             <div class="div-table" style="margin-top: 10px;">
@@ -154,18 +154,36 @@
                                 response(data);
                             }
                         });
-                    }, response: function (event, ui) {
-                        if (ui.content.length === 0) 
-                            $("#btn-add-new-ingredient-popup").show();
+                    }, 
+                    
+                    response: function (event, ui) {
+                        
+                        if (ui.content.length === 0) {
+                                //$("#btn-add-new-ingredient-popup").show();
+                                $('#modal-add-ingredient').modal('show');
+                
+                            
+                            /*
                             $("#btn-add-new-ingredient-popup").click(function() {
-                                 $('#modal-add-ingredient').modal('show');
-                                 });
+                                
+                            });
+                            */
                             $("#btn-close-add-new-ingredient , #btn-close-add-new-ingredient-2").click(function() {
                                   $("#btn-add-new-ingredient-popup").hide();
-                                  });
-                        
-                    }
+                            });
+                            
+                            }
+                            
+
+                        }
+                    
                 });
+
+
+
+
+
+
 
                 // INPUT VALIDATION- DISH
                 function dishNameValidation(dishName) {
@@ -273,8 +291,20 @@
                     $("#dropdown-add-new-dish-ingredients-unit")[0].selectedIndex = 0; 
                 }
 
+/* CHANGES GO HERE
+                var ingredientName = capitalize($('#new-dish-ingredients-name').val());
+                    ingredientName = $.trim(ingredientName);
+                var ingredientQty = $('#new-dish-ingredients-quantity').val();
+                var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit option:selected').text();
+                var ingredientUnitID = $('#dropdown-add-new-dish-ingredients-unit option:selected').val();
+
+*/
+
+                
+
                 $('#btn-add-new-dish-ingredient').click(function() {
                     var ingredientName = capitalize($('#new-dish-ingredients-name').val());
+                        ingredientName = $.trim(ingredientName);
                     var ingredientQty = $('#new-dish-ingredients-quantity').val();
                     var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit option:selected').text();
                     var ingredientUnitID = $('#dropdown-add-new-dish-ingredients-unit option:selected').val();

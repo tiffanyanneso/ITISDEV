@@ -378,6 +378,7 @@
                     var origDishName = $("#view-dish-orig-name").text();
                     var dishID = $("#view-dish-dishID").text();
                     var dishName = capitalize($('#edit-dish-name').val());
+                        dishName = $.trim(dishName);
                     var dishPrice = $('#edit-dish-price').val();
                     var dishClassificationID = $('#dropdown-edit-dish-classification').val();
                     var dishStatusID = $("#view-dish-statusID").text();
