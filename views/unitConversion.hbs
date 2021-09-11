@@ -14,7 +14,16 @@
     <body>
 
         {{> logoutPartial }}
-        {{> managerPartial }}
+
+
+        {{#if inventory}}
+            {{> inventoryPartial }}
+        {{/if}}
+
+        {{#if manager}}
+            {{> managerPartial }}
+        {{/if}}
+
         
          <div class="content">
          

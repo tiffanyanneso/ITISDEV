@@ -9,7 +9,7 @@ const Conversion = require('../models/ConversionModel.js');
 const unitController = {
 	getUnitConverter: function (req, res) {
 
-		if( req.session.position != 'Admin' ){
+		if( req.session.position != 'Admin' && req.session.position != "Inventory" && req.session.position != "Purchasing" ){
 			res.redirect('/dashboard');
 		}
 		else{	
@@ -68,7 +68,15 @@ const unitController = {
 				unitNames.push (unit);
 			}
 
-			res.render('unitConversion', {conversions, unitNames});
+			if(req.session.position == "Inventory"  || req.session.position == "Purchasing"){
+                var inventory = req.session.position;
+                res.render('unitConversion', {conversions, unitNames, inventory});
+            }
+
+            if(req.session.position == "Admin"){
+               	var manager = req.session.position;
+              	res.render('unitConversion', {conversions, unitNames, manager});
+            }
 		}
 
 		db.findMany (Units, {}, '_id unit', function (result) {
