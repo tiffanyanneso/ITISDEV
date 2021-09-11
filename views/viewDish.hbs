@@ -49,7 +49,9 @@
                 </div>
             </div>
 
-            <div class="div-btn-right" id="div-change-status" style="margin-top: 90px;"><button class="btn-light-blue" id="btn-view-dish-change-status" style="margin-bottom: 10px;" data-toggle="modal" data-target="#modal-change-status">Change Status</button></div>
+            {{#if manager}}
+                <div class="div-btn-right" id="div-change-status" style="margin-top: 90px;"><button class="btn-light-blue" id="btn-view-dish-change-status" style="margin-bottom: 10px;" data-toggle="modal" data-target="#modal-change-status">Change Status</button></div>
+            {{/if}}
 
             <!-- Change Status Modal -->
             <div class="modal fade" id="modal-change-status" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle" aria-hidden="true">
@@ -134,9 +136,11 @@
                     </tbody>
                 </table>
             </div>
-            <form action="/editDish/{{dish.systemID}}">
-                 <div class="div-btn-right" id="div-view-dish-edit-dish" style="margin-top: 20px;" ><button class="btn-light-blue" id="btn-view-dish-edit-dish" style="margin-bottom: 10px;" >Edit Dish</button></div>
-            </form>
+            {{#if manager}}
+                <form action="/editDish/{{dish.systemID}}">
+                    <div class="div-btn-right" id="div-view-dish-edit-dish" style="margin-top: 20px;" ><button class="btn-light-blue" id="btn-view-dish-edit-dish" style="margin-bottom: 10px;" >Edit Dish</button></div>
+                </form>
+            {{/if}}
            
         </div>
         <script>
