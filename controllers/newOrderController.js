@@ -302,7 +302,7 @@ const newOrderController = {
                 var deductedQuantity = parseFloat(ingredient.quantityAvailable) - parseFloat(quantityUsed);
 
                 //will cause negative ingredients
-                console.log("i " + canBeMade )
+                //console.log("i " + canBeMade )
 
                 if (deductedQuantity < 0)
                     canBeMade = false
