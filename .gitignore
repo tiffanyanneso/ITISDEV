@@ -7,5 +7,4 @@ node_modules
 # Ignore all text files
 *.txt
 package-lock.json
-package.json
 
