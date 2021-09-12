@@ -288,7 +288,7 @@ const reportController = {
         function getUnitName(unitId) {
             return new Promise ((resolve, reject) => {
                 db.findOne (Units, {_id:unitId}, 'unit', function(result){
-                    if (result!="")
+                    //if (result!="")
                         resolve(result.unit);
                 });
             });
@@ -337,7 +337,7 @@ const reportController = {
          function getSales () {
             return new Promise((resolve, reject) => {
                 db.findMany (Sales, {}, '_id date', function (result) {
-                    if (result !="")
+                    //if (result !="")
                         resolve(result);
                 })
             })
@@ -346,7 +346,7 @@ const reportController = {
         function getDishSales (salesID) {
             return new Promise((resolve, reject) => {
                 db.findMany (SalesDishes, {salesID:salesID}, 'dishID quantity', function (result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 })
             })
@@ -355,7 +355,7 @@ const reportController = {
         function getDishIngredients (dishID) {
             return new Promise ((resolve, reject) => {
                 db.findMany (DishIngredients, {dishID:dishID}, 'ingredientID quantity unitMeasurement', function (result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 })
             })
@@ -364,7 +364,7 @@ const reportController = {
         function getIngredient (ingredientID) {
             return new Promise ((resolve, reject) => {
                 db.findOne (Ingredients, {_id: ingredientID}, 'unitMeasurement', function(result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 })
             })
@@ -375,10 +375,10 @@ const reportController = {
                 var conversion = [];
                 db.findOne (Conversion, {$and:[ {unitA:fromUnit}, {unitB:toUnit} ]}, 'ratio operator', function(result){
                     //console.log("direct " + result);
-                    if (result!="") {
+                    //if (result!="") {
                         conversion.push (result);
                         resolve(conversion);
-                    }
+                    //}
                 });
             });
         }
@@ -608,7 +608,7 @@ const reportController = {
         function getUnitName(unitId) {
             return new Promise ((resolve, reject) => {
                 db.findOne (Units, {_id:unitId}, 'unit', function(result){
-                    if (result!="")
+                    //if (result!="")
                         resolve(result.unit);
                 });
             });
@@ -679,7 +679,7 @@ const reportController = {
         function getDishSales (salesID) {
             return new Promise((resolve, reject) => {
                 db.findMany (SalesDishes, {salesID:salesID}, 'dishID quantity', function (result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 })
             })
@@ -688,7 +688,7 @@ const reportController = {
         function getDishIngredients (dishID) {
             return new Promise ((resolve, reject) => {
                 db.findMany (DishIngredients, {dishID:dishID}, 'ingredientID quantity unitMeasurement', function (result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 })
             })
@@ -697,7 +697,7 @@ const reportController = {
         function getIngredient (ingredientID) {
             return new Promise ((resolve, reject) => {
                 db.findOne (Ingredients, {_id: ingredientID}, 'unitMeasurement', function(result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 })
             })
@@ -708,10 +708,10 @@ const reportController = {
                 var conversion = [];
                 db.findOne (Conversion, {$and:[ {unitA:fromUnit}, {unitB:toUnit} ]}, 'ratio operator', function(result){
                     //console.log("direct " + result);
-                    if (result!="") {
+                    //if (result!="") {
                         conversion.push (result);
                         resolve(conversion);
-                    }
+                    //}
                 });
             });
         }
@@ -911,7 +911,7 @@ const reportController = {
         function getPurchases () {
             return new Promise ((resolve, reject) => {
                 db.findMany (Purchases, {}, '_id dateBought', function(result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 });
             });
@@ -948,7 +948,7 @@ const reportController = {
         function getSales() {
             return new Promise ((resolve, reject) => {
                 db.findMany (Sales, {}, '_id date', function(result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 });
             });
@@ -957,7 +957,7 @@ const reportController = {
         function getDishes (salesID) {
             return new Promise((resolve, reject) => {
                 db.findMany (SalesDishes, {salesID:salesID}, 'dishID quantity', function(result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 });
             });
@@ -966,7 +966,7 @@ const reportController = {
         function getDishIngredients (dishID) {
             return new Promise ((resolve, reject) => {
                 db.findMany (DishIngredients, {dishID:dishID}, 'ingredientID quantity unitMeasurement', function (result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 });
             });
@@ -975,7 +975,7 @@ const reportController = {
         function getDishName (dishID) {
             return new Promise ((resolve, reject) => {
                 db.findOne (Dishes, {_id:dishID}, 'dishName', function (result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result.dishName);
                 });
             });
@@ -984,7 +984,7 @@ const reportController = {
         function getUnitName(unitId) {
             return new Promise ((resolve, reject) => {
                 db.findOne (Units, {_id:unitId}, 'unit', function(result){
-                    if (result!="")
+                    //if (result!="")
                         resolve(result.unit);
                 });
             });
@@ -1149,7 +1149,7 @@ const reportController = {
         function getDishes (salesID) {
             return new Promise((resolve, reject) => {
                 db.findMany (SalesDishes, {salesID:salesID}, 'dishID', function(result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 })
             })
@@ -1158,7 +1158,7 @@ const reportController = {
         function getDishIngredients (dishID) {
             return new Promise ((resolve, reject) => {
                 db.findMany (DishIngredients, {dishID:dishID}, 'ingredientID quantity unitMeasurement', function (result) {
-                    if (result!="")
+                    //if (result!="")
                         resolve(result);
                 })
             })
@@ -1168,7 +1168,7 @@ const reportController = {
             return new Promise ((resolve, reject) => {
                 db.findOne (Dishes, {_id:dishID}, 'dishName', function (result) {
                     console.log(result.dishName)
-                    if (result!="")
+                    //if (result!="")
                         resolve(result.dishName);
                 })
             })
@@ -1177,7 +1177,7 @@ const reportController = {
         function getUnitName(unitId) {
             return new Promise ((resolve, reject) => {
                 db.findOne (Units, {_id:unitId}, 'unit', function(result){
-                    if (result!="")
+                    //if (result!="")
                         resolve(result.unit);
                 });
             });
