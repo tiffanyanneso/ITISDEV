@@ -93,7 +93,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" id ="btn-close-add-new-ingredient-2">Close</button>
-                        <button type="button" class="btn btn-primary" id="btn-add-new-ingredient" disabled="true">Add Ingredient</button>
+                        <button type="button" class="btn btn-primary" id="btn-add-new-ingredient">Add Ingredient</button>
                       </div>
                   </form>
                 </div>
@@ -119,7 +119,7 @@
                             </button>
                           </div>
                           <div class="modal-body">
-                                <p>Unit A must always be bigger than Unit B</p>
+                                <p>Unit A must always be larger than Unit B</p>
                                 <p>Unit B must always be smaller than Unit A</p>
                                 <p id="p-ingredient-unit"></p>
                                 <select class="dropdown" id="unitA" style="margin-right: 5px"> 
@@ -166,19 +166,19 @@
             
                               <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal" id ="btn-close-add-conversion-2">Close</button>
-                                <button type="button" class="btn btn-primary" id="btn-save-unit">Add unit</button>
+                                <button type="button" class="btn btn-primary" id="btn-save-unit">Add Unit</button>
                               </div>
                         </div>
                       </div>
                     </div>
                 </div>
-                <button class="btn-dark-blue" id="add-single-unit" data-toggle="modal" data-target="#modal-add-unit">Add new unit</button>
+                
 
                 <input class="btn-add" type="button" id="btn-add-new-dish-ingredient" name="btn-add-new-dish-ingredient" value="+"> 
                 <div class="div-btn-left" style="margin-top: 20px;">
-                    <button class="btn-light-blue" id="btn-add-new-ingredient-popup" data-toggle="modal" data-target="#modal-add-ingredient">Add New Ingredient</button>
-
-                    <button class="btn-light-blue" id="add-conversion" style="display: none;" data-toggle="modal" data-target="#modal-add-conversion">Add Conversion</button>
+                    <button class="btn-light-blue" id="btn-add-new-ingredient-popup" style="display: none;" data-toggle="modal" data-target="#modal-add-ingredient">Add New Ingredient</button>
+                    <button class="btn-light-blue" id="add-single-unit" data-toggle="modal" data-target="#modal-add-unit">Add New Unit</button>
+                    <button class="btn-light-blue" id="add-conversion" style="position:relative, left:20px, display: none;" data-toggle="modal" data-target="#modal-add-conversion">Add Conversion</button>
                 </div>
             <p class="error" id="error-ingredients"></p>
 
@@ -229,25 +229,36 @@
                     response: function (event, ui) {
                         
                         if (ui.content.length === 0) {
-                                //$("#btn-add-new-ingredient-popup").show();
-                                $('#modal-add-ingredient').modal('show');
-                
-                            
-                            /*
-                            $("#btn-add-new-ingredient-popup").click(function() {
+                                errorMessage("ingredientNameNotExist");
+                                $("#btn-add-new-ingredient-popup").show();
                                 
-                            });
-                            */
+
+                            
+                            
                             $("#btn-close-add-new-ingredient , #btn-close-add-new-ingredient-2").click(function() {
                                   $("#btn-add-new-ingredient-popup").hide();
                             });
                             
-                            }
+                        }
+
+                        else
+                           
+                            $("#new-dish-ingredients-name").css("border", "1px solid #DDDDDD");
+                            $("#error-ingredients").text("");
                             
 
-                        }
+                    }
                     
                 });
+
+                function noSelected() {
+                    var ingredientType = $('#dropdown-ingredient-type').val();
+                    var ingredientUnit = $('#dropdown-ingredient-unit').val();
+                    if (ingredientType == "no-selected" || ingredientUnit == "no-selected")
+                        return true;
+                    else
+                        return false;
+                }
 
                 // INPUT VALIDATION- DISH
                 function dishNameValidation(dishName) {
@@ -319,7 +330,7 @@
                     return words.join(' ');
                 };
 
-                // FIX
+                
                 $('#new-dish-name').keyup(function () { 
                     // Get value 
                      var dishName = capitalize($('#new-dish-name').val());
@@ -355,14 +366,6 @@
                     $("#dropdown-add-new-dish-ingredients-unit")[0].selectedIndex = 0; 
                 }
 
-/* CHANGES GO HERE
-                var ingredientName = capitalize($('#new-dish-ingredients-name').val());
-                    ingredientName = $.trim(ingredientName);
-                var ingredientQty = $('#new-dish-ingredients-quantity').val();
-                var ingredientUnit = $('#dropdown-add-new-dish-ingredients-unit option:selected').text();
-                var ingredientUnitID = $('#dropdown-add-new-dish-ingredients-unit option:selected').val();
-
-*/
                 $('#dropdown-add-new-dish-ingredients-unit').change(function() {
                     var ingredientName = capitalize($('#new-dish-ingredients-name').val());
                     ingredientName = $.trim(ingredientName);
@@ -377,9 +380,103 @@
                             $('#add-conversion').css('display', 'none')
                             $('#p-ingredient-unit').text('')
                         }
-                    })
-                })
-                
+                    });
+                });
+
+
+                $('#dropdown-ingredient-type').change(function() {
+                    if (!noSelected()) {
+                        $("#btn-add-new-ingredient").prop("disabled", true);
+                        $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                    }
+                    else {
+                        $("#btn-add-new-ingredient").prop("disabled", false);
+                        $("#btn-add-new-ingredient").css("background-color", "#0F84D9");
+                    }
+                });
+
+                $('#dropdown-ingredient-unit').change(function() {
+                    if (!noSelected()) {
+                        $("#btn-add-new-ingredient").prop("disabled", true);
+                        $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                    }
+                    else {
+                        $("#btn-add-new-ingredient").prop("disabled", false);
+                        $("#btn-add-new-ingredient").css("background-color", "#0F84D9");
+                    }
+                });  
+
+
+                $('#ingredient-name').keyup(function() {
+                    var ingredientName = capitalize($('#ingredient-name').val());
+                    $.get('/getCheckIngredientName', {ingredientName: ingredientName}, function (result) {
+                            if (result.ingredientName == ingredientName) {
+                                $("#ingredient-name").css("border", "1px solid #B00000");
+                                $('#error-new-ingredient-name').text("Ingredient already exists");
+                                $("#btn-add-new-ingredient").prop("disabled", true);
+                                $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                            }
+
+                            //result name is not equal but no selected yet
+                            else if (result.ingredientName != ingredientName && noSelected()) {
+                                $("#ingredient-name").css("border", "1px solid #DDDDDD");
+                                $("#error-new-ingredient-name").text("");
+                                $("#btn-add-new-ingredient").prop("disabled", true);
+                                $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                            }
+
+                            else {
+                                $("#ingredient-name").css("border", "1px solid #DDDDDD");
+                                $("#error-new-ingredient-name").text("");
+                                $("#btn-add-new-ingredient").prop("disabled", false);
+                                $("#btn-add-new-ingredient").css("background-color", "#0F84D9");
+                            }
+                    });
+                });
+
+                 $('#btn-add-new-ingredient').click(function() {
+                    var ingredientName = capitalize($('#ingredient-name').val());
+                    var ingredientName = $.trim(ingredientName);
+                    var ingredientTypeVal = $('#dropdown-ingredient-type').val();
+                    var ingredientTypeText = $('#dropdown-ingredient-type :selected').text();
+                    var ingredientUnitVal = $('#dropdown-ingredient-unit').val();
+                    var ingredientUnitText = $('#dropdown-ingredient-unit :selected').text();
+
+
+                    $('#modal-add-ingredient').modal('toggle');
+                    $('#add-new-ingredient').trigger('reset');
+
+                    $.get('/getCheckIngredientName', {ingredientName: ingredientName}, function (result) {
+                    if (result.ingredientName == ingredientName) {
+                        
+                        $("#ingredient-name").css("border", "1px solid #B00000");
+                        $('#error-new-ingredient-name').text("Ingredient already exists");
+                        
+                        $("#btn-add-new-ingredient").prop("disabled", true);
+                        $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                        
+                        //another modal popup saying it exists
+                        alert(ingredientName + " already exists as an ingredient");
+                    }
+
+                    else{
+                      $.ajax({
+                            url: "/addIngredient",              
+                            type: "POST",
+                            data: {'ingredientName': ingredientName,'ingredientType': ingredientTypeVal, 'ingredientUnitVal': ingredientUnitVal},
+                            async:false,
+                            success: function(result){
+ 
+                                alert("New Ingredient Added");
+                            }
+                        });
+                    } 
+                    
+                });
+     
+                });
+
+
 
                 $('#btn-add-new-dish-ingredient').click(function() {
                     var ingredientName = capitalize($('#new-dish-ingredients-name').val());
