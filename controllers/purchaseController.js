@@ -187,9 +187,9 @@ const purchaseController = {
 					var ratioAndOperator = await getRatioAndOperator(stockInfo.stockUnit, ingredientInfo.unitMeasurement);
 					var ratio = ratioAndOperator.ratio;
 					if (ratioAndOperator.operator == "*")
-						purchasedQuantity = quantity*ratio;
+						purchasedQuantity = stockInfo.quantity*ratio;
 					else
-						purchasedQuantity = quantity/ratio;
+						purchasedQuantity = stockInfo.quantity/ratio;
 				}
 
 				var newQuantity = ingredientInfo.quantityAvailable + purchasedQuantity;

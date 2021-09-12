@@ -21,20 +21,6 @@ const orderHistoryController = {
         }
         else{   
 
-       /* var salesOrder = {
-            salesID: "2",
-        
-            dishID: "2",
-        
-            quantity: 2.2
-        };
-
-        db.insertOne (SalesDishes, salesOrder, function (flag) {
-			if (flag) {
-
-			} 
-        });*/
-
         var projection = '_id date total employeeID';
         var orders = [];
         var today = new Date().toLocaleString('en-US');
