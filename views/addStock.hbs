@@ -223,6 +223,11 @@
                 });
 
                  $("#table-add-stock-new-stock").on('click','.add-stock-delete-button',function() {
+                    var removedRowAmount = parseInt ($(this).closest('tr').find('.total').text())
+                    var currentTotal = parseInt($('#add-stock-total').text())
+
+                    currentTotal -= removedRowAmount
+                    $('#add-stock-total').text(currentTotal)
                     $(this).closest('tr').remove();
                 });
 
