@@ -82,6 +82,8 @@ router.post('/postAddIngredients', addNewDishController.postAddIngredients);
 
 router.post('/postAddOneIngredient', addNewDishController.postAddOneIngredient); 
 
+router.post('/addDishUnit', addNewDishController.addDishUnit)
+
 //---NEW ORDER---
 
 router.get('/newOrder', newOrderController.getNewOrder);

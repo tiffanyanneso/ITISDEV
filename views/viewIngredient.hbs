@@ -94,14 +94,14 @@
                                     <option value="{{id}}">{{unitName}}</option>
                                 {{/each}}
                             </select><br>
-                            <button style="margin-left:3px; display: none;" id="btn-add-conversion" class="btn-dark-blue">Add Conversion</button>
                         </div>
                     </form>
-                    <button id="add-conversion" data-href="/unitConverter">Add Conversion</button>
-                </div>
+                    <button id="add-conversion" class="btn-dark-blue" data-target="/unitConverter" style=
+                            "margin-left: 3px;">Add New Unit</button>
+                 </div>     
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="btn-add-new-stock" disabled="=true">Add Stock</button>
+                    <button type="button" class="btn btn-primary" id="btn-add-new-stock">Add Stock</button>
                   </div>
                 </div>
               </div>
@@ -189,7 +189,7 @@
                 });
 
                 $('#add-conversion').click(function() {
-                    window.location = $(this).data("href")
+                    window.location = $(this).data("target")
                 })
 
                 $('#btn-add-new-stock').click(function() {

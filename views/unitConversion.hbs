@@ -48,20 +48,20 @@
         <hr>
          
          <h3 class="bold">Add Conversion</h3>
-         <p>Unit A must always be bigger than Unit B</p>
+         <p>Unit A must always be larger than Unit B</p>
          <p>Unit B must always be smaller than Unit A</p>
          <!--DROPDOWN-->
          <div style="input-container">
 
             <select class="dropdown" id="unitA" style="margin-right: 5px"> 
-            <option value="">Select Unit A</option>
+            <option value="">--Select Unit A--</option>
             {{#each unitNames}}
                 <option value="{{id}}">{{unitName}}</option>
             {{/each}}
             </select>
 
             <select class="dropdown" id="unitB" style="margin-right: 10px">
-            <option value="">Select Unit B</option>
+            <option value="">--Select Unit B--</option>
             {{#each unitNames}}
                 <option value="{{id}}">{{unitName}}</option>
             {{/each}}
@@ -144,6 +144,7 @@
                         return false;
                     }
                 }
+                
 
 
                 $('#enter-unit').keyup(function() {
@@ -184,6 +185,7 @@
                             $('#error-unit').text("Unit already exists").delay(2300).fadeOut();
                             $("#error-unit").css("margin-left", "0px");
                             $("#error-unit").css("color", "#B00000");
+                            location.reload(true);
                         }
 
                         else if(unit != '' && result.unit != unit){
@@ -199,10 +201,13 @@
                             $('#error-unit').text("Invalid entry").delay(2300).fadeOut();
                             $("#error-unit").css("margin-left", "0px");
                             $("#error-unit").css("color", "#B00000");
+                            location.reload(true);
                         }
                            
                     }); 
                 });
+
+                
 
                 $('#save-conversion').click(function(){
 
@@ -224,7 +229,7 @@
                         $('#error-conversion').text("Invalid input for unit or ratio").delay(2300).fadeOut();;
                         $("#error-conversion").css("margin-left", "0px");
                         $("#error-conversion").css("color", "#B00000");
-
+                         location.reload(true);
                     }
                     });
                 });

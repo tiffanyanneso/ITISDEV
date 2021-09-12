@@ -402,6 +402,13 @@ const addNewDishController = {
 
         saveIngredients(parsedIngredients);
 
+    },
+
+    addDishUnit: function(req, res) {
+        var unit = req.body.unit;
+        db.insertOneResult (Units, {unit:unit}, function (result) {
+            res.send(result);
+        })
     }
 	
 };

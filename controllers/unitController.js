@@ -198,17 +198,34 @@ const unitController = {
 			})
 		}
 
-		async function checkConversion(unit, ingredientName) {
-			var ingredient = getIngredient(ingredientName)
+		function getUnitName (unitID) {
+			return new Promise ((resolve, reject) => {
+				db.findOne (Units, {_id:unitID}, 'unit', function (result) {
+					resolve (result.unit)
+				})
+			})
+		}
 
+		async function checkConversion(unit, ingredientName) {
+			var ingredient = await getIngredient(ingredientName)
 			var conversion = []
 
-			conversion = await getConversion(unit, ingredient.unitMeasurement);
+			if (unit != ingredient.unitMeasurement) {
+				conversion = await getConversion(unit, ingredient.unitMeasurement);
 
-			//no direct conversion was found
-			if (conversion.length==0)
-				conversion = await getIndirectConversion(unit, ingredient.unitMeasurement)
-			res.send(conversion)
+				//no direct conversion was found
+				if (conversion.length==0)
+					conversion = await getIndirectConversion(unit, ingredient.unitMeasurement)
+
+				if (conversion[0] == null) {
+					var unit = await getUnitName (ingredient.unitMeasurement)
+					res.send(unit)
+				}
+				else
+					res.send(null)
+			}
+			else
+				res.send(null)
 		}
 
 		checkConversion(unit, ingredientName)

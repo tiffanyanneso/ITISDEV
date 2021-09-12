@@ -277,6 +277,9 @@
                                  $(".link").click(function() {
                                     window.location = $(this).data("href");
                                 });
+
+                                $("#btn-add-new-ingredient").attr("disabled", true);
+                                $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
                             }
                         });
                     } 
