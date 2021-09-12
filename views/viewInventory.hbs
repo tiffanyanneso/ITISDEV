@@ -33,7 +33,7 @@
             </div>
 
             <div class="div-btn-50">
-               <button class="btn-light-blue" id="btn-view-inventory-add-ingredient" data-toggle="modal" data-target="#modal-add-ingredient">+ Add Ingredient</button>
+               <button class="btn-light-blue" id="btn-view-inventory-add-ingredient" data-toggle="modal" data-target="#modal-add-ingredient">Add Ingredient</button>
             </div>
 
             <!-- Modal -->
@@ -246,14 +246,15 @@
 
                     $.get('/getCheckIngredientName', {ingredientName: ingredientName}, function (result) {
                     if (result.ingredientName == ingredientName) {
-                        /*
+                        
                         $("#ingredient-name").css("border", "1px solid #B00000");
                         $('#error-new-ingredient-name').text("Ingredient already exists");
+                        
                         $("#btn-add-new-ingredient").prop("disabled", true);
                         $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
-                        */
+                        
                         //another modal popup saying it exists
-                        alert("Ingredient already exists");
+                        alert(ingredientName + " already exists as an ingredient");
                     }
 
                     else{

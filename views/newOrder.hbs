@@ -43,7 +43,7 @@
 
             <div style="margin-top: 10px;"> 
                 <input type="text" name="dish-name" id="dish-name" placeholder="Dish Name" style="margin-right: 5px">
-                <input type="number" name="dish-quantity" id="dish-quantity" placeholder="Quantity" min="0" style="margin-right: 10px">
+                <input type="number" name="dish-quantity" id="dish-quantity" placeholder="Quantity" min="0" oninput="validity.valid||(value='');" style="margin-right: 10px">
                 <input class="btn-add" type="button" id="btn-add-dish" name="btn-add" value="+">
             </div>
 
