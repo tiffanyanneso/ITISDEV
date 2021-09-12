@@ -16,7 +16,7 @@ const orderHistoryController = {
 
     getOrderHistory: function (req, res) {
 
-        if( req.session.position != 'Admin' ){
+        if( req.session.position != 'Admin' && req.session.position != "Cashier" ){
             res.redirect('/dashboard');
         }
         else{   
@@ -59,7 +59,16 @@ const orderHistoryController = {
 				orders.reverse();
 
                 //console.log(purchases);
-                res.render('viewOrderHistory', {orders, total, today});
+
+                if(req.session.position == "Cashier"){
+                    var cashier = req.session.position;
+                    res.render('viewOrderHistory', {orders, total, today, cashier});
+                }
+
+                if(req.session.position == "Admin"){
+                    var manager = req.session.position;
+                    res.render('viewOrderHistory', {orders, total, today, manager});
+                }
             });
         });
         }
@@ -111,7 +120,7 @@ const orderHistoryController = {
 
     getViewSpecificOrder: function (req, res) {
 
-        if( req.session.position != 'Admin' ){
+        if( req.session.position != 'Admin' && req.session.position != "Cashier"){
             res.redirect('/dashboard');
         }
         else{   
@@ -175,8 +184,17 @@ const orderHistoryController = {
                             }
 
                         }
-                        
-                        res.render('viewOrder', {sale, salesDishes});
+
+                    if(req.session.position == "Cashier"){
+                        var cashier = req.session.position;
+                         res.render('viewOrder', {sale, salesDishes, cashier});
+                    }
+
+                    if(req.session.position == "Admin"){
+                        var manager = req.session.position;
+                         res.render('viewOrder', {sale, salesDishes, manager});
+                    }
+
                     });
                 });
 

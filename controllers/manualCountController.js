@@ -23,7 +23,7 @@ const manualCountController = {
 
 	getUpdatePage: function (req,res) {
 
-		if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' ){
+		if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' && req.session.position != 'Admin' ){
 			res.redirect('/dashboard');
 		}
 		else{	
@@ -55,7 +55,17 @@ const manualCountController = {
 			var ingredientID = req.params.ingredientID
 
 			var reasons = await getReasons();
-			res.render('updateManualCount', {ingredientID, stocks, reasons});
+
+
+			if(req.session.position == "Inventory"  || req.session.position == "Purchasing"){
+                var inventory = req.session.position;
+                res.render('updateManualCount', {ingredientID, stocks, reasons, inventory});
+            }
+
+            if(req.session.position == "Admin"){
+                var manager = req.session.position;
+            	res.render('updateManualCount', {ingredientID, stocks, reasons, manager});
+            }
 		}
 
 		var projection = 'stockName quantity stockUnit'
