@@ -10,9 +10,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>   
     </head>
     <body>
 
@@ -110,46 +108,77 @@
                         <option value={{_id}}>{{unitName}}</option>
                     {{/each}}
                 </select>
-                <button id="add-conversion" style="display: none;" data-toggle="modal" data-target="#modal-add-conversion">Add Conversion</button>
 
                 <div class="modal fade" id="modal-add-conversion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
                             <h3 class="modal-title" id="exampleModalLongTitle">Add Conversion</h3>
-                            <button type="button" class="close" data-dismiss="modal" id="btn-close-add-new-ingredient" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" id="btn-close-add-conversion" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
                           </div>
                           <div class="modal-body">
+                                <p>Unit A must always be bigger than Unit B</p>
+                                <p>Unit B must always be smaller than Unit A</p>
+                                <p id="p-ingredient-unit"></p>
                                 <select class="dropdown" id="unitA" style="margin-right: 5px"> 
                                 <option value="">Select Unit A</option>
-                                {{#each unitNames}}
-                                    <option value="{{id}}">{{unitName}}</option>
+                                {{#each units}}
+                                    <option value={{_id}}>{{unitName}}</option>
                                 {{/each}}
                                 </select>
 
                                 <select class="dropdown" id="unitB" style="margin-right: 10px">
                                 <option value="">Select Unit B</option>
-                                {{#each unitNames}}
-                                    <option value="{{id}}">{{unitName}}</option>
+                                {{#each units}}
+                                    <option value={{_id}}>{{unitName}}</option>
                                 {{/each}}
                                 </select>
 
                                 <input type="number" name="ratio" id="ratio" placeholder="Ratio" style="margin-right: 10px">
+                                <br>
+                                 <p class="error" id="error-conversion"></p> 
             
                               <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal" id ="btn-close-add-new-ingredient-2">Close</button>
-                                <button type="button" class="btn btn-primary" id="btn-save-conversion" disabled="true">Save Conversion</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" id ="btn-close-add-conversion-2">Close</button>
+                                <button type="button" class="btn btn-primary" id="btn-save-conversion">Save Conversion</button>
                               </div>
                         </div>
                       </div>
                     </div>
                 </div>
 
-                <input class="btn-add" type="button" id="btn-add-new-dish-ingredient" name="btn-add-new-dish-ingredient" value="+">
+                <div class="modal fade" id="modal-add-unit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h3 class="modal-title" id="exampleModalLongTitle">Add Conversion</h3>
+                            <button type="button" class="close" data-dismiss="modal" id="btn-close-add-conversion" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                                <label for="unit">Unit</label>
+                                <input type="text" name="unit" id="unit" placeholder="Unit">
+                                <br>
+                                <p class="error" id="error-unit"></p> 
+            
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" id ="btn-close-add-conversion-2">Close</button>
+                                <button type="button" class="btn btn-primary" id="btn-save-unit">Add unit</button>
+                              </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <button class="btn-dark-blue" id="add-single-unit" data-toggle="modal" data-target="#modal-add-unit">Add new unit</button>
+
+                <input class="btn-add" type="button" id="btn-add-new-dish-ingredient" name="btn-add-new-dish-ingredient" value="+"> 
                 <div class="div-btn-left" style="margin-top: 20px;">
                     <button class="btn-light-blue" id="btn-add-new-ingredient-popup" data-toggle="modal" data-target="#modal-add-ingredient">Add New Ingredient</button>
+
+                    <button class="btn-light-blue" id="add-conversion" style="display: none;" data-toggle="modal" data-target="#modal-add-conversion">Add Conversion</button>
                 </div>
             <p class="error" id="error-ingredients"></p>
 
@@ -336,11 +365,13 @@
                     var unit = $('#dropdown-add-new-dish-ingredients-unit').val();
                     $.get('/checkUnitConverter', {unit, ingredientName}, function(result) {
                         //conversion was not found
-                        if (result[0] == null) {
+                        if (result != null) {
                             $('#add-conversion').css('display', 'block')
-                        }
+                            $('#p-ingredient-unit').text(`The ingredient unit is ${result}`)
+                        } 
                         else {
                             $('#add-conversion').css('display', 'none')
+                            $('#p-ingredient-unit').text('')
                         }
                     })
                 })
@@ -475,6 +506,91 @@
                         return false;
                     }
                 }
+
+                function noSelected(){
+
+                    var unitA = $('#unitA').val();
+                    var unitB = $('#unitB').val();
+
+                    if($('#unitA').val() == '' || $('#unitB').val() == ''){
+                        return true;
+
+                    }
+
+                    else{
+                        return false;
+                    }
+                }
+
+                function sameUnit() {
+
+                    var unitA = $('#unitA').val();
+                    var unitB = $('#unitB').val();
+
+                    if(unitA == unitB){
+                        return true;
+                    }
+
+                    else if(unitA != unitB){
+                        return false;
+                    }
+                }
+
+                function ratioValidation(){
+
+                    var ratio = $('#ratio').val();
+                    if(ratio < 0 || ratio == ''){
+                        return true;
+                    }
+
+                    else{
+                        return false;
+                    }
+                }
+
+                $('#btn-save-conversion').click(function() {
+                    if(!noSelected() && !sameUnit() && !ratioValidation()){
+
+                        $('#error-conversion').text("Unit Conversion has been saved");
+                        $("#error-conversion").css("margin-left", "0px");
+                        $("#error-conversion").css("color", "#008000");
+
+                        var unitA = $('#unitA').val();
+                        var unitB = $('#unitB').val();
+                        var ratio = $('#ratio').val();
+
+                        $.post('/saveUnitConvert', {unitA, unitB, ratio});
+                    }
+                    else{
+                        $('#error-conversion').text("Invalid input for unit or ratio").delay(2300).fadeOut();;
+                        $("#error-conversion").css("margin-left", "0px");
+                        $("#error-conversion").css("color", "#B00000");
+
+                    }
+                });
+
+                $('#unit').keyup(function(){
+                    var unit = $('#unit').val();
+                    $.get('/getCheckUnitName', {unit}, function (result) {
+                        if (result!="")
+                            $('#error-unit').text('Unit already exists');
+                        else
+                            $('#error-unit').text('')
+                    })
+                })
+
+                $('#btn-save-unit').click(function() {
+                    var unit = capitalize($('#unit').val());
+
+                    $.post('/addDishUnit', {unit}, function (result) {
+                        $('#unit').val('')
+                        $('#modal-add-unit').modal('hide');
+
+                        $('#dropdown-add-new-dish-ingredients-unit').append(`
+                            <option value="${result._id}">${result.unit}</option>`)
+                    })
+                });
+                        
         });
         </script>
 
