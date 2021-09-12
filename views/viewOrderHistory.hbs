@@ -15,7 +15,15 @@
 
         <!-- PARTIALS -->
         {{> logoutPartial }}
-        {{> managerPartial }}
+
+        {{#if cashier}}
+            {{> cashierPartial }}
+        {{/if}}
+
+        {{#if manager}}
+            {{> managerPartial }}
+        {{/if}}
+        
 
         <div class="content">
 
