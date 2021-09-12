@@ -108,6 +108,7 @@ const MenuController = {
 		}
 
 		async function checkAvailability(dish) {
+			console.log("check availability")
 			// get ingredients used per dish
 
 			var dishIngredients = await getDishIngredients(dish._id);
@@ -218,7 +219,8 @@ const MenuController = {
 		var unavailableStatus = [];
 		var outOfStockStatus = [];
 
-		var statusProjection = '_id status'; 	
+		var statusProjection = '_id status'; 
+		console.log("statuses");	
 		db.findMany (DishStatus, {}, statusProjection, function(result3) {
 
 			for (var i=0; i<result3.length; i++) {
@@ -271,6 +273,8 @@ const MenuController = {
 				db.findMany (Dishes, {}, dishProjection, function(result2) {
 
 					for (var j =0; j<result2.length; j++) {
+
+						checkAvailability(result2[j]);
 
 						var status = "Out of Stock";
 						for(var i=0; i<statuses.length; i++){

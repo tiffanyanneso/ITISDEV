@@ -6,6 +6,8 @@ const Units = require('../models/UnitsModel.js');
 
 const Conversion = require('../models/ConversionModel.js');
 
+const Ingredients = require('../models/IngredientsModel.js')
+
 const unitController = {
 	getUnitConverter: function (req, res) {
 
@@ -17,6 +19,8 @@ const unitController = {
 		function getUnitName(unitId) {
 			return new Promise ((resolve, reject) => {
 				db.findOne (Units, {_id:unitId}, 'unit', function(result){
+					console.log("unit")
+					console.log(result)
 					if (result!="")
 						resolve(result.unit);
 				})
@@ -139,6 +143,75 @@ const unitController = {
 
 		//insertConversion(unitA, unitB, ratio, operator);
 		
+	},
+
+	checkUnitConverter: function(req, res) {
+
+		var unit = req.query.unit;
+		var ingredientName = req.query.ingredientName
+
+		// get ingredient
+		function getIngredient(ingredientName) {
+			return new Promise ((resolve, reject) => {
+				var projection = '_id ingredientName unitMeasurement quantityAvailable';
+				db.findOne (Ingredients, {ingredientName: ingredientName}, projection, function(result) {
+					if (result!="")
+						resolve(result);
+				});
+			});
+		}
+
+
+		function getConversion (unitA, unitB){
+			return new Promise((resolve, reject) => {
+				var conversion = []
+				db.findOne (Conversion, {$and:[ {unitA:unitA}, {unitB:unitB} ]}, 'ratio operator', function(result){
+					//console.log("direct " + result);
+					if (result!="") 
+						conversion.push (result)
+					resolve(conversion);
+				})
+			})
+		}
+
+		function getIndirectConversion(unitA, unitB) {
+			return new Promise ((resolve, reject) => {
+				var conversions = [];
+				//get all conversions with ingredientUnit
+				db.findMany (Conversion, {unitA:unitA}, 'unitB ratio operator', function (result) {	
+					//get all conversions with dishUnit as unit to be converted to
+					db.findMany (Conversion, {unitB:unitB}, 'unitA ratio operator', function (result1) {
+						var found = false;
+						for (var i=0; i<result.length && !found; i++) {
+							for (var j=0; j<result1.length && !found; j++) {
+								if (result[i].unitB == result1[j].unitA) {
+									conversions.push (result[i]);
+									conversions.push (result1[j]);
+									found = true;
+								}
+							}
+						}
+						//console.log("indirect " + conversions);
+						resolve(conversions);
+					})
+				}) 
+			})
+		}
+
+		async function checkConversion(unit, ingredientName) {
+			var ingredient = getIngredient(ingredientName)
+
+			var conversion = []
+
+			conversion = await getConversion(unit, ingredient.unitMeasurement);
+
+			//no direct conversion was found
+			if (conversion.length==0)
+				conversion = await getIndirectConversion(unit, ingredient.unitMeasurement)
+			res.send(conversion)
+		}
+
+		checkConversion(unit, ingredientName)
 	}
 
 };

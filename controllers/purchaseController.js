@@ -195,6 +195,8 @@ const purchaseController = {
 				var newQuantity = ingredientInfo.quantityAvailable + purchasedQuantity;
 
 				updateQuantity (ingredientInfo._id, newQuantity)
+
+				res.redirect('/purhcase/' + purchaseID)
 			}
 
 		}

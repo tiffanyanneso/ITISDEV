@@ -110,6 +110,43 @@
                         <option value={{_id}}>{{unitName}}</option>
                     {{/each}}
                 </select>
+                <button id="add-conversion" style="display: none;" data-toggle="modal" data-target="#modal-add-conversion">Add Conversion</button>
+
+                <div class="modal fade" id="modal-add-conversion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h3 class="modal-title" id="exampleModalLongTitle">Add Conversion</h3>
+                            <button type="button" class="close" data-dismiss="modal" id="btn-close-add-new-ingredient" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                                <select class="dropdown" id="unitA" style="margin-right: 5px"> 
+                                <option value="">Select Unit A</option>
+                                {{#each unitNames}}
+                                    <option value="{{id}}">{{unitName}}</option>
+                                {{/each}}
+                                </select>
+
+                                <select class="dropdown" id="unitB" style="margin-right: 10px">
+                                <option value="">Select Unit B</option>
+                                {{#each unitNames}}
+                                    <option value="{{id}}">{{unitName}}</option>
+                                {{/each}}
+                                </select>
+
+                                <input type="number" name="ratio" id="ratio" placeholder="Ratio" style="margin-right: 10px">
+            
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" id ="btn-close-add-new-ingredient-2">Close</button>
+                                <button type="button" class="btn btn-primary" id="btn-save-conversion" disabled="true">Save Conversion</button>
+                              </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
                 <input class="btn-add" type="button" id="btn-add-new-dish-ingredient" name="btn-add-new-dish-ingredient" value="+">
                 <div class="div-btn-left" style="margin-top: 20px;">
                     <button class="btn-light-blue" id="btn-add-new-ingredient-popup" data-toggle="modal" data-target="#modal-add-ingredient">Add New Ingredient</button>
@@ -178,12 +215,6 @@
                         }
                     
                 });
-
-
-
-
-
-
 
                 // INPUT VALIDATION- DISH
                 function dishNameValidation(dishName) {
@@ -299,7 +330,20 @@
                 var ingredientUnitID = $('#dropdown-add-new-dish-ingredients-unit option:selected').val();
 
 */
-
+                $('#dropdown-add-new-dish-ingredients-unit').change(function() {
+                    var ingredientName = capitalize($('#new-dish-ingredients-name').val());
+                    ingredientName = $.trim(ingredientName);
+                    var unit = $('#dropdown-add-new-dish-ingredients-unit').val();
+                    $.get('/checkUnitConverter', {unit, ingredientName}, function(result) {
+                        //conversion was not found
+                        if (result[0] == null) {
+                            $('#add-conversion').css('display', 'block')
+                        }
+                        else {
+                            $('#add-conversion').css('display', 'none')
+                        }
+                    })
+                })
                 
 
                 $('#btn-add-new-dish-ingredient').click(function() {

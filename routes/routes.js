@@ -148,6 +148,8 @@ router.post('/saveUnit', unitController.saveUnit);
 
 router.post('/saveUnitConvert', unitController.saveUnitConvert);
 
+router.get('/checkUnitConverter', unitController.checkUnitConverter);
+
 
 //---MANUAL COUNT---
 
