@@ -11,6 +11,8 @@ const Employees = require('../models/EmployeesModel.js');
 
 const Ingredients = require('../models/IngredientsModel.js');
 
+const IngredientTypes =require('../models/IngredientTypesModel.js');
+
 const Units = require('../models/UnitsModel.js');
 
 const Conversion = require('../models/ConversionModel.js');
@@ -21,63 +23,35 @@ const purchaseController = {
 
 	renderPurchase: function (req, res) {
 
-		if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' ){
-			res.redirect('/dashboard');
-		}
-		else{	
-
-		db.findMany (Units, {}, '_id unit', function (result) {
-			var units = [];
-			for (var i=0; i<result.length; i++) {
-				var unit = {
-					id:result[i]._id,
-					unitName:result[i].unit
-				};
-				units.push (unit);
-			}
-			res.render('addStock', {units});
-		});
-
-		/*function getUnitName(unitId) {
+		function getUnits() {
 			return new Promise ((resolve, reject) => {
-				db.findOne (Units, {_id:unitId}, 'unit', function(result){
+				db.findMany (Units, {}, '_id unit', function(result){
 					if (result!="")
-						resolve(result.unit);
+						resolve(result);
 				})
 			})
 		}
 
-		async function getUnit (stocks) {
-			for (var i=0; i<stocks.length; i++) 
-				stocks[i].stockUnit  = await getUnitName (stocks[i].stockUnit	);
-			
-			db.findMany (Units, {}, '_id unit', function (result) {
-				var units = [];
-				for (var i=0; i<result.length; i++) {
-					var unit = {
-						id:result[i]._id,
-						unitName:result[i].unit
-					};
-					units.push (unit);
-				}
-				res.render('addStock', {stocks, units});
+		function getIngredientTypes() {
+			return new Promise((resolve, reject) => {
+				db.findMany (IngredientTypes, {}, '_id ingredientType', function(result) {
+					if (result!="")
+						resolve(result)
+				})
 			})
-			
 		}
-		
-		var projection = 'stockName quantity stockUnit';
-		var stocks = [];
-		db.findMany (Stock, {}, projection, function (result) {
-			for (var i=0; i<result.length; i++) {
-				var stock = {
-					stockName: result[i].stockName,
-					quantity: result[i].quantity,
-					stockUnit: result[i].stockUnit
-				}
-				stocks.push(stock);
-			}
-			getUnit (stocks);
-		});*/
+
+		async function getInfoAndRender() {
+			var units = await getUnits();
+			var ingredientTypes  = await getIngredientTypes();
+			res.render('addStock', {units, ingredientTypes});
+		}
+
+		if( req.session.position != 'Inventory' && req.session.position != 'Purchasing' ){
+			res.redirect('/dashboard');
+		}
+		else{		
+			getInfoAndRender();
 		}
 	},
 

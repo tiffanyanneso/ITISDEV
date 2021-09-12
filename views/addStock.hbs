@@ -10,7 +10,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
          rel = "stylesheet">
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
     <body>
@@ -21,47 +21,6 @@
        
         <div class="content">
             <h1 class="bold color-blue margin-bottom-0">New Purchase</h1> 
-            <!--<div style="display: flex; flex-direction: row; float:right;">
-                <h4 id="date">${date} </h4>
-                <h4 id="time">${time}</h4>
-            </div>-->
-            <!--<hr style="margin-bottom: 5px;">
-
-            <div style="margin-bottom: 10px;">
-                <div style="display: flex;">
-                    <div style="width: 50%;"><h3 class="bold margin-bottom-0">Stock</h3> </div>
-                    <div class="div-btn-status">
-                        <div> 
-                            <select class="dropdown" id="dropdown-add-stock">
-                                <option value="all" selected>All</option>
-                                <option value="option2">Option 2</option>
-                                <option value="option3">Option 3</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="div-table table-height-185">
-                <table class="table" id="table-add-stock-stock">
-                    <thead class="table-head table-sticky-header">
-                        <tr>
-                            <th>Name</th>
-                            <th>Quantity</th>
-                            <th>Unit</th>
-                        </tr>
-                    </thead>
-                    <tbody> 
-                        {{#each stocks}}
-                        <tr>
-                            <td>{{stockName}}</td>
-                            <td>{{quantity}}</td>
-                            <td>{{stockUnit}}</td>
-                        </tr>
-                        {{/each}}
-                    </tbody>
-                </table>
-            </div>-->
 
             <hr style="margin-bottom: 5px;">
 
@@ -70,9 +29,8 @@
                 <input type="number" name="add-stock-count" id="add-stock-count" placeholder="Count" style="margin-right: 10px">
                 <input type="number" name="add-stock-price" id="add-stock-price" placeholder="Price" style="margin-right: 10px">
                 <input class="btn-add" type="button" id="btn-add-stock" name="btn-add-stock" value="+">
-                 <div class="div-btn-left" style="margin-top: 20px;"><button class="btn-light-blue" id="btn-add-new-ingredient-popup">Add New Ingredient</button>
 
-                <!-- Modal -->
+                 <!-- Modal Stock -->
                 <div class="modal fade" id="modal-add-stock" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
@@ -83,15 +41,15 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                        <form id="add-new-stock">
-                            <label for="ingredient-name">Ingredient Name</label> <input id="ingredient-name" type="text"><br>
+                        <form id="add-new-stock" class="ui-front">
+                            <label for="ingredient-name">Ingredient Name</label> <input id="new-stock-ingredient-name" type="text"><br>
                             <label for="stock-name">Stock Name</label> <input id="stock-name" type="text"> <br>
                             <label for="stock-quantity">Quantity</label> <input id="stock-quantity" type="text"> <br>
                             <label for="dropdown-stock-unit">Unit of Measurement</label>
                             <select class="dropdown" id="dropdown-ingredient-unit">
                                 <option value="no-selected">--Select unit--</option>
                                 {{#each units}}
-                                    <option value="{{id}}">{{unitName}}</option>
+                                    <option value="{{_id}}">{{unit}}</option>
                                 {{/each}}
                             </select><br>
                           <div class="modal-footer">
@@ -102,6 +60,50 @@
                     </div>
                   </div>
                 </div>
+            </div>
+
+            <!-- Modal Ingredient -->
+            <div class="modal fade" id="modal-add-ingredient" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLongTitle">Add Ingredient</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="add-new-ingredient">
+                        <label for="ingredient-name">Name</label> <input id="new-ingredient-ingredient-name" type="text"><br>
+                        <p class="error" id="error-new-ingredient-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
+                        <label for="dropdown-ingredient-type">Ingredient Type</label>
+                        <select class="dropdown" id="dropdown-ingredient-type"> 
+                            <option value="no-selected">--Select ingredient type--</option>
+                            {{#each ingredientTypes}}
+                                <option value="{{_id}}">{{ingredientType}}</option>
+                            {{/each}}
+                        </select><br>
+                        <label for="dropdown-ingredient-unit">Unit of Measurement</label>
+                        <select class="dropdown" id="dropdown-ingredient-unit">
+                            <option value="no-selected">--Select unit--</option>
+                            {{#each units}}
+                                <option value="{{_id}}">{{unit}}</option>
+                            {{/each}}
+                        </select><br>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btn-add-new-ingredient" disabled="true">Add Ingredient</button>
+                      </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+                <div style="float: right; display: flex; flex-direction: row;">
+                    <button class="btn-light-blue" id="btn-add-new-ingredient-popup" style="margin-right: 5px;"data-toggle="modal" data-target="#modal-add-stock">Add New Stock</button>
+                    <button class="btn-light-blue" id="btn-add-new-stock-popup" data-toggle="modal" data-target="#modal-add-ingredient">Add New Ingredient</button>
+                </diiv>
             </div>
 
             <p class="error" id="error-add-stock" style="display: none;">Stock not found</p>
@@ -135,10 +137,8 @@
 
         <script>
             $(document).ready(function() {
-
-                 $("#btn-add-new-ingredient-popup").hide();
                  
-                $( "#add-stock-name" ).autocomplete({
+                $("#add-stock-name" ).autocomplete({
                     source: function(request, response) {
                     $.ajax({
                                 url: `/getStockName?query=${request.term}`,
@@ -269,6 +269,24 @@
                    $('#btn-add-stock-save').prop('disabled', true);
                 });
 
+                $("#new-stock-ingredient-name").autocomplete({
+                    source:function(request, response) {
+                    $.ajax({
+                                url: `/getAutoIngredientName?query=${request.term}`,
+                                dataType: "json",
+                                data: {
+                                    //request.term refers to the value currently in the text input
+                                    term: request.term,
+                                },
+                                success: function (data) {
+                                    response(data);
+                                }
+                         });
+                    },
+                });
+
+                //validation for modals
+                $('')
 
             });
         </script>
