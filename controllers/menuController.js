@@ -25,7 +25,6 @@ const MenuController = {
 			res.redirect('/dashboard');
 		}
 		else{	
-
 		var checkedStatuses = [];
 		var k;
 
@@ -106,11 +105,10 @@ const MenuController = {
 				}
 				//console.log(computedQuantity);
 				resolve (computedQuantity);
-			});
+			}) 
 		}
 
 		async function checkAvailability(dish) {
-			console.log("check availability")
 			// get ingredients used per dish
 
 			var dishIngredients = await getDishIngredients(dish._id);
@@ -184,7 +182,6 @@ const MenuController = {
 					checkedStatuses.push(checkStatus);
 				}
 			}
-			console.log(checkedStatuses)
 			
 			var dishProj = '_id dishName dishStatus';
 			var checkedDishes = [];
@@ -222,8 +219,7 @@ const MenuController = {
 		var unavailableStatus = [];
 		var outOfStockStatus = [];
 
-		var statusProjection = '_id status'; 
-		console.log("statuses");	
+		var statusProjection = '_id status'; 	
 		db.findMany (DishStatus, {}, statusProjection, function(result3) {
 
 			for (var i=0; i<result3.length; i++) {
@@ -286,7 +282,7 @@ const MenuController = {
 						var dish = {
 							_id: result2[j]._id,
 							dishName: result2[j].dishName,
-							dishPrice: result2[j].dishPrice.toFixed(2),
+							dishPrice: result2[j].dishPrice,
 							dishStatus: status,
 							dishClassification: result2[j].dishClassification
 						};
@@ -326,7 +322,7 @@ const MenuController = {
 	                if(req.session.position == "Admin"){
 	                	var manager = req.session.position;
 	                	 res.render('menu', {menu, manager});
-	                }
+	                }	
 				});
 			});
 		});
