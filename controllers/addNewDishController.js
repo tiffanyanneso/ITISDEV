@@ -287,6 +287,15 @@ const addNewDishController = {
             })
         }
 
+        function getDishInfo() {
+            return new Promise((resolve, reject)=> {
+                db.findOne(Dishes, {_id:dishID}, 'dishStatus', function(result) {
+                    if (result!="")
+                        resolve(result.dishStatus)
+                })
+            })
+        }
+
         //unitA will be ingredient unit, unitB will be dishUnit
         function getConversion (ingredientUnit, dishUnit){
             return new Promise((resolve, reject) => {
@@ -381,7 +390,8 @@ const addNewDishController = {
                 ingredients[i].unitMeasurement = await getUnitID(ingredients[i].unitMeasurement);
 
                 var available = await checkAvailability(ingredients[i].ingredientID, ingredients[i].quantity, ingredients[i].unitMeasurement)
-                if (!available) 
+                var dishStatus = await getDishInfo()
+                if (!available && dishStatus!="61136a0e6876670e697134a3") 
                     updateDishStatus(dishID)
             }
 
