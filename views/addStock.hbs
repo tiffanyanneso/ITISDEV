@@ -324,14 +324,10 @@
                     var quantity = $('#new-stock-stock-quantity').val();
                     var stockUnitVal = $('#dropdown-new-stock-unit').val()
 
-                    console.log(ingredientName)
-                    console.log(stockName)
-                    console.log(quantity)
-                    console.log(stockUnitVal)
+                    $('#modal-add-stock').modal('toggle')
+                    $('#add-new-stock').trigger('reset')
 
                     $.post('/addStock', {stockName, quantity, stockUnitVal, ingredientName})
-                    $('#modal-add-stock').toggle()
-                    $('#add-new-stock').trigger('reset')
                 })
 
 
