@@ -64,14 +64,12 @@
                                 <option value="{{_id}}">{{unit}}</option>
                             {{/each}}
                         </select><br>
-                    </form>
-                      <button id="add-conversion" class="btn-dark-blue" data-target="/unitConverter" style=
-                            "margin-left: 3px;">Add New Unit</button>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary" id="btn-add-new-ingredient" disabled="true">Add Ingredient</button>
                       </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -168,14 +166,12 @@
         </div>
         <script> 
             $(document).ready(function() {
-
                 function capitalize(string){
                     var words = string.toLowerCase().split(' ');
                     for (i=0; i<words.length; i++)
                         words[i] = words[i].charAt(0).toUpperCase() + words[i].substring(1);
                     return words.join(' ');
                 };
-
                 function noSelected() {
                     var ingredientType = $('#dropdown-ingredient-type').val();
                     var ingredientUnit = $('#dropdown-ingredient-unit').val();
@@ -184,7 +180,6 @@
                     else
                         return false;
                 }
-
                 $('#dropdown-ingredient-type').change(function() {
                     if (noSelected()) {
                         $("#btn-add-new-ingredient").prop("disabled", true);
@@ -195,7 +190,6 @@
                         $("#btn-add-new-ingredient").css("background-color", "#0F84D9");
                     }
                 });
-
                 $('#dropdown-ingredient-unit').change(function() {
                     if (noSelected()) {
                         $("#btn-add-new-ingredient").prop("disabled", true);
@@ -206,7 +200,6 @@
                         $("#btn-add-new-ingredient").css("background-color", "#0F84D9");
                     }
                 })
-
                 $('#ingredient-name').keyup(function() {
                     var ingredientName = capitalize($('#ingredient-name').val());
                     $.get('/getCheckIngredientName', {ingredientName: ingredientName}, function (result) {
@@ -216,7 +209,6 @@
                                 $("#btn-add-new-ingredient").prop("disabled", true);
                                 $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
                             }
-
                             //result name is not equal but no selected yet
                             else if (result.ingredientName != ingredientName && noSelected()) {
                                 $("#ingredient-name").css("border", "1px solid #DDDDDD");
@@ -224,7 +216,6 @@
                                 $("#btn-add-new-ingredient").prop("disabled", true);
                                 $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
                             }
-
                             else {
                                 $("#ingredient-name").css("border", "1px solid #DDDDDD");
                                 $("#error-new-ingredient-name").text("");
@@ -233,7 +224,6 @@
                             }
                     });
                 }); 
-
                 $('#btn-add-new-ingredient').click(function() {
                     var ingredientName = capitalize($('#ingredient-name').val());
                     ingredientName = $.trim(ingredientName);
@@ -241,11 +231,8 @@
                     var ingredientTypeText = $('#dropdown-ingredient-type :selected').text();
                     var ingredientUnitVal = $('#dropdown-ingredient-unit').val();
                     var ingredientUnitText = $('#dropdown-ingredient-unit :selected').text();
-
-
                     $('#modal-add-ingredient').modal('toggle');
                     $('#add-new-ingredient').trigger('reset');
-
                     $.get('/getCheckIngredientName', {ingredientName: ingredientName}, function (result) {
                     if (result.ingredientName == ingredientName) {
                         
@@ -258,11 +245,6 @@
                         //another modal popup saying it exists
                         alert(ingredientName + " already exists as an ingredient");
                     }
-
-                    $('#add-conversion').click(function() {
-                        window.location = $(this).data("target")
-                    })
-
                     else{
                       $.ajax({
                             url: "/addIngredient",              
@@ -270,7 +252,6 @@
                             data: {'ingredientName': ingredientName,'ingredientType': ingredientTypeVal, 'ingredientUnitVal': ingredientUnitVal},
                             async:false,
                             success: function(result){
-
                                  $('#table-view-inventory tbody').append (
                                     `<tr class='link' data-href='/ingredient/${result}'>
                                         <td>${ingredientName}</td> 
@@ -283,21 +264,17 @@
                                  $(".link").click(function() {
                                     window.location = $(this).data("href");
                                 });
-
                                 $("#btn-add-new-ingredient").attr("disabled", true);
                                 $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
                             }
                         });
                     } 
                     }); 
-
      
                 });
-
                 $(".link").click(function() {
                     window.location = $(this).data("href");
                 });
-
                 $('#view-inventory-search-field').keyup(function() {
                     $('#table-view-inventory tr').show();
                     var searchItem = $(this).val().toLowerCase();
@@ -308,7 +285,6 @@
                             $(this).toggle();
                     })
                 })
-
                 $('#dropdown-view-inventory-status').change(function() {
                     $('#table-view-inventory tr').show();
                     var filter = $('#dropdown-view-inventory-status').val()
@@ -319,7 +295,6 @@
                             $(this).toggle();
                     })
                 })
-
                 $('#dropdown-view-inventory-type').change(function() {
                     $('#table-view-inventory tr').show();
                     var filter = $('#dropdown-view-inventory-type').val()
@@ -330,42 +305,34 @@
                             $(this).toggle();
                     })
                 })
-
                 $('#dropdown-reorder-point').change(function() {
                     var reorder = $('#dropdown-reorder-point').val();
-
                     if (reorder == "no-selected") {
                         $('#description-sales').css('display', 'none')
                         $('#description-input').css('display', 'none');
                         $('#div-multiplier-input').css('display', 'none')
                     }
-
                     else if (reorder == "sales") {
                         $('#description-sales').css('display', 'block')
                         $('#description-input').css('display', 'none');
                         $('#div-multiplier-input').css('display', 'none')
                     }
-
                     else if (reorder == "input") {
                         $('#description-sales').css('display', 'none')
                         $('#description-input').css('display', 'block');
                         $('#div-multiplier-input').css('display', 'block')
                     }
                 })
-
                 $('#btn-change-reorder-computation').click(function() {
                     var reorder = $('#dropdown-reorder-point').val();
                     if (reorder == "sales") {
                         $.post('/reorderFormulaSales');
                     }
-
                     else if (reorder == "input") {
                         var values = []
-
                         $('.types').each(function() {
                             var typeID = $(this).attr('id')
                             var multiplier = $(this).val();
-
                             var value = {
                                 typeID: typeID,
                                 multiplier: multiplier
@@ -374,7 +341,6 @@
                         })
                         var multipliers = JSON.stringify(values)
                         $.post('/reorderFormulaInput', {multipliers})
-
                         $('#description-sales').css('display', 'none')
                         $('#description-input').css('display', 'none');
                         $('#div-multiplier-input').css('display', 'none')
