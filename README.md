@@ -1,14 +1,14 @@
 # ITISDEV
 
-###User Credentials
-####Cashier
+### User Credentials
+#### Cashier
 nathango - password
 ramisabarre - passsword
 
-####Inventory and Purchasing
+#### Inventory and Purchasing
 elianamisa - password
 tifannyso - password
 ryangarcia - password
 
-####Admin 
+#### Admin 
 francisdevera - password
