@@ -66,7 +66,7 @@ const newOrderController = {
                     if (result!="") {
                         conversion.push (result)
                         resolve(conversion);
-                    }
+                    } 
                 })
             })
         }

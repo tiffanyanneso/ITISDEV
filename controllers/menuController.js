@@ -11,6 +11,8 @@ const DishIngredients = require('../models/DishIngredientsModel.js');
 
 const Ingredients = require('../models/IngredientsModel.js');
 
+const IngredientTypes = require('../models/IngredientTypesModel.js');
+
 const Units = require('../models/UnitsModel.js');
 
 const Conversion = require('../models/ConversionModel.js');
@@ -538,11 +540,21 @@ const MenuController = {
 								});
 							}
 
+							function getIngredientTypes() {
+								return new Promise((resolve, reject) => {
+									db.findMany (IngredientTypes, {}, '_id ingredientType', function (result) {
+										if (result!="")
+											resolve (result)
+									})
+								})
+							}
+
 							async function getNames(dishIngredients) {
 								for (var i = 0; i < dishIngredients.length; i++) {
 									dishIngredients[i].ingredientName = await getIngredientName(dishIngredients[i].ingredientID);
 									dishIngredients[i].measurementName = await getUnitName(dishIngredients[i].measurementID);
 								}
+								var ingredientTypes = await getIngredientTypes();
 					
 								//console.log(dishIngredients);
 
@@ -559,14 +571,15 @@ const MenuController = {
 				
 									//console.log(dishIngredients);
 
+
 									if(req.session.position == "Cashier"){
 					                	var cashier = req.session.position;
-										res.render('editDish', {dish, classifications, dishIngredients, units, cashier});
+										res.render('editDish', {dish, classifications, dishIngredients, units, cashier, ingredientTypes});
 					                }
 
 					                if(req.session.position == "Admin"){
 					                	var manager = req.session.position;
-										res.render('editDish', {dish, classifications, dishIngredients, units, manager});
+										res.render('editDish', {dish, classifications, dishIngredients, units, manager, ingredientTypes});
 					                }
 
 									
