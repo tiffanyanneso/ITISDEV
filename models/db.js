@@ -48,7 +48,8 @@ const database = {
     */
     insertOne: function(model, doc, callback) {
         model.create(doc, function(error, result) {
-            if(error) return callback(false);
+            if(error) {console.log(error); 
+                return callback(false)}
             console.log('Added ' + result);
             return callback(true);
         });
@@ -57,7 +58,7 @@ const database = {
     //inserts a single doc and returns the result
     insertOneResult: function(model, doc, callback) {
         model.create(doc, function(error, result) {
-            if(error) return callback(false);
+            if(error) {console.log(error); return callback(false)};
             console.log('Added ' + result);
             return callback(result);
         });

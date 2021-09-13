@@ -151,8 +151,6 @@ const viewInventoryController = {
 			quantityAvailable: 0,
 			unitMeasurement: req.body.ingredientUnitVal,
 			reorderLevel: 0,
-			ingredientID: req.body.systemID,
-			//_id: req.params.systemID
 		};
 /*
 		db.insertOne (Ingredients, ingredient, function (result) {

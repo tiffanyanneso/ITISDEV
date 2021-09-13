@@ -7,9 +7,9 @@
         <link rel="stylesheet" type="text/css" href="../css/general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
          rel = "stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     </head>
@@ -42,11 +42,13 @@
                       </div>
                       <div class="modal-body">
                         <form id="add-new-stock" class="ui-front">
-                            <label for="ingredient-name">Ingredient Name</label> <input id="new-stock-ingredient-name" type="text"><br>
-                            <label for="stock-name">Stock Name</label> <input id="stock-name" type="text"> <br>
-                            <label for="stock-quantity">Quantity</label> <input id="stock-quantity" type="text"> <br>
-                            <label for="dropdown-stock-unit">Unit of Measurement</label>
-                            <select class="dropdown" id="dropdown-ingredient-unit">
+                            <label for="new-stock-ingredient-name">Ingredient Name</label> <input id="new-stock-ingredient-name" type="text"><br>
+                            <p class="error" id="error-new-stock-ingredient-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
+                            <label for="new-stock-stock-name">Stock Name</label> <input id="new-stock-stock-name" type="text"> <br>
+                            <p class="error" id="error-new-stock-stock-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
+                            <label for="new-stock-stock-quantity">Quantity</label> <input id="new-stock-stock-quantity" type="text"> <br>
+                            <label for="dropdown-new-stock-unit">Unit of Measurement</label>
+                            <select class="dropdown" id="dropdown-new-stock-unit">
                                 <option value="no-selected">--Select unit--</option>
                                 {{#each units}}
                                     <option value="{{_id}}">{{unit}}</option>
@@ -74,17 +76,17 @@
                   </div>
                   <div class="modal-body">
                     <form id="add-new-ingredient">
-                        <label for="ingredient-name">Name</label> <input id="new-ingredient-ingredient-name" type="text"><br>
-                        <p class="error" id="error-new-ingredient-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
-                        <label for="dropdown-ingredient-type">Ingredient Type</label>
-                        <select class="dropdown" id="dropdown-ingredient-type"> 
+                        <label for="new-ingredient-ingredient-name">Name</label> <input id="new-ingredient-ingredient-name" type="text"><br>
+                        <p class="error" id="error-new-ingredient-ingredient-name" style="margin-top: 3px; margin-bottom: 3px;"></p>
+                        <label for="dropdown-new-ingredient-ingredient-type">Ingredient Type</label>
+                        <select class="dropdown" id="dropdown-new-ingredient-ingredient-type"> 
                             <option value="no-selected">--Select ingredient type--</option>
                             {{#each ingredientTypes}}
                                 <option value="{{_id}}">{{ingredientType}}</option>
                             {{/each}}
                         </select><br>
-                        <label for="dropdown-ingredient-unit">Unit of Measurement</label>
-                        <select class="dropdown" id="dropdown-ingredient-unit">
+                        <label for="dropdown-new-ingredient-ingredient-unit">Unit of Measurement</label>
+                        <select class="dropdown" id="dropdown-new-ingredient-ingredient-unit">
                             <option value="no-selected">--Select unit--</option>
                             {{#each units}}
                                 <option value="{{_id}}">{{unit}}</option>
@@ -175,7 +177,7 @@
                 $('#time').html(time);
 
                 function capitalize(string){
-                    var words = string.toLowerCase().split(' ');
+                    var words = string.toString().toLowerCase().split(' ');
                     for (i=0; i<words.length; i++)
                         words[i] = words[i].charAt(0).toUpperCase() + words[i].substring(1);
                     return words.join(' ');
@@ -286,7 +288,112 @@
                 });
 
                 //validation for modals
-                $('')
+                $('#new-stock-ingredient-name').keyup(function() {
+                    var ingredientName = capitalize($('#new-stock-ingredient-name'))
+                    $.get('/getCheckIngredientName', ingredientName , function(result) {
+                        if (result.ingredientName!=ingredientName) {
+                            $("#new-stock-ingredient-name").css("border", "1px solid #B00000");
+                            $('#error-new-stock-ingredient-name').text("Ingredient does-not-exist");
+                            $("#btn-add-new-stock").prop("disabled", true);
+                            $("#btn-add-new-stock").css("background-color", "#b3b3b3");
+                        }
+                        else {
+                            $("#new-stock-ingredient-name").css("border", "1px solid #DDDDDD");
+                            $('#error-new-stock-ingredient-name').text("");
+                            $("#btn-add-new-stock").prop("disabled", false);
+                            $("#btn-add-new-stock").css("background-color", "#0F84D9");
+                        }
+                    })
+                })
+
+                function isFilled () {
+                    var stockName = capitalize($('#new-stock-stock-name').val());
+                    var stockQuantity = $('#stock-quantity').val();
+
+                    if (stockName=="" || stockQuantity=="")
+                        return false;
+                    else
+                        return true;
+                }
+
+                $('#new-stock-stock-name').keyup(function() {
+                    var stockName = capitalize($('#new-stock-stock-name').val());
+                    $.get('/getCheckStockName', {stockName:stockName}, function(result) {
+                        if (result.stockName == stockName) {
+                            $("#new-stock-stock-name").css("border", "1px solid #B00000");
+                            $('#error-new-stock-stock-name').text("Stock already exists");
+                            $("#btn-add-new-stock").prop("disabled", true);
+                            $("#btn-add-new-stock").css("background-color", "#b3b3b3");
+                        }
+                        else { 
+                            $("#new-stock-stock-name").css("border", "1px solid #DDDDDD");
+                            $("#error-new-stock-stock-name").text("");
+                            $("#btn-add-new-stock").prop("disabled", false);
+                            $("#btn-add-new-stock").css("background-color", "#0F84D9");
+                        }
+                    })
+                })
+
+                $('#btn-add-new-stock').click(function() {
+                    var ingredientName = capitalize($('#new-stock-ingredient-name'))
+                    var stockName = capitalize($('#new-stock-stock-name').val());
+                    var quantity = $('#new-stock-stock-quantity').val();
+                    var stockUnitVal = $('#dropdown-nwq-stock-unit').val()
+
+                    $.post('/addStock', {stockName, quantity, stockUnitVal, ingredientName})
+                    $('#modal-add-stock').toggle()
+                    $('#add-new-stock').trigger('reset')
+                })
+
+
+                $('#new-ingredient-ingredient-name').keyup(function() {
+                    var ingredientName = capitalize($('#new-ingredient-ingredient-name').val())
+                    $.get('/getCheckIngredientName', {ingredientName:ingredientName}, function(result) {
+                        if (result.ingredientName == ingredientName) {
+                            $("#new-ingredient-ingredient-name").css("border", "1px solid #B00000");
+                            $('#error-new-ingredient-ingredient-name').text("Ingredient already exists");
+                            $("#btn-add-new-ingredient").prop("disabled", true);
+                            $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                        }
+                        else {
+                             $("#new-ingredient-ingredient-name").css("border", "1px solid #DDDDDD");
+                            $("#error-new-ingredient-ingredient-name").text("");
+                            $("#btn-add-new-ingredient").prop("disabled", false);
+                            $("#btn-add-new-ingredient").css("background-color", "#0F84D9");
+                        } 
+                    })
+                })
+
+                $('#btn-add-new-ingredient').click(function() {
+                    var ingredientName = capitalize($('#new-ingredient-ingredient-name').val());
+                    ingredientName = $.trim(ingredientName);
+                    var ingredientTypeVal = $('#dropdown-new-ingredient-ingredient-type').val();
+                    var ingredientUnitVal = $('#dropdown-new-ingredient-ingredient-unit').val();
+
+
+                    $('#modal-add-ingredient').modal('toggle');
+                    $('#add-new-ingredient').trigger('reset');
+
+                    $.get('/getCheckIngredientName', {ingredientName: ingredientName}, function (result) {
+                        if (result.ingredientName == ingredientName) {
+                            
+                            $("#ingredient-name").css("border", "1px solid #B00000");
+                            $('#error-new-ingredient-name').text("Ingredient already exists");
+                            
+                            $("#btn-add-new-ingredient").prop("disabled", true);
+                            $("#btn-add-new-ingredient").css("background-color", "#b3b3b3");
+                            
+                            //another modal popup saying it exists
+                            alert(ingredientName + " already exists as an ingredient");
+                        }
+                        else {
+                            $.post('/addIngredient', {ingredientName, ingredientzType:ingredientTypeVal, ingredientUnitVal})
+                            $('#modal-add-ingredient').modal('toggle');
+                            $('#add-new-ingredient').trigger('reset');
+                        }
+                    })
+                })
+
 
             });
         </script>

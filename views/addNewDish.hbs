@@ -87,7 +87,7 @@
                         <select class="dropdown" id="dropdown-ingredient-unit">
                             <option value="no-selected">--Select unit--</option>
                             {{#each units}}
-                                <option value="{{id}}">{{unitName}}</option>
+                                <option value="{{_id}}">{{unitName}}</option>
                             {{/each}}
                         </select><br>
                       </div>
@@ -438,9 +438,7 @@
                     var ingredientName = capitalize($('#ingredient-name').val());
                     var ingredientName = $.trim(ingredientName);
                     var ingredientTypeVal = $('#dropdown-ingredient-type').val();
-                    var ingredientTypeText = $('#dropdown-ingredient-type :selected').text();
                     var ingredientUnitVal = $('#dropdown-ingredient-unit').val();
-                    var ingredientUnitText = $('#dropdown-ingredient-unit :selected').text();
 
 
                     $('#modal-add-ingredient').modal('toggle');
