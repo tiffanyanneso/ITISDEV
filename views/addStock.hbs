@@ -234,22 +234,6 @@
                 });
 
 
-                //saves new stock to db
-                $('#btn-add-new-stock').click(function() {
-                    var stockName = $('#stock-name').val();
-                    var stockName = S.trim(stockName);
-                    var quantity = $('#stock-quantity').val();
-                    var stockUnit = $('#dropdown-stock-unit').val();
-                    var ingredientName = $('#ingredient-id').val();
-
-
-                    $('#table-add-stock-stock').append ("<tr>" + "<td>" + stockName + "</td>" + "<td>" + quantity + "</td>" + "<td>" + stockUnit + "</td>");
-                    $('#modal-add-stock').modal('toggle');
-                    $('#add-new-stock').trigger('reset');
-                    $.post('/addStock', {stockName, quantity, stockUnit, ingredientName});
-                });
-
-
                 //saves purchase to db
                 $('#btn-add-stock-save').click (function() {
                     var newStocks = [];
@@ -288,12 +272,12 @@
                 });
 
                 //validation for modals
-                $('#new-stock-ingredient-name').keyup(function() {
+                /*$('#new-stock-ingredient-name').keyup(function() {
                     var ingredientName = capitalize($('#new-stock-ingredient-name'))
                     $.get('/getCheckIngredientName', ingredientName , function(result) {
                         if (result.ingredientName!=ingredientName) {
                             $("#new-stock-ingredient-name").css("border", "1px solid #B00000");
-                            $('#error-new-stock-ingredient-name').text("Ingredient does-not-exist");
+                            $('#error-new-stock-ingredient-name').text("Ingredient does not exist");
                             $("#btn-add-new-stock").prop("disabled", true);
                             $("#btn-add-new-stock").css("background-color", "#b3b3b3");
                         }
@@ -304,7 +288,7 @@
                             $("#btn-add-new-stock").css("background-color", "#0F84D9");
                         }
                     })
-                })
+                })*/
 
                 function isFilled () {
                     var stockName = capitalize($('#new-stock-stock-name').val());
@@ -335,10 +319,15 @@
                 })
 
                 $('#btn-add-new-stock').click(function() {
-                    var ingredientName = capitalize($('#new-stock-ingredient-name'))
+                    var ingredientName = capitalize($('#new-stock-ingredient-name').val())
                     var stockName = capitalize($('#new-stock-stock-name').val());
                     var quantity = $('#new-stock-stock-quantity').val();
-                    var stockUnitVal = $('#dropdown-nwq-stock-unit').val()
+                    var stockUnitVal = $('#dropdown-new-stock-unit').val()
+
+                    console.log(ingredientName)
+                    console.log(stockName)
+                    console.log(quantity)
+                    console.log(stockUnitVal)
 
                     $.post('/addStock', {stockName, quantity, stockUnitVal, ingredientName})
                     $('#modal-add-stock').toggle()
@@ -388,8 +377,6 @@
                         }
                         else {
                             $.post('/addIngredient', {ingredientName, ingredientzType:ingredientTypeVal, ingredientUnitVal})
-                            $('#modal-add-ingredient').modal('toggle');
-                            $('#add-new-ingredient').trigger('reset');
                         }
                     })
                 })

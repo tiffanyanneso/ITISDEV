@@ -152,20 +152,7 @@ const viewInventoryController = {
 			unitMeasurement: req.body.ingredientUnitVal,
 			reorderLevel: 0,
 		};
-/*
-		db.insertOne (Ingredients, ingredient, function (result) {
-			res.send({redirect: '/ingredient/:id' + req.params.systemID});
 
-		});
-
-		insertOneResult: function(model, doc, callback) {
-			model.create(doc, function(error, result) {
-				if(error) return callback(false);
-				console.log('Added ' + result);
-				return callback(result);
-			});
-		},
-*/
 		db.insertOneResult(Ingredients, ingredient, function(result){
 			var ingredientID = result._id;
 			res.send(ingredientID);
@@ -279,6 +266,7 @@ const viewInventoryController = {
 	},
 
 	addStock: function(req, res) {
+		console.log(req.body.ingredientName)
 		db.findOne(Ingredients, {ingredientName:req.body.ingredientName}, '_id', function(result) {
 			var stock = {
 				stockName: req.body.stockName,
