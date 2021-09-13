@@ -64,12 +64,14 @@
                                 <option value="{{_id}}">{{unit}}</option>
                             {{/each}}
                         </select><br>
+                    </form>
+                      <button id="add-conversion" class="btn-dark-blue" data-target="/unitConverter" style=
+                            "margin-left: 3px;">Add New Unit</button>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary" id="btn-add-new-ingredient" disabled="true">Add Ingredient</button>
                       </div>
-                  </form>
                 </div>
               </div>
             </div>
@@ -256,6 +258,10 @@
                         //another modal popup saying it exists
                         alert(ingredientName + " already exists as an ingredient");
                     }
+
+                    $('#add-conversion').click(function() {
+                        window.location = $(this).data("target")
+                    })
 
                     else{
                       $.ajax({

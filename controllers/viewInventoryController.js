@@ -89,7 +89,7 @@ const viewInventoryController = {
 
 		async function getUnit(ingredients) {
 			for (var i=0; i<ingredients.length; i++) {
-				ingredients[i].unitMeasurement = await getUnitName (ingredients[i].unitMeasurement);
+				ingredients[i].unitMeasurement = await getUnitName(ingredients[i].unitMeasurement);
 				ingredients[i].ingredientTypeName = await getIngredientType(ingredients[i].ingredientType);
 
 				var statusID;
@@ -266,7 +266,6 @@ const viewInventoryController = {
 	},
 
 	addStock: function(req, res) {
-		console.log(req.body.ingredientName)
 		db.findOne(Ingredients, {ingredientName:req.body.ingredientName}, '_id', function(result) {
 			var stock = {
 				stockName: req.body.stockName,
