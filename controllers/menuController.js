@@ -184,6 +184,7 @@ const MenuController = {
 					checkedStatuses.push(checkStatus);
 				}
 			}
+			console.log(checkedStatuses)
 			
 			var dishProj = '_id dishName dishStatus';
 			var checkedDishes = [];
@@ -275,8 +276,6 @@ const MenuController = {
 				db.findMany (Dishes, {}, dishProjection, function(result2) {
 
 					for (var j =0; j<result2.length; j++) {
-
-						checkAvailability(result2[j]);
 
 						var status = "Out of Stock";
 						for(var i=0; i<statuses.length; i++){

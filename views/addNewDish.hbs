@@ -109,6 +109,7 @@
                     {{/each}}
                 </select>
 
+                <!--conversion modal-->
                 <div class="modal fade" id="modal-add-conversion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -149,12 +150,13 @@
                     </div>
                 </div>
 
+                <!--unit modal-->
                 <div class="modal fade" id="modal-add-unit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
                             <h3 class="modal-title" id="exampleModalLongTitle">Add Conversion</h3>
-                            <button type="button" class="close" data-dismiss="modal" id="btn-close-add-conversion" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" id="btn-close-add-unit" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
                           </div>
@@ -165,7 +167,7 @@
                                 <p class="error" id="error-unit"></p> 
             
                               <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal" id ="btn-close-add-conversion-2">Close</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" id ="btn-close-add-unit-2">Close</button>
                                 <button type="button" class="btn btn-primary" id="btn-save-unit">Add Unit</button>
                               </div>
                         </div>
@@ -679,7 +681,7 @@
                 })
 
                 $('#btn-save-unit').click(function() {
-                    var unit = capitalize($('#unit').val());
+                    var unit = $('#unit').val();
 
                     $.post('/addDishUnit', {unit}, function (result) {
                         $('#unit').val('')

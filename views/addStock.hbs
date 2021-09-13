@@ -155,8 +155,11 @@
                                 }
                          });
                     }, response: function (event, ui) {
-                        if (ui.content.length === 0) {
+                        if (ui.content.length === 0) 
                             $('#error-add-stock').css('display', 'block')
+
+                        else
+                            $('#error-add-stock').css('display','none')
                             // $("#btn-add-new-ingredient-popup").show();
                             //$("#btn-add-new-ingredient-popup").click(function() {
                                  //$('#modal-add-ingredient').modal('show');
@@ -164,8 +167,6 @@
                             //$("#btn-close-add-new-ingredient , #btn-close-add-new-ingredient-2").click(function() {
                                   //$("#btn-add-new-ingredient-popup").hide();
                                   //});
-
-                        }
                     }
                         
                 });
@@ -253,6 +254,7 @@
                    $("#table-add-stock-new-stock tbody tr").remove();
                    $('#add-stock-total').text('0');
                    $('#btn-add-stock-save').prop('disabled', true);
+                   alert("Purchase Saved!");
                 });
 
                 $("#new-stock-ingredient-name").autocomplete({
@@ -355,7 +357,6 @@
                     var ingredientTypeVal = $('#dropdown-new-ingredient-ingredient-type').val();
                     var ingredientUnitVal = $('#dropdown-new-ingredient-ingredient-unit').val();
 
-
                     $('#modal-add-ingredient').modal('toggle');
                     $('#add-new-ingredient').trigger('reset');
 
@@ -372,7 +373,7 @@
                             alert(ingredientName + " already exists as an ingredient");
                         }
                         else {
-                            $.post('/addIngredient', {ingredientName, ingredientzType:ingredientTypeVal, ingredientUnitVal})
+                            $.post('/addIngredient', {ingredientName, ingredientType:ingredientTypeVal, ingredientUnitVal})
                         }
                     })
                 })
