@@ -26,8 +26,8 @@
 
             <div style="margin-top: 20px;"> 
                 <input type="text" name="add-stock-name" id="add-stock-name" placeholder="Stock Name" style="margin-right: 5px">
-                <input type="number" name="add-stock-count" id="add-stock-count" placeholder="Count" style="margin-right: 10px">
-                <input type="number" name="add-stock-price" id="add-stock-price" placeholder="Price" style="margin-right: 10px">
+                <input type="number" name="add-stock-count" id="add-stock-count" placeholder="Count" min="0" oninput="validity.valid||(value='');" style="margin-right: 10px">
+                <input type="number" name="add-stock-price" id="add-stock-price" placeholder="Price" min="0" oninput="validity.valid||(value='');" style="margin-right: 10px">
                 <input class="btn-add" type="button" id="btn-add-stock" name="btn-add-stock" value="+">
 
                  <!-- Modal Stock -->
